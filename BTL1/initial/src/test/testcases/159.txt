@@ -1,0 +1,2 @@
+string s <- " evd6 \1 "
+    

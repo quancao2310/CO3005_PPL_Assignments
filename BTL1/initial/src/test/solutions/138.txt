@@ -1,0 +1,1 @@
+escape \b \r \t \f \n \' \\ characters,<EOF>

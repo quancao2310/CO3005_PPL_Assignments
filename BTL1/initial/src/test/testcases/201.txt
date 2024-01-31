@@ -1,0 +1,9 @@
+func main()
+begin
+if (a = 1)
+if (a = 2)
+if (a = 3)
+b <- 3
+else b <- 4
+elif (a = 5) return
+end

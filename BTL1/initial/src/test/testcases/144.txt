@@ -1,0 +1,1 @@
+ "a string with some \r\n\t \a \e \i \o \u" 

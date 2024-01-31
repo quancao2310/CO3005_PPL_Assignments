@@ -1,0 +1,5 @@
+func,ffsfJO5,(,pgN8UBu,,,pxANGbn,,,psWgC8L,,,pJhgLfE,),
+,begin,
+,var,vCzcszX,<-,-,1192,
+,end,
+,<EOF>

@@ -1,0 +1,1 @@
+0 1.2 3E4 5e+6 7.8e-9 ## These are some valid number literals in ZCode

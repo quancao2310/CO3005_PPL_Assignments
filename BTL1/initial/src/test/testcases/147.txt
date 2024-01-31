@@ -1,0 +1,1 @@
+a <- "SQ1: ' - SQ2: \' - All accepted!" 
