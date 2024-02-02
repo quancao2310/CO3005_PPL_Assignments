@@ -11,15 +11,15 @@ options {
 }
 
 // ********************GRAMMAR********************
-program: decl_list EOF;
+program: nullable_newline_list decl_list EOF;
 
 // --------------------DECLARATIONS--------------------
 decl_list: decl decl_list
          | decl
          ;
 
-decl: variable_decl nonempty_newline_list
-    | function_decl nonempty_newline_list
+decl: variable_decl
+    | function_decl
     ;
 
 // Variables
@@ -29,21 +29,25 @@ variable_decl: primitive_decl
              | array_decl
              ;
 
-primitive_decl: primitive_type IDENTIFIER optional_init;
-var_keyword_decl: VAR IDENTIFIER ASSIGN expression;
-dynamic_keyword_decl: DYNAMIC IDENTIFIER optional_init;
+primitive_decl: primitive_type IDENTIFIER optional_init nonempty_newline_list;
+var_keyword_decl: VAR IDENTIFIER ASSIGN expression nonempty_newline_list;
+dynamic_keyword_decl: DYNAMIC IDENTIFIER optional_init nonempty_newline_list;
 optional_init: ASSIGN expression | ;
 
-array_decl: primitive_type IDENTIFIER array_dimensions (ASSIGN array_lit | );
-array_dimensions: LEFT_SQUARE_BRACKET number_list RIGHT_SQUARE_BRACKET;
+array_decl: primitive_type IDENTIFIER array_dimensions optional_array_init nonempty_newline_list;
+array_dimensions: LEFT_SQUARE_BRACKET dimension_list RIGHT_SQUARE_BRACKET;
+dimension_list: NUMBER_LIT COMMA dimension_list
+              | NUMBER_LIT
+              ;
+optional_array_init: ASSIGN array_lit | ;
 
 // Functions
-function_decl: FUNC IDENTIFIER param_decl optional_impl;
+function_decl: FUNC IDENTIFIER param_decl optional_impl nonempty_newline_list;
 param_decl: LEFT_PAREN param_list RIGHT_PAREN;
-param_list: param_list_sub | ;
-param_list_sub: param COMMA param_list_sub
-              | param
-              ;
+param_list: param_list_prime | ;
+param_list_prime: param COMMA param_list_prime
+                | param
+                ;
 param: primitive_type IDENTIFIER
      | primitive_type IDENTIFIER array_dimensions
      ;
@@ -65,12 +69,12 @@ statement: variable_stmt
          ;
 
 // Variable statement
-variable_stmt: variable_decl nonempty_newline_list;
+variable_stmt: variable_decl;
 
 // Assignment statement
 assignment_stmt: lhs_asmt ASSIGN expression nonempty_newline_list;
 lhs_asmt: IDENTIFIER
-        | IDENTIFIER index_op
+        | IDENTIFIER LEFT_SQUARE_BRACKET expr_list RIGHT_SQUARE_BRACKET
         ;
 
 // If statement
@@ -99,6 +103,9 @@ call_stmt: call_expr nonempty_newline_list;
 
 // Block statement
 block_stmt: BEGIN nonempty_newline_list stmt_list END;
+stmt_list: statement stmt_list
+         | 
+         ;
 
 // --------------------EXPRESSIONS--------------------
 expression: expr1 CONCAT expr1
@@ -136,40 +143,25 @@ operand: NUMBER_LIT
        ;
 
 boolean_lit: TRUE | FALSE;
-array_lit: LEFT_SQUARE_BRACKET array_element_list RIGHT_SQUARE_BRACKET;
-array_element_list: expr_list;
+array_lit: LEFT_SQUARE_BRACKET expr_list RIGHT_SQUARE_BRACKET;
 
 // Function call
 call_expr: IDENTIFIER LEFT_PAREN argument_list RIGHT_PAREN;
 argument_list: expr_list | ;
 
 // Indexing expression
-index_expr: expr_for_indexing index_op;
+index_expr: expr_for_indexing LEFT_SQUARE_BRACKET expr_list RIGHT_SQUARE_BRACKET;
 expr_for_indexing: IDENTIFIER
                  | call_expr
                  ;
 
 // --------------------COMMONLY USED/GROUPING GRAMMAR RULES--------------------
-// Lists
+primitive_type: NUMBER | BOOL | STRING;
+rel_op: EQ | STRING_EQ | NEQ | LT | GT | LTE | GTE;
+
 expr_list: expression COMMA expr_list
          | expression
          ;
-
-number_list: NUMBER_LIT COMMA number_list
-           | NUMBER_LIT
-           ;
-
-stmt_list: statement stmt_list
-         | 
-         ;
-
-// id_list: IDENTIFIER COMMA id_list
-//        | IDENTIFIER
-//        ;
-
-nullable_newline_list: NEWLINE nullable_newline_list // At least 0 \n
-                     | 
-                     ;
 
 // This rule is used to end a statement or declaration
 // as one must end with at least one \n
@@ -177,9 +169,11 @@ nonempty_newline_list: NEWLINE nonempty_newline_list // At least 1 \n
                      | NEWLINE
                      ;
 
-primitive_type: NUMBER | BOOL | STRING;
-rel_op: EQ | STRING_EQ | NEQ | LT | GT | LTE | GTE;
-index_op: LEFT_SQUARE_BRACKET expr_list RIGHT_SQUARE_BRACKET;
+// Some statements/declarations allow \n but not compulsory
+// such as function body, if-statement, for-statement
+nullable_newline_list: NEWLINE nullable_newline_list // At least 0 \n
+                     | 
+                     ;
 
 // ********************LEXICON********************
 // --------------------KEYWORDS--------------------
