@@ -1,1 +1,1 @@
-string,s,<-,Illegal Escape In String:  evd6 \1
+string,x,<-,1,+,-,-,-,-,123,+,/,aaajam,<EOF>

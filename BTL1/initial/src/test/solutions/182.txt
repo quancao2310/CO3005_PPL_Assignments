@@ -1,5 +1,1 @@
-func,fmpnl1G,(,p1j70U5,,,pgQz3Cm,,,pEo16z6,),
-,begin,
-,vjH4UEx,<-,1580,
-,end,
-,<EOF>
+<EOF>

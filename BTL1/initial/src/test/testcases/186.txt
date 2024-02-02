@@ -1,5 +1,0 @@
-func fJ3pU77() 
- begin 
-dynamic vqCykP9 <-792
- end
-    

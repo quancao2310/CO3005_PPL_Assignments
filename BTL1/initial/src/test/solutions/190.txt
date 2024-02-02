@@ -1,2 +1,1 @@
-var,vcceOxV,<-,-,725,
-,<EOF>
+<EOF>

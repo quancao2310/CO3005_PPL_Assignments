@@ -1,0 +1,8 @@
+
+string a <- x...y
+
+var x <- arr[1, 2, 3]
+
+func main() begin
+    a[3 + foo(2), x, y] <- a[b[2, 3]] + 4
+end

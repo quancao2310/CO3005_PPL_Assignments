@@ -1,0 +1,3 @@
+number a
+number b <- 1
+number c <- 2.5

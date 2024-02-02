@@ -1,0 +1,4 @@
+func f()
+begin
+string x <- 1+----123+/aaajam
+end

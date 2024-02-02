@@ -1,0 +1,13 @@
+func bar(number x)
+
+func main() begin
+    number a <- bar(2024)
+    string b <- bar("John")
+    writeNumber(a)
+end
+
+
+func bar(number x)
+begin
+    return x + 1
+end

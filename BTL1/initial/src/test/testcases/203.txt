@@ -1,1 +1,1 @@
-int main( {}
+number a[10]

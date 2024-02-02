@@ -1,1 +1,1 @@
-string,s,<-,Illegal Escape In String:  jLPrl \#
+<EOF>

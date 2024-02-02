@@ -1,1 +1,1 @@
-string,s,<-,Illegal Escape In String:   \<
+string,x,<-,a,[,0,...,asdas'"da\f,<EOF>

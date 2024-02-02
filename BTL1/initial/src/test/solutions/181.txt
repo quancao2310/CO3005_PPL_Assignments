@@ -1,8 +1,1 @@
-func,fnWheBB,(,pP6YJ6I,,,p8ymqez,),
-,begin,
-,func,fNZkY4I,(,),
-,begin,
-,number,vfyIGL3,<-,454,
-,end,
-,end,
-,<EOF>
+<EOF>

@@ -1,0 +1,19 @@
+func main()
+begin
+    var x <- -1
+    var x <- --1
+    var x <- ---1
+    var x <- ----1
+    var x <- -----1
+    var x <--------1
+    
+    var y <- not x
+    var y <- not not x
+    var y <- not not not x
+    var y <- not not not not not not x
+    
+    var z <- a[1]
+    var z <- a[1, 2, a[3]]
+    var z <- a[1, "a", "B"]
+    var z <- a[[true, false]]
+end

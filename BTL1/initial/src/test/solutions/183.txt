@@ -1,5 +1,1 @@
-func,f0NCuHQ,(,pUf1az0,),
-,begin,
-,number,vKXJQCy,<-,-,1119,
-,end,
-,<EOF>
+<EOF>

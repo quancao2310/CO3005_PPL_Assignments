@@ -1,2 +1,1 @@
-numberEY,
-,<EOF>
+<EOF>

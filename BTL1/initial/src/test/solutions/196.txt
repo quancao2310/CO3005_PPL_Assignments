@@ -1,2 +1,1 @@
-var,vyqBMA2,<-,1095,
-,<EOF>
+<EOF>

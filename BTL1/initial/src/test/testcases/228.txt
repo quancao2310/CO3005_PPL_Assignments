@@ -1,0 +1,7 @@
+func main()
+begin
+number a
+string b <- "x"
+var c <- false
+
+func foo()

@@ -1,0 +1,4 @@
+bool a
+## Comment 1
+bool b <- true ## Comment 2
+######## Comment 3

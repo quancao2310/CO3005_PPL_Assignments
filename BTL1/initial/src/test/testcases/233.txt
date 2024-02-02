@@ -1,0 +1,5 @@
+
+dynamic a <- foo(213)
+dynamic a <- bar(foo("x" + 4.213))
+dynamic a <- (foo() + 2) * "adsad"
+dynamic a <- -(x + x)*(x-x) ... foo(x, y, z)

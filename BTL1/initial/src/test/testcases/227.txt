@@ -1,0 +1,8 @@
+number MOD <- 1e9 + 7
+number _val1 <- 1000
+number _val2 <- 20.24
+func main()
+begin
+    writeNumber(_val1 % MOD)
+    writeNumber(_val2 % MOD)
+end

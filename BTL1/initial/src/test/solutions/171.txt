@@ -1,2 +1,1 @@
-funcOr,
-,<EOF>
+<EOF>

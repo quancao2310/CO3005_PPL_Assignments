@@ -1,2 +1,1 @@
-continueNB,
-,<EOF>
+<EOF>

@@ -1,2 +1,1 @@
-string s <- " k0LhrA \" "
-    
+number a <- a3 == a2 and a1 != a2

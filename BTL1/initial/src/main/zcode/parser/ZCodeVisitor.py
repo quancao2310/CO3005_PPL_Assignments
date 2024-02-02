@@ -59,6 +59,16 @@ class ZCodeVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by ZCodeParser#dimension_list.
+    def visitDimension_list(self, ctx:ZCodeParser.Dimension_listContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ZCodeParser#optional_array_init.
+    def visitOptional_array_init(self, ctx:ZCodeParser.Optional_array_initContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by ZCodeParser#function_decl.
     def visitFunction_decl(self, ctx:ZCodeParser.Function_declContext):
         return self.visitChildren(ctx)
@@ -74,8 +84,8 @@ class ZCodeVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ZCodeParser#param_list_sub.
-    def visitParam_list_sub(self, ctx:ZCodeParser.Param_list_subContext):
+    # Visit a parse tree produced by ZCodeParser#param_list_prime.
+    def visitParam_list_prime(self, ctx:ZCodeParser.Param_list_primeContext):
         return self.visitChildren(ctx)
 
 
@@ -169,6 +179,11 @@ class ZCodeVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by ZCodeParser#stmt_list.
+    def visitStmt_list(self, ctx:ZCodeParser.Stmt_listContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by ZCodeParser#expression.
     def visitExpression(self, ctx:ZCodeParser.ExpressionContext):
         return self.visitChildren(ctx)
@@ -224,11 +239,6 @@ class ZCodeVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ZCodeParser#array_element_list.
-    def visitArray_element_list(self, ctx:ZCodeParser.Array_element_listContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by ZCodeParser#call_expr.
     def visitCall_expr(self, ctx:ZCodeParser.Call_exprContext):
         return self.visitChildren(ctx)
@@ -249,31 +259,6 @@ class ZCodeVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ZCodeParser#expr_list.
-    def visitExpr_list(self, ctx:ZCodeParser.Expr_listContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ZCodeParser#number_list.
-    def visitNumber_list(self, ctx:ZCodeParser.Number_listContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ZCodeParser#stmt_list.
-    def visitStmt_list(self, ctx:ZCodeParser.Stmt_listContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ZCodeParser#nullable_newline_list.
-    def visitNullable_newline_list(self, ctx:ZCodeParser.Nullable_newline_listContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ZCodeParser#nonempty_newline_list.
-    def visitNonempty_newline_list(self, ctx:ZCodeParser.Nonempty_newline_listContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by ZCodeParser#primitive_type.
     def visitPrimitive_type(self, ctx:ZCodeParser.Primitive_typeContext):
         return self.visitChildren(ctx)
@@ -284,8 +269,18 @@ class ZCodeVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ZCodeParser#index_op.
-    def visitIndex_op(self, ctx:ZCodeParser.Index_opContext):
+    # Visit a parse tree produced by ZCodeParser#expr_list.
+    def visitExpr_list(self, ctx:ZCodeParser.Expr_listContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ZCodeParser#nonempty_newline_list.
+    def visitNonempty_newline_list(self, ctx:ZCodeParser.Nonempty_newline_listContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ZCodeParser#nullable_newline_list.
+    def visitNullable_newline_list(self, ctx:ZCodeParser.Nullable_newline_listContext):
         return self.visitChildren(ctx)
 
 

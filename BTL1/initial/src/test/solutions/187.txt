@@ -1,8 +1,1 @@
-func,fJ6UE3s,(,),
-,begin,
-,func,fnoOnLG,(,pBXfUW9,,,pZKEvcO,,,pXpi2fe,),
-,begin,
-,v9tzKsv,<-,409,
-,end,
-,end,
-,<EOF>
+<EOF>

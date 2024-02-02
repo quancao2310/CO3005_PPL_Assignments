@@ -1,0 +1,10 @@
+func foo(number x, number y, string s[9])
+begin
+    s[5] <- "Awesome"
+    return x + y
+end
+
+func main() begin
+    foo(1, 2, "xyz")
+    return
+end

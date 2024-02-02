@@ -1,2 +1,1 @@
-string s <- " QS5xbmQK \= "
-    
+number a <- --x + y - y * y / y % y

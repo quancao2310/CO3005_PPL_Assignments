@@ -1,2 +1,1 @@
-string s <- " W \c "
-    
+((a + b - c) * d / e) + (j / k) * l + (p * q)

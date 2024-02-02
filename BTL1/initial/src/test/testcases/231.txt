@@ -1,0 +1,12 @@
+
+bool a <- x and y
+bool a <- x or y
+bool a <- not y
+
+bool a <- x = y
+bool a <- x != y
+bool a <- x < y
+bool a <- x <= y
+bool a <- x > y
+bool a <- x >= y
+bool a <- x == y

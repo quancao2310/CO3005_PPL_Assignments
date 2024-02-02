@@ -1,1 +1,1 @@
-string,s,<-,Illegal Escape In String:  DKEfyat5 \(
+dynamic,a,<-,foo,(,213,),and,bar,(,foo,(,x,+,4.213,),),+,(,(,foo,(,),+,2,),*,adsad,/,-,(,x,+,x,),*,(,x,-,x,),...,foo,(,x,,,y,,,z,),),<EOF>

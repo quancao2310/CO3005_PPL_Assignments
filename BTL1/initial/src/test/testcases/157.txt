@@ -1,2 +1,1 @@
-string s <- " zVhDl \# "
-    
+bool a <- foo(1,2,)

@@ -1,0 +1,4 @@
+func void()
+begin
+string x <- a[0 ... "asdas'"da\f"
+end

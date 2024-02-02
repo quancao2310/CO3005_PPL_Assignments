@@ -1,8 +1,1 @@
-func,fwrmLPz,(,pnhtrwn,,,pqzkK0O,,,phLwONp,,,ps1ewc4,),
-,begin,
-,func,fP7DoVT,(,pxUSKRB,),
-,begin,
-,string,vJtQLJV,<-,2717,
-,end,
-,end,
-,<EOF>
+<EOF>

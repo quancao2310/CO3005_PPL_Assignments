@@ -1,2 +1,2 @@
-string s <- " boiV \e "
-    
+bool a <- not x and y or y
+x = y, x != y, x < y, x <= y, x > y, x >= y, x == y

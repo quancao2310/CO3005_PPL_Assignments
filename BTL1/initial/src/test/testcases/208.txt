@@ -1,0 +1,1 @@
+string s <- "This is an invalid string: \f \a \b \n"

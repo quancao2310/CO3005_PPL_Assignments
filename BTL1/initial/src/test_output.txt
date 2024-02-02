@@ -1,5 +1,485 @@
-..
+........................................FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+======================================================================
+FAIL: test_240 (ParserSuite.ParserSuite)
 ----------------------------------------------------------------------
-Ran 2 tests in 0.095s
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 432, in test_240
+    self.assertTrue(TestParser.test(input, expect, 240))
+AssertionError: False is not true
 
-OK
+======================================================================
+FAIL: test_241 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 438, in test_241
+    self.assertTrue(TestParser.test(input, expect, 241))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_242 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 444, in test_242
+    self.assertTrue(TestParser.test(input, expect, 242))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_243 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 450, in test_243
+    self.assertTrue(TestParser.test(input, expect, 243))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_244 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 456, in test_244
+    self.assertTrue(TestParser.test(input, expect, 244))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_245 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 462, in test_245
+    self.assertTrue(TestParser.test(input, expect, 245))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_246 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 468, in test_246
+    self.assertTrue(TestParser.test(input, expect, 246))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_247 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 474, in test_247
+    self.assertTrue(TestParser.test(input, expect, 247))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_248 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 480, in test_248
+    self.assertTrue(TestParser.test(input, expect, 248))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_249 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 486, in test_249
+    self.assertTrue(TestParser.test(input, expect, 249))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_250 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 492, in test_250
+    self.assertTrue(TestParser.test(input, expect, 250))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_251 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 498, in test_251
+    self.assertTrue(TestParser.test(input, expect, 251))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_252 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 504, in test_252
+    self.assertTrue(TestParser.test(input, expect, 252))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_253 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 510, in test_253
+    self.assertTrue(TestParser.test(input, expect, 253))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_254 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 516, in test_254
+    self.assertTrue(TestParser.test(input, expect, 254))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_255 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 522, in test_255
+    self.assertTrue(TestParser.test(input, expect, 255))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_256 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 528, in test_256
+    self.assertTrue(TestParser.test(input, expect, 256))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_257 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 534, in test_257
+    self.assertTrue(TestParser.test(input, expect, 257))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_258 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 540, in test_258
+    self.assertTrue(TestParser.test(input, expect, 258))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_259 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 546, in test_259
+    self.assertTrue(TestParser.test(input, expect, 259))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_260 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 552, in test_260
+    self.assertTrue(TestParser.test(input, expect, 260))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_261 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 558, in test_261
+    self.assertTrue(TestParser.test(input, expect, 261))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_262 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 564, in test_262
+    self.assertTrue(TestParser.test(input, expect, 262))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_263 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 570, in test_263
+    self.assertTrue(TestParser.test(input, expect, 263))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_264 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 576, in test_264
+    self.assertTrue(TestParser.test(input, expect, 264))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_265 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 582, in test_265
+    self.assertTrue(TestParser.test(input, expect, 265))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_266 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 588, in test_266
+    self.assertTrue(TestParser.test(input, expect, 266))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_267 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 594, in test_267
+    self.assertTrue(TestParser.test(input, expect, 267))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_268 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 600, in test_268
+    self.assertTrue(TestParser.test(input, expect, 268))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_269 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 606, in test_269
+    self.assertTrue(TestParser.test(input, expect, 269))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_270 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 612, in test_270
+    self.assertTrue(TestParser.test(input, expect, 270))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_271 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 618, in test_271
+    self.assertTrue(TestParser.test(input, expect, 271))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_272 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 624, in test_272
+    self.assertTrue(TestParser.test(input, expect, 272))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_273 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 630, in test_273
+    self.assertTrue(TestParser.test(input, expect, 273))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_274 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 636, in test_274
+    self.assertTrue(TestParser.test(input, expect, 274))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_275 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 642, in test_275
+    self.assertTrue(TestParser.test(input, expect, 275))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_276 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 648, in test_276
+    self.assertTrue(TestParser.test(input, expect, 276))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_277 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 654, in test_277
+    self.assertTrue(TestParser.test(input, expect, 277))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_278 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 660, in test_278
+    self.assertTrue(TestParser.test(input, expect, 278))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_279 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 666, in test_279
+    self.assertTrue(TestParser.test(input, expect, 279))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_280 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 672, in test_280
+    self.assertTrue(TestParser.test(input, expect, 280))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_281 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 678, in test_281
+    self.assertTrue(TestParser.test(input, expect, 281))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_282 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 684, in test_282
+    self.assertTrue(TestParser.test(input, expect, 282))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_283 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 690, in test_283
+    self.assertTrue(TestParser.test(input, expect, 283))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_284 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 696, in test_284
+    self.assertTrue(TestParser.test(input, expect, 284))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_285 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 702, in test_285
+    self.assertTrue(TestParser.test(input, expect, 285))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_286 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 708, in test_286
+    self.assertTrue(TestParser.test(input, expect, 286))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_287 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 714, in test_287
+    self.assertTrue(TestParser.test(input, expect, 287))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_288 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 720, in test_288
+    self.assertTrue(TestParser.test(input, expect, 288))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_289 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 726, in test_289
+    self.assertTrue(TestParser.test(input, expect, 289))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_290 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 732, in test_290
+    self.assertTrue(TestParser.test(input, expect, 290))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_291 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 738, in test_291
+    self.assertTrue(TestParser.test(input, expect, 291))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_292 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 744, in test_292
+    self.assertTrue(TestParser.test(input, expect, 292))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_293 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 750, in test_293
+    self.assertTrue(TestParser.test(input, expect, 293))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_294 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 756, in test_294
+    self.assertTrue(TestParser.test(input, expect, 294))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_295 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 762, in test_295
+    self.assertTrue(TestParser.test(input, expect, 295))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_296 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 768, in test_296
+    self.assertTrue(TestParser.test(input, expect, 296))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_297 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 774, in test_297
+    self.assertTrue(TestParser.test(input, expect, 297))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_298 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 780, in test_298
+    self.assertTrue(TestParser.test(input, expect, 298))
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_299 (ParserSuite.ParserSuite)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL1\initial\src\./test\ParserSuite.py", line 786, in test_299
+    self.assertTrue(TestParser.test(input, expect, 299))
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 100 tests in 1.542s
+
+FAILED (failures=60)

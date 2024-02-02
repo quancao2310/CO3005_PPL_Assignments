@@ -1,0 +1,5 @@
+func main() {
+    number a
+    string b <- "x"
+    var c <- false
+}

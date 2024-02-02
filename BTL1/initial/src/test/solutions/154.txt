@@ -1,1 +1,1 @@
-string,s,<-,Illegal Escape In String:  xT8g \d
+var,x,<-,-,-,-,-,-,-,-,-,-,-,-,-,-,1,<EOF>
