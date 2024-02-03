@@ -212,8 +212,7 @@ class ZCodeParser ( Parser ):
                      "'if'", "'else'", "'elif'", "'begin'", "'end'", "'<-'", 
                      "'+'", "'-'", "'*'", "'/'", "'%'", "'not'", "'and'", 
                      "'or'", "'='", "'!='", "'<'", "'<='", "'>'", "'>='", 
-                     "'...'", "'=='", "'('", "')'", "'['", "']'", "','", 
-                     "'\n'" ]
+                     "'...'", "'=='", "'('", "')'", "'['", "']'", "','" ]
 
     symbolicNames = [ "<INVALID>", "TRUE", "FALSE", "NUMBER", "BOOL", "STRING", 
                       "RETURN", "VAR", "DYNAMIC", "FUNC", "FOR", "UNTIL", 

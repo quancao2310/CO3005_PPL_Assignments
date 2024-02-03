@@ -226,7 +226,7 @@ RIGHT_PAREN: ')';
 LEFT_SQUARE_BRACKET: '[';
 RIGHT_SQUARE_BRACKET: ']';
 COMMA: ',';
-NEWLINE: '\n';
+NEWLINE: '\r'? '\n' {self.text = '\n'};
 
 // --------------------LITERALS--------------------
 NUMBER_LIT: INT DEC? EXP?;
@@ -235,17 +235,18 @@ fragment DEC: '.' [0-9]*;
 fragment EXP: [eE] [+-]? [0-9]+;
 
 STRING_LIT: '"' VALID_CHAR* '"' {self.text = self.text[1:-1]};
-fragment ESC_CHAR: '\\' [bfrnt'\\]; // Valid escape characters: \b, \f, \r, \n, \t, \', \\
+fragment ESC_CHAR: '\\' [bfrnt'\\];
 fragment INVALID_ESC_CHAR: '\\' ~[bfrnt'\\];
 fragment VALID_CHAR: ESC_CHAR | '\'"' | ~["\r\n\\];
 
 // --------------------COMMENTS--------------------
-COMMENT: '##' ~[\r\n]* -> skip;
+COMMENT: '##' ~[\n]* -> skip;
 
 // --------------------IDENTIFIERS--------------------
 IDENTIFIER: [a-zA-Z_] [a-zA-Z0-9_]*;
 
-WS: [ \b\t\f\r]+ -> skip;
+// --------------------WHITESPACE--------------------
+WS: [ \b\t\f]+ -> skip;
 
 // Error tokens
 UNCLOSE_STRING: '"' VALID_CHAR* ([\r\n] | EOF) {
