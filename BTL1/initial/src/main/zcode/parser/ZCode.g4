@@ -39,7 +39,7 @@ array_dimensions: LEFT_SQUARE_BRACKET dimension_list RIGHT_SQUARE_BRACKET;
 dimension_list: NUMBER_LIT COMMA dimension_list
               | NUMBER_LIT
               ;
-optional_array_init: ASSIGN array_lit | ;
+optional_array_init: ASSIGN expression | ;
 
 // Functions
 function_decl: FUNC IDENTIFIER param_decl optional_impl nonempty_newline_list;
