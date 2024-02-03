@@ -1,0 +1,12 @@
+func main() begin
+    begin
+        number r
+        number s <- 3
+        r <- 2.0
+        begin
+            s <- r * r - r
+            writeNumber(s)
+        end
+        writeNumber(s)
+    end
+end

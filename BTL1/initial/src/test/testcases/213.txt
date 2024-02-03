@@ -1,1 +1,2 @@
-number x[2.3e1] <- [1, 2, 3]
+number x[2] <- foo(x)
+number y[2] <- x

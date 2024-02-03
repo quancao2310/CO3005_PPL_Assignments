@@ -1,3 +1,6 @@
-
-,a,<-,5,
+and,and,not,],
+,begin,var,var,for,-,continue,
+,or,,,(,by,
+,string,return,abcd,...,),a1,>,-,bool,for,until,
+,),),continue,
 ,<EOF>

@@ -1,1 +1,1 @@
-successful
+This is also an invalid string: \f 

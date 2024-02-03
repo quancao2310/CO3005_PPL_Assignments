@@ -1,1 +1,2 @@
-<EOF>
+func,main,(,),return,1,
+,<EOF>

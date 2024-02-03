@@ -1,6 +1,7 @@
-number a[5] <- [2, 3, 5, 7, 11]
-string sss[4] <- ["PPL", "is", "very", "hard"]
-bool abc[4] <- [true, true, false, false]
+var x <- 1
+var y <- true
+var z <- "str"
 
-number b[2, 3] <- [[1, 2, 3], [4, 5, 6]]
-bool c[2, 2, 3] <- [[[true, true, false], [true, true, false]], [[true, true, false], [true, true, false]]]
+dynamic x <- 1
+dynamic y
+dynamic z <- "str"

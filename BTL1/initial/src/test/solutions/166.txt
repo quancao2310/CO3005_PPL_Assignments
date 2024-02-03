@@ -1,1 +1,1 @@
-<EOF>
+for,i,until,i,=,20,by,1,if,(,i,=,10,),break,<EOF>

@@ -1,0 +1,6 @@
+func main() begin
+    begin
+        number r
+        number s <- 3
+        r <- 2.0
+end

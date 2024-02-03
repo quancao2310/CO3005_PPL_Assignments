@@ -1,0 +1,10 @@
+func main() begin
+number arr[20, 10]
+var i <- 0
+var j <- 0
+for i until i >= 20 by 1
+    for j until j >= 10 by 1
+        arr[i, j] <- readNumber()
+writeNumber(i)
+writeNumber(j)
+end

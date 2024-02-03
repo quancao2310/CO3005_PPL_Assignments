@@ -1,1 +1,8 @@
-<EOF>
+func,fAqCy41,(,put8fbW,),
+,begin,
+,func,fci4bwp,(,p3HkPQh,),
+,begin,
+,var,v74jw0H,<-,2936,
+,end,
+,end,
+,<EOF>

@@ -1,1 +1,1 @@
-bool a <- foo(1,2,)
+bool a <- a[1][2]

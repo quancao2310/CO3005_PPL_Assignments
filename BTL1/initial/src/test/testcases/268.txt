@@ -1,0 +1,3 @@
+func main() begin
+func foo() return 1
+end

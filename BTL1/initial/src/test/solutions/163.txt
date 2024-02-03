@@ -1,1 +1,1 @@
-<EOF>
+if,(,a,=,1,),if,(,b,=,1,),writeString,(,s,),<EOF>

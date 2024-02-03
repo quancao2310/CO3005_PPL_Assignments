@@ -1,0 +1,7 @@
+func main() begin
+    foo()
+    pow(2, 3)
+    pow(0, 4)
+    pow(pow(2, 3), pow(4, 2))
+    pow(arr[2, 3], 4 - 2 + 6 * round(7/3))
+end

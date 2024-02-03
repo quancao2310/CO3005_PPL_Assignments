@@ -1,1 +1,1 @@
-Error on line 1 col 0: <EOF>
+Error on line 4 col 0: elif

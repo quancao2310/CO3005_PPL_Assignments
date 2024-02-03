@@ -1,1 +1,6 @@
-<EOF>
+func,
+,abcd,!=,bool,bool,+,
+,break,,,until,break,abcd,],+,
+,[,a1,
+,for,
+,a1,end,end,!=,continue,(,<EOF>

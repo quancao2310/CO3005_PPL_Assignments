@@ -1,0 +1,9 @@
+func main() begin
+    if (a = 1)
+    
+    begin
+        bool x <- true
+        writeBool(x)
+        x <- x ... a + 2
+    end
+end

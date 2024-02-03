@@ -1,0 +1,7 @@
+func main() begin
+    if (a = 1)
+        if (b = 1) begin
+            string s <- readString()
+            writeString(s)
+        end
+end

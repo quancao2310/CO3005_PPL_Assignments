@@ -1,0 +1,7 @@
+func main() begin
+    return
+end
+
+func foo(number x) begin
+    if (x > 1) return
+end

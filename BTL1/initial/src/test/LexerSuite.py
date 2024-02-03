@@ -77,7 +77,7 @@ class LexerSuite(unittest.TestCase):
     
     def test_110(self):
         # Escape Characters
-        input = "SOS\b\r\t\f\nHUHU"
+        input = """SOS\b\t\f\nHUHU"""
         expect = "SOS,\n,HUHU,<EOF>"
         self.assertTrue(TestLexer.test(input, expect, 110))
     
@@ -114,8 +114,8 @@ class LexerSuite(unittest.TestCase):
     
     def test_116(self):
         # Case sensitive
-        input = "chipi ChIpI cHaPi CHAPI"
-        expect = "chipi,ChIpI,cHaPi,CHAPI,<EOF>"
+        input = "chipi ChIpI cHaPa CHAPA"
+        expect = "chipi,ChIpI,cHaPa,CHAPA,<EOF>"
         self.assertTrue(TestLexer.test(input, expect, 116))
     
     def test_117(self):
@@ -233,13 +233,13 @@ class LexerSuite(unittest.TestCase):
         self.assertTrue(TestLexer.test(input, expect, 134))
     
     def test_135(self):
-        # ## in comments
+        # Comment in comment
         input = "## Comment 1 ## Comment 2"
         expect = "<EOF>"
         self.assertTrue(TestLexer.test(input, expect, 135))
     
     def test_136(self):
-        # Mix numbers with comments
+        # Mix numbers with comment
         input = "0 1.2 3E4 5e+6 7.8e-9 ## These are some valid number literals in ZCode"
         expect = "0,1.2,3E4,5e+6,7.8e-9,<EOF>"
         self.assertTrue(TestLexer.test(input, expect, 136))
@@ -253,7 +253,6 @@ class LexerSuite(unittest.TestCase):
     
     def test_138(self):
         # Other escape characters in string
-        # Actual string of this test case is "escape \b \r \t \f \n \' \\ characters"
         input = r""" "escape \b \r \t \f \n \' \\ characters" """
         expect = r"""escape \b \r \t \f \n \' \\ characters,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 138))
@@ -397,137 +396,261 @@ end
     
     # Statements
     def test_160(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Assignment statement
+        input = "l[3] <- value * aPi"
+        expect = "l,[,3,],<-,value,*,aPi,<EOF>"
         self.assertTrue(TestLexer.test(input, expect, 160))
     
     def test_161(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Block statement
+        input = """begin
+number r
+r <- 2.0
+end
+"""
+        expect = "begin,\n,number,r,\n,r,<-,2.0,\n,end,\n,<EOF>"
         self.assertTrue(TestLexer.test(input, expect, 161))
     
     def test_162(self):
-        # 
-        input = """"""
-        expect = """"""
+        # If statement
+        input = "if (a = 1) writeBool(true)"
+        expect = "if,(,a,=,1,),writeBool,(,true,),<EOF>"
         self.assertTrue(TestLexer.test(input, expect, 162))
     
     def test_163(self):
-        # 
-        input = """"""
-        expect = """"""
+        # If statement: nested if
+        input = "if (a = 1) if (b = 1) writeString(s)"
+        expect = "if,(,a,=,1,),if,(,b,=,1,),writeString,(,s,),<EOF>"
         self.assertTrue(TestLexer.test(input, expect, 163))
     
     def test_164(self):
-        # 
-        input = """"""
-        expect = """"""
+        # If-elif-else statement
+        input = """if (a = 1) s <- "1"
+elif (a = 2) s <- "2"
+else s <- "3"
+"""
+        expect = "if,(,a,=,1,),s,<-,1,\n,elif,(,a,=,2,),s,<-,2,\n,else,s,<-,3,\n,<EOF>"
         self.assertTrue(TestLexer.test(input, expect, 164))
     
     def test_165(self):
-        # 
-        input = """"""
-        expect = """"""
+        # For statement
+        input = "for i until i >= 10 by 1 writeNumber(i)"
+        expect = "for,i,until,i,>=,10,by,1,writeNumber,(,i,),<EOF>"
         self.assertTrue(TestLexer.test(input, expect, 165))
     
     def test_166(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Break statement
+        input = "for i until i = 20 by 1 if (i = 10) break"
+        expect = "for,i,until,i,=,20,by,1,if,(,i,=,10,),break,<EOF>"
         self.assertTrue(TestLexer.test(input, expect, 166))
     
     def test_167(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Continue statement
+        input = "for i until i = 0 by -1 if (i >= 10) continue"
+        expect = "for,i,until,i,=,0,by,-,1,if,(,i,>=,10,),continue,<EOF>"
         self.assertTrue(TestLexer.test(input, expect, 167))
     
     def test_168(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Return statement
+        input = "return return 1 return t*p"
+        expect = "return,return,1,return,t,*,p,<EOF>"
         self.assertTrue(TestLexer.test(input, expect, 168))
     
     def test_169(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Function call statement
+        input = """foo()
+pow(2, 3)
+pow(pow(2, 3), pow(4, 2))
+"""
+        expect = "foo,(,),\n,pow,(,2,,,3,),\n,pow,(,pow,(,2,,,3,),,,pow,(,4,,,2,),),\n,<EOF>"
         self.assertTrue(TestLexer.test(input, expect, 169))
     
     # Mixed Cases
     def test_170(self):
-        input = """## This is a single comment.
-a <- 5
-### This is the second comment."""
-        expect = """\n,a,<-,5,\n,<EOF>"""
+        # Random tokens 1
+        input = """ and and	not	]
+begin var var for -	continue
+or ,	( by
+string return "abcd" ... )	a1	> - bool	for until
+) ) continue
+"""
+        expect = """and,and,not,],
+,begin,var,var,for,-,continue,
+,or,,,(,by,
+,string,return,abcd,...,),a1,>,-,bool,for,until,
+,),),continue,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 170))
     
     def test_171(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Random tokens 2
+        input = """	)	not begin
+true	by
+for begin >=	and	!= begin end	%
+<	102.1
+end <- <	121	!=
+<
+> <= [ dynamic
+continue	= number	return	< , ]	>=	end = end end	else ...	% != - ] func ==	func > elif	< %
+by	,	until	"abcd"
+break	dynamic break false	] = func continue
+return >
+"""
+        expect = """),not,begin,
+,true,by,
+,for,begin,>=,and,!=,begin,end,%,
+,<,102.1,
+,end,<-,<,121,!=,
+,<,
+,>,<=,[,dynamic,
+,continue,=,number,return,<,,,],>=,end,=,end,end,else,...,%,!=,-,],func,==,func,>,elif,<,%,
+,by,,,until,abcd,
+,break,dynamic,break,false,],=,func,continue,
+,return,>,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 171))
     
     def test_172(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Random tokens 3
+        input = """ %
+=
+elif ) else	
+	bool	number number	continue	/	elif and var
+!=	and
+elif continue	"abcd" a1	<= false <-
+133.68 number
+break	>=	* continue elif	a1 elif	elif
+46e121	if * 126.9E-5776 string
+%	elif	dynamic number	false
+<=	( false	*	>=
+, until	!=	)
+break
+[	string	continue [	or 71.49e-5776	%
+begin - ... 
+ 
+ continue	==	until	(
+<- ) 42.62 bool	func >=	or until	continue	return	if	break
+    """
+        expect = """%,
+,=,
+,elif,),else,
+,bool,number,number,continue,/,elif,and,var,
+,!=,and,
+,elif,continue,abcd,a1,<=,false,<-,
+,133.68,number,
+,break,>=,*,continue,elif,a1,elif,elif,
+,46e121,if,*,126.9E-5776,string,
+,%,elif,dynamic,number,false,
+,<=,(,false,*,>=,
+,,,until,!=,),
+,break,
+,[,string,continue,[,or,71.49e-5776,%,
+,begin,-,...,
+,
+,continue,==,until,(,
+,<-,),42.62,bool,func,>=,or,until,continue,return,if,break,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 172))
     
     def test_173(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Random tokens 4
+        input = " true = <- elif <- &"
+        expect = "true,=,<-,elif,<-,Error Token &"
         self.assertTrue(TestLexer.test(input, expect, 173))
     
     def test_174(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Random tokens 5
+        input = " [ STRINGLIT else until / <= == ^"
+        expect = "[,STRINGLIT,else,until,/,<=,==,Error Token ^"
         self.assertTrue(TestLexer.test(input, expect, 174))
     
     def test_175(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Random tokens 6
+        input = """func fAqCy41(put8fbW) 
+ begin 
+func fci4bwp(p3HkPQh) 
+ begin 
+var v74jw0H <-2936
+ end
+ end
+"""
+        expect = """func,fAqCy41,(,put8fbW,),
+,begin,
+,func,fci4bwp,(,p3HkPQh,),
+,begin,
+,var,v74jw0H,<-,2936,
+,end,
+,end,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 175))
     
     def test_176(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Random tokens 7
+        input = """+ ...\tbreak and
+... and return\tby   bool
+continue\t> ( ,
+or -\t+\t"abcd" -\t+ and        ]
+and [" qQJEAOtaT \\# "
+< else"""
+        expect = "+,...,break,and,\n,...,and,return,by,bool,\n,continue,>,(,,,\n,or,-,+,abcd,-,+,and,],\n,and,[,Illegal Escape In String:  qQJEAOtaT \\#"
         self.assertTrue(TestLexer.test(input, expect, 176))
     
     def test_177(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Random tokens 8
+        input = """	dynamic ...
+%	until	<	until	break
+until <- ( / 45	-	func
+, and
+
+	[ end	% [	if - , >="""
+        expect = """dynamic,...,
+,%,until,<,until,break,
+,until,<-,(,/,45,-,func,
+,,,and,
+,
+,[,end,%,[,if,-,,,>=,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 177))
     
     def test_178(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Random tokens 9
+        input = """	dynamic ...
+%	until	<	until	break" boiV \n "
+until <- ( / 45	-	func
+, and
+
+	[ end	% [	if - , >="""
+        expect = "dynamic,...,\n,%,until,<,until,break,Unclosed String:  boiV "
         self.assertTrue(TestLexer.test(input, expect, 178))
     
     def test_179(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Random tokens 10
+        input = """ func
+"abcd"	!= bool	bool +
+break , until break "abcd"	] +
+[ a1
+for
+a1	end end !=	continue ("""
+        expect = """func,
+,abcd,!=,bool,bool,+,
+,break,,,until,break,abcd,],+,
+,[,a1,
+,for,
+,a1,end,end,!=,continue,(,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 179))
     
     def test_180(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Comments with statements
+        input = """## This is a single comment.
+a <- 5
+### This is the second comment."""
+        expect = "\n,a,<-,5,\n,<EOF>"
         self.assertTrue(TestLexer.test(input, expect, 180))
     
     def test_181(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Simple program
+        input = """func main() return 1
+"""
+        expect = "func,main,(,),return,1,\n,<EOF>"
         self.assertTrue(TestLexer.test(input, expect, 181))
     
     def test_182(self):

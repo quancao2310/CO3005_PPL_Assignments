@@ -1,1 +1,12 @@
-<EOF>
+),not,begin,
+,true,by,
+,for,begin,>=,and,!=,begin,end,%,
+,<,102.1,
+,end,<-,<,121,!=,
+,<,
+,>,<=,[,dynamic,
+,continue,=,number,return,<,,,],>=,end,=,end,end,else,...,%,!=,-,],func,==,func,>,elif,<,%,
+,by,,,until,abcd,
+,break,dynamic,break,false,],=,func,continue,
+,return,>,
+,<EOF>

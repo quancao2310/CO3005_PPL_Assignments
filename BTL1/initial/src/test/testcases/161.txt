@@ -1,0 +1,4 @@
+begin
+number r
+r <- 2.0
+end

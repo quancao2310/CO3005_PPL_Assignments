@@ -1,7 +1,2 @@
-var x <- 1
-var y <- true
-var z <- "str"
-
-dynamic x <- 1
-dynamic y
-dynamic z <- "str"
+string s <- "This is also an invalid string: \f 
+\a \b \n"

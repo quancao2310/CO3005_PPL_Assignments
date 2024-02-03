@@ -1,0 +1,18 @@
+func main() begin
+number x[50] <- createArray(50)
+return [1, 2, 3]
+end
+
+func createArray(number n)
+begin
+    if (n > 100) n <- 100
+    
+    number res[100]
+    var i <- 0
+    for i until i = n by 1
+        res[i] <- 0
+    i <- n
+    for i until i = 100 by 1
+        res[i] <- -1
+    return res
+end

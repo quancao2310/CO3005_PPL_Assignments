@@ -1,1 +1,1 @@
-<EOF>
+return,return,1,return,t,*,p,<EOF>

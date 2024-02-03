@@ -1,0 +1,5 @@
+func main() begin
+if (a = 1) writeBool(true)
+else writeBool(false)
+elif (false) writeBool(invalid)
+end

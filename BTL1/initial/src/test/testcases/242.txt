@@ -1,0 +1,3 @@
+func main() begin
+f()[0, 1, 2] <- "abc"
+end

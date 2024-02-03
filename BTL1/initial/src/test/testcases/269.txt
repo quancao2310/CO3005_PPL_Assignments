@@ -1,0 +1,2 @@
+func main()
+for i until i = 1 by 1 return

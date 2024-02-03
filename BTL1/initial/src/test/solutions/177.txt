@@ -1,1 +1,6 @@
-<EOF>
+dynamic,...,
+,%,until,<,until,break,
+,until,<-,(,/,45,-,func,
+,,,and,
+,
+,[,end,%,[,if,-,,,>=,<EOF>

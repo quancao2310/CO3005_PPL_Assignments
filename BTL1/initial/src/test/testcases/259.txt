@@ -1,0 +1,9 @@
+func main() begin
+number i <- 20
+for i until i = 0 by -1
+begin
+    if (i >= 10)
+        continue
+    writeString("less than 10")
+end
+end

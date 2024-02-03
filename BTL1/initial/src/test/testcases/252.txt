@@ -1,0 +1,17 @@
+func main() begin
+if ("adk\rasd")
+if (sdad)
+if (true and false)
+foo(1)
+elif (adm2 or fs)
+foo(2)
+else foo(3)
+elif (_13kacs)
+if (akdsd)
+foo(4)
+else foo(5)
+else foo(6)
+elif ("\''"ashduau23/fik")
+foo(7)
+else foo(8)
+end

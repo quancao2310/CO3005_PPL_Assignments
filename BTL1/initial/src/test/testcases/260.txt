@@ -1,0 +1,4 @@
+func main() begin
+for i until i < 10 by i <- i + 1
+    writeBool(false)
+end

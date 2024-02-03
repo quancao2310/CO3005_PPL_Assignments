@@ -1,0 +1,6 @@
+func main() begin
+a <- 100
+b <- "oifj'"safjms'"fp"
+c <- true and true
+d <- 0.13E-1
+end

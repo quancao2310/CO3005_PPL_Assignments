@@ -1,1 +1,1 @@
-<EOF>
+if,(,a,=,1,),writeBool,(,true,),<EOF>
