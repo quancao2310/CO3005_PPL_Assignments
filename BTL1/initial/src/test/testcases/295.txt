@@ -1,0 +1,17 @@
+func reHeapDown(number arr[100], number length, number index) begin
+    number l <- 2*index + 1
+    number r <- 2*index + 2
+    number largest <- index
+    if ((l < length) and (arr[l] > arr[largest])) largest <- l
+    if ((r < length) and (arr[r] > arr[largest])) largest <- r
+    if (largest != index) begin
+        swap(arr, index, largest)
+        reHeapDown(arr, length, largest)
+    end
+end
+
+func buildHeap(number arr[100], number length) begin
+    number internal <- round(length/2) - 1
+    for internal until internal < 0 by -1
+        reHeapDown(arr, length, internal)
+end

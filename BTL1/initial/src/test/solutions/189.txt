@@ -1,1 +1,12 @@
-<EOF>
+func,selectionSort,(,number,arr,[,100,],,,number,length,),
+,begin,
+,number,i,<-,0,
+,for,i,until,i,>=,length,-,1,by,1,begin,
+,number,min_idx,<-,i,
+,number,j,<-,i,+,1,
+,for,j,until,j,>=,length,by,1,
+,if,(,arr,[,j,],<,arr,[,min_idx,],),min_idx,<-,j,
+,swap,(,arr,,,i,,,min_idx,),
+,end,
+,end,
+,<EOF>

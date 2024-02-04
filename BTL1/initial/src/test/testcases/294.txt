@@ -1,0 +1,10 @@
+func heapSort(number arr[100], number length)
+begin
+    buildHeap(arr, length) ## Build heap algorithm in next testcase
+    
+    var i <- length - 1
+    for i until i < 0 by -1 begin
+        swap(arr, 0, i)
+        reHeapDown(arr, i, 0)
+    end
+end

@@ -654,109 +654,607 @@ a <- 5
         self.assertTrue(TestLexer.test(input, expect, 181))
     
     def test_182(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Print array
+        input = """func printArr(number a[100], number length)
+begin
+    var i <- 0
+    for i until i >= length by 1 begin
+        writeNumber(a[i])
+        writeString(" ")
+    end
+    writeString("\\n")
+end
+"""
+        expect = """func,printArr,(,number,a,[,100,],,,number,length,),
+,begin,
+,var,i,<-,0,
+,for,i,until,i,>=,length,by,1,begin,
+,writeNumber,(,a,[,i,],),
+,writeString,(, ,),
+,end,
+,writeString,(,\\n,),
+,end,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 182))
     
     def test_183(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Find maximum in array
+        input = """func max(number a[100], number length)
+begin
+    if (length <= 0)
+        return -1e9 ## Represent negative infinity
+    var max <- a[0]
+    var i <- 0
+    for i until i >= length by 1
+        if (a[i] > max) max <- a[i]
+    return max
+end
+"""
+        expect = """func,max,(,number,a,[,100,],,,number,length,),
+,begin,
+,if,(,length,<=,0,),
+,return,-,1e9,
+,var,max,<-,a,[,0,],
+,var,i,<-,0,
+,for,i,until,i,>=,length,by,1,
+,if,(,a,[,i,],>,max,),max,<-,a,[,i,],
+,return,max,
+,end,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 183))
     
     def test_184(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Linear search
+        input = """func find(number arr[100], number length, number element)
+begin
+    var i <- 0
+    for i until i >= length by 1
+        if (arr[i] = element) return i
+    return -1
+end
+"""
+        expect = """func,find,(,number,arr,[,100,],,,number,length,,,number,element,),
+,begin,
+,var,i,<-,0,
+,for,i,until,i,>=,length,by,1,
+,if,(,arr,[,i,],=,element,),return,i,
+,return,-,1,
+,end,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 184))
     
     def test_185(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Binary search
+        input = """func find(number arr[100], number length, number element)
+begin
+    var left <- 0
+    var right <- length - 1
+    number mid
+    for _ until left > right by 0 begin
+        mid <- (left + right) / 2
+        if (element = arr[mid]) return mid
+        elif (element > arr[mid]) left <- mid + 1
+        else right <- mid - 1
+    end
+    return -1
+end
+"""
+        expect = """func,find,(,number,arr,[,100,],,,number,length,,,number,element,),
+,begin,
+,var,left,<-,0,
+,var,right,<-,length,-,1,
+,number,mid,
+,for,_,until,left,>,right,by,0,begin,
+,mid,<-,(,left,+,right,),/,2,
+,if,(,element,=,arr,[,mid,],),return,mid,
+,elif,(,element,>,arr,[,mid,],),left,<-,mid,+,1,
+,else,right,<-,mid,-,1,
+,end,
+,return,-,1,
+,end,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 185))
     
     def test_186(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Interpolation search
+        input = """func interpolationSearch(number arr[100], number element, number left, number right)
+begin
+    if ((left > right) or (element < arr[left]) or (element > arr[right])) return -1
+    number pos <- left + (right - left)*(element - arr[left])/(arr[right] - arr[left])
+    if (element = arr[pos]) return pos
+    else if (element < arr[pos]) return interpolationSearch(arr, element, left, pos-1)
+    return interpolationSearch(arr, element, pos+1, right)
+end
+"""
+        expect = """func,interpolationSearch,(,number,arr,[,100,],,,number,element,,,number,left,,,number,right,),
+,begin,
+,if,(,(,left,>,right,),or,(,element,<,arr,[,left,],),or,(,element,>,arr,[,right,],),),return,-,1,
+,number,pos,<-,left,+,(,right,-,left,),*,(,element,-,arr,[,left,],),/,(,arr,[,right,],-,arr,[,left,],),
+,if,(,element,=,arr,[,pos,],),return,pos,
+,else,if,(,element,<,arr,[,pos,],),return,interpolationSearch,(,arr,,,element,,,left,,,pos,-,1,),
+,return,interpolationSearch,(,arr,,,element,,,pos,+,1,,,right,),
+,end,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 186))
     
     def test_187(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Jump search
+        input = """func jumpSearch(number arr[100], number n, number element)
+begin
+    number m <- sqrt(n)
+    number k <- 0
+    for k until k*m >= n by 1 begin
+        if (element = arr[k*m]) return k*m
+        if (element < arr[k*m]) break
+    end
+    k <- k - 1
+    number i <- k*m + 1
+    for i until i >= (k+1)*m by 1 begin
+        if ((i >= n) or (element < arr[i])) break
+        if (element = arr[i]) return i
+    end
+    return -1
+end
+"""
+        expect = """func,jumpSearch,(,number,arr,[,100,],,,number,n,,,number,element,),
+,begin,
+,number,m,<-,sqrt,(,n,),
+,number,k,<-,0,
+,for,k,until,k,*,m,>=,n,by,1,begin,
+,if,(,element,=,arr,[,k,*,m,],),return,k,*,m,
+,if,(,element,<,arr,[,k,*,m,],),break,
+,end,
+,k,<-,k,-,1,
+,number,i,<-,k,*,m,+,1,
+,for,i,until,i,>=,(,k,+,1,),*,m,by,1,begin,
+,if,(,(,i,>=,n,),or,(,element,<,arr,[,i,],),),break,
+,if,(,element,=,arr,[,i,],),return,i,
+,end,
+,return,-,1,
+,end,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 187))
     
     def test_188(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Bubble sort
+        input = """func bubbleSort(number arr[100], number length)
+begin
+    number i <- 1
+    for i until i >= length by 1 begin
+        number j <- length - 1
+        for j until j < i by -1
+            if (arr[j] < arr[j - 1]) swap(arr, j, j - 1)
+    end
+end
+"""
+        expect = """func,bubbleSort,(,number,arr,[,100,],,,number,length,),
+,begin,
+,number,i,<-,1,
+,for,i,until,i,>=,length,by,1,begin,
+,number,j,<-,length,-,1,
+,for,j,until,j,<,i,by,-,1,
+,if,(,arr,[,j,],<,arr,[,j,-,1,],),swap,(,arr,,,j,,,j,-,1,),
+,end,
+,end,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 188))
     
     def test_189(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Selection sort
+        input = """func selectionSort(number arr[100], number length)
+begin
+    number i <- 0
+    for i until i >= length-1 by 1 begin
+        number min_idx <- i
+        number j <- i + 1
+        for j until j >= length by 1
+            if (arr[j] < arr[min_idx]) min_idx <- j
+        swap(arr, i, min_idx)
+    end
+end
+"""
+        expect = """func,selectionSort,(,number,arr,[,100,],,,number,length,),
+,begin,
+,number,i,<-,0,
+,for,i,until,i,>=,length,-,1,by,1,begin,
+,number,min_idx,<-,i,
+,number,j,<-,i,+,1,
+,for,j,until,j,>=,length,by,1,
+,if,(,arr,[,j,],<,arr,[,min_idx,],),min_idx,<-,j,
+,swap,(,arr,,,i,,,min_idx,),
+,end,
+,end,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 189))
     
     def test_190(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Insertion sort
+        input = """func insertionSort(number arr[100], number length)
+begin
+    number i <- 1
+    for i until i >= length by 1 begin
+        number tmp <- arr[i]
+        number j <- i-1
+        for j until ((j < 0) or (tmp >= arr[j])) by -1
+            arr[j+1] <- arr[j]
+        arr[j+1] <- tmp
+    end
+end
+"""
+        expect = """func,insertionSort,(,number,arr,[,100,],,,number,length,),
+,begin,
+,number,i,<-,1,
+,for,i,until,i,>=,length,by,1,begin,
+,number,tmp,<-,arr,[,i,],
+,number,j,<-,i,-,1,
+,for,j,until,(,(,j,<,0,),or,(,tmp,>=,arr,[,j,],),),by,-,1,
+,arr,[,j,+,1,],<-,arr,[,j,],
+,arr,[,j,+,1,],<-,tmp,
+,end,
+,end,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 190))
     
     def test_191(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Shell sort
+        input = """func sortSegment(number arr[100], number length, number segment_idx, number k)
+begin
+    number i <- segment_idx + k
+    for i until i >= length by k begin
+        number tmp <- arr[i]
+        number j <- i-k
+        for j until ((j < 0) or (tmp >= arr[j])) by -k
+            arr[j+k] <- arr[j]
+        arr[j+k] <- tmp
+    end
+end
+
+func shellSort(number arr[100], number length, number num_of_segment_list[10], number num_phases) begin
+    number i <- num_phases-1
+    for i until i < 0 by -1 begin
+        number segment <- 0
+        for segment until segment > num_of_segment_list[i] by 1
+            sortSegment(arr, length, segment, num_of_segment_list[i])
+    end
+end
+"""
+        expect = """func,sortSegment,(,number,arr,[,100,],,,number,length,,,number,segment_idx,,,number,k,),
+,begin,
+,number,i,<-,segment_idx,+,k,
+,for,i,until,i,>=,length,by,k,begin,
+,number,tmp,<-,arr,[,i,],
+,number,j,<-,i,-,k,
+,for,j,until,(,(,j,<,0,),or,(,tmp,>=,arr,[,j,],),),by,-,k,
+,arr,[,j,+,k,],<-,arr,[,j,],
+,arr,[,j,+,k,],<-,tmp,
+,end,
+,end,
+,
+,func,shellSort,(,number,arr,[,100,],,,number,length,,,number,num_of_segment_list,[,10,],,,number,num_phases,),begin,
+,number,i,<-,num_phases,-,1,
+,for,i,until,i,<,0,by,-,1,begin,
+,number,segment,<-,0,
+,for,segment,until,segment,>,num_of_segment_list,[,i,],by,1,
+,sortSegment,(,arr,,,length,,,segment,,,num_of_segment_list,[,i,],),
+,end,
+,end,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 191))
     
     def test_192(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Merge sort
+        input = """func round(number n) return n - n % 1
+func merge(number arr[100], number left, number right, number mid) begin
+    number left_length <- mid - left + 1
+    number right_length <- right - mid
+    number arr_left[50]
+    number arr_right[50]
+    
+    number i <- 0
+    number j <- 0
+    
+    for i until i >= left_length by 1
+        arr_left[i] <- arr[left + i]
+    for j until j >= right_length by 1
+        arr_right[j] <- arr[mid + 1 + j]
+    
+    number k <- left
+    for k until k > right by 1 begin
+        if ((i < left_length) and ((j >= right_length) or (arr_left[i] <= arr_right[j]))) begin
+            arr[k] <- arr_left[i]
+            i <- i + 1
+        end
+        else begin
+            arr[k] <- arr_right[j]
+            j <- j + 1
+        end
+    end
+end
+
+func mergeSort(number arr[100], number left, number right) begin
+    if (left >= right) return
+    number mid <- round((left + right) / 2)
+    mergeSort(arr, left, mid)
+    mergeSort(arr, mid + 1, right)
+    merge(arr, left, right, mid)
+end
+"""
+        expect = """func,round,(,number,n,),return,n,-,n,%,1,
+,func,merge,(,number,arr,[,100,],,,number,left,,,number,right,,,number,mid,),begin,
+,number,left_length,<-,mid,-,left,+,1,
+,number,right_length,<-,right,-,mid,
+,number,arr_left,[,50,],
+,number,arr_right,[,50,],
+,
+,number,i,<-,0,
+,number,j,<-,0,
+,
+,for,i,until,i,>=,left_length,by,1,
+,arr_left,[,i,],<-,arr,[,left,+,i,],
+,for,j,until,j,>=,right_length,by,1,
+,arr_right,[,j,],<-,arr,[,mid,+,1,+,j,],
+,
+,number,k,<-,left,
+,for,k,until,k,>,right,by,1,begin,
+,if,(,(,i,<,left_length,),and,(,(,j,>=,right_length,),or,(,arr_left,[,i,],<=,arr_right,[,j,],),),),begin,
+,arr,[,k,],<-,arr_left,[,i,],
+,i,<-,i,+,1,
+,end,
+,else,begin,
+,arr,[,k,],<-,arr_right,[,j,],
+,j,<-,j,+,1,
+,end,
+,end,
+,end,
+,
+,func,mergeSort,(,number,arr,[,100,],,,number,left,,,number,right,),begin,
+,if,(,left,>=,right,),return,
+,number,mid,<-,round,(,(,left,+,right,),/,2,),
+,mergeSort,(,arr,,,left,,,mid,),
+,mergeSort,(,arr,,,mid,+,1,,,right,),
+,merge,(,arr,,,left,,,right,,,mid,),
+,end,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 192))
     
     def test_193(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Quick sort
+        input = """func swap(number arr[100], number i, number j)
+func partition(number arr[100], number left, number right) begin
+    number pivot <- arr[left]
+    number i <- left + 1
+    number j <- right
+    
+    for i until i > j by 0 begin
+        for i until ((i > j) or (arr[i] >= pivot)) by 1 begin
+        end
+        for j until ((i > j) or (arr[j] < pivot)) by -1 begin
+        end
+        if (i < j) begin
+            swap(arr, i, j)
+            i <- i + 1
+            j <- j - 1
+        end
+    end
+    swap(arr, j, left)
+    return j
+end
+
+func quickSort(number arr[100], number left, number right) begin
+    if (left >= right) return
+    number pos <- partition(arr, left, right)
+    quickSort(arr, left, pos - 1)
+    quickSort(arr, pos + 1, right)
+end
+"""
+        expect = """func,swap,(,number,arr,[,100,],,,number,i,,,number,j,),
+,func,partition,(,number,arr,[,100,],,,number,left,,,number,right,),begin,
+,number,pivot,<-,arr,[,left,],
+,number,i,<-,left,+,1,
+,number,j,<-,right,
+,
+,for,i,until,i,>,j,by,0,begin,
+,for,i,until,(,(,i,>,j,),or,(,arr,[,i,],>=,pivot,),),by,1,begin,
+,end,
+,for,j,until,(,(,i,>,j,),or,(,arr,[,j,],<,pivot,),),by,-,1,begin,
+,end,
+,if,(,i,<,j,),begin,
+,swap,(,arr,,,i,,,j,),
+,i,<-,i,+,1,
+,j,<-,j,-,1,
+,end,
+,end,
+,swap,(,arr,,,j,,,left,),
+,return,j,
+,end,
+,
+,func,quickSort,(,number,arr,[,100,],,,number,left,,,number,right,),begin,
+,if,(,left,>=,right,),return,
+,number,pos,<-,partition,(,arr,,,left,,,right,),
+,quickSort,(,arr,,,left,,,pos,-,1,),
+,quickSort,(,arr,,,pos,+,1,,,right,),
+,end,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 193))
     
     def test_194(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Heap sort
+        input = """func heapSort(number arr[100], number length)
+begin
+    buildHeap(arr, length) ## Build heap algorithm in next testcase
+    
+    var i <- length - 1
+    for i until i < 0 by -1 begin
+        swap(arr, 0, i)
+        reHeapDown(arr, i, 0)
+    end
+end
+"""
+        expect = """func,heapSort,(,number,arr,[,100,],,,number,length,),
+,begin,
+,buildHeap,(,arr,,,length,),
+,
+,var,i,<-,length,-,1,
+,for,i,until,i,<,0,by,-,1,begin,
+,swap,(,arr,,,0,,,i,),
+,reHeapDown,(,arr,,,i,,,0,),
+,end,
+,end,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 194))
     
     def test_195(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Build heap
+        input = """func reHeapDown(number arr[100], number length, number index) begin
+    number l <- 2*index + 1
+    number r <- 2*index + 2
+    number largest <- index
+    if ((l < length) and (arr[l] > arr[largest])) largest <- l
+    if ((r < length) and (arr[r] > arr[largest])) largest <- r
+    if (largest != index) begin
+        swap(arr, index, largest)
+        reHeapDown(arr, length, largest)
+    end
+end
+
+func buildHeap(number arr[100], number length) begin
+    number internal <- round(length/2) - 1
+    for internal until internal < 0 by -1
+        reHeapDown(arr, length, internal)
+end
+"""
+        expect = """func,reHeapDown,(,number,arr,[,100,],,,number,length,,,number,index,),begin,
+,number,l,<-,2,*,index,+,1,
+,number,r,<-,2,*,index,+,2,
+,number,largest,<-,index,
+,if,(,(,l,<,length,),and,(,arr,[,l,],>,arr,[,largest,],),),largest,<-,l,
+,if,(,(,r,<,length,),and,(,arr,[,r,],>,arr,[,largest,],),),largest,<-,r,
+,if,(,largest,!=,index,),begin,
+,swap,(,arr,,,index,,,largest,),
+,reHeapDown,(,arr,,,length,,,largest,),
+,end,
+,end,
+,
+,func,buildHeap,(,number,arr,[,100,],,,number,length,),begin,
+,number,internal,<-,round,(,length,/,2,),-,1,
+,for,internal,until,internal,<,0,by,-,1,
+,reHeapDown,(,arr,,,length,,,internal,),
+,end,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 195))
     
     def test_196(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Insert an element into a heap
+        input = """func reHeapUp(number arr[100], number length, number index) begin
+    if (index = 0) return
+    number parent <- round((index - 1)/2)
+    if (arr[index] > arr[parent]) begin
+        swap(arr, index, parent)
+        reHeapUp(arr, length, parent)
+    end
+end
+
+func insertHeap(number arr[100], number length, number element)
+begin
+    arr[length] <- element
+    length <- length + 1
+    reHeapUp(arr, length, length - 1)
+    return length
+end
+"""
+        expect = """func,reHeapUp,(,number,arr,[,100,],,,number,length,,,number,index,),begin,
+,if,(,index,=,0,),return,
+,number,parent,<-,round,(,(,index,-,1,),/,2,),
+,if,(,arr,[,index,],>,arr,[,parent,],),begin,
+,swap,(,arr,,,index,,,parent,),
+,reHeapUp,(,arr,,,length,,,parent,),
+,end,
+,end,
+,
+,func,insertHeap,(,number,arr,[,100,],,,number,length,,,number,element,),
+,begin,
+,arr,[,length,],<-,element,
+,length,<-,length,+,1,
+,reHeapUp,(,arr,,,length,,,length,-,1,),
+,return,length,
+,end,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 196))
     
     def test_197(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Delete an element from a heap
+        input = """func removeHeap(number arr[100], number length)
+begin
+    if (length <= 0) return
+    var deleted <- arr[0]
+    arr[0] <- arr[length - 1]
+    length <- length - 1
+    reHeapDown(arr, length, 0)
+    return deleted
+end
+"""
+        expect = """func,removeHeap,(,number,arr,[,100,],,,number,length,),
+,begin,
+,if,(,length,<=,0,),return,
+,var,deleted,<-,arr,[,0,],
+,arr,[,0,],<-,arr,[,length,-,1,],
+,length,<-,length,-,1,
+,reHeapDown,(,arr,,,length,,,0,),
+,return,deleted,
+,end,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 197))
     
     def test_198(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Longest Increasing Subsequence (LIS)
+        # Print the length of the longest increasing subsequence of array
+        input = """func lis(number arr[100], number n) begin
+    number lis[100]
+    lis[0] <- 1
+    
+    number i <- 1
+    for i until i >= n by 1 begin
+        lis[i] <- 1
+        
+        number j <- 0
+        for j until j >= i by 1
+            if ((arr[i] > arr[j]) and (lis[j] + 1 > lis[i]))
+                lis[i] <- lis[j] + 1
+    end
+    return max(lis, n)
+end
+"""
+        expect = """func,lis,(,number,arr,[,100,],,,number,n,),begin,
+,number,lis,[,100,],
+,lis,[,0,],<-,1,
+,
+,number,i,<-,1,
+,for,i,until,i,>=,n,by,1,begin,
+,lis,[,i,],<-,1,
+,
+,number,j,<-,0,
+,for,j,until,j,>=,i,by,1,
+,if,(,(,arr,[,i,],>,arr,[,j,],),and,(,lis,[,j,],+,1,>,lis,[,i,],),),
+,lis,[,i,],<-,lis,[,j,],+,1,
+,end,
+,return,max,(,lis,,,n,),
+,end,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 198))
     
     def test_199(self):
-        # 
-        input = """"""
-        expect = """"""
+        # Longest Common Subsequence (LCS)
+        # Print the length of the longest common subsequence of array (or strings)
+        input = """func lcs(number arr1[100], number arr2[100], number m, number n) begin
+    if ((m = 0) or (n = 0)) return 0
+    if (arr1[m - 1] = arr2[n - 1]) return 1 + lcs(arr1, arr2, m - 1, n - 1)
+    return max(lcs(arr1, arr2, m - 1, n), lcs(arr1, arr2, m, n - 1))
+end
+"""
+        expect = """func,lcs,(,number,arr1,[,100,],,,number,arr2,[,100,],,,number,m,,,number,n,),begin,
+,if,(,(,m,=,0,),or,(,n,=,0,),),return,0,
+,if,(,arr1,[,m,-,1,],=,arr2,[,n,-,1,],),return,1,+,lcs,(,arr1,,,arr2,,,m,-,1,,,n,-,1,),
+,return,max,(,lcs,(,arr1,,,arr2,,,m,-,1,,,n,),,,lcs,(,arr1,,,arr2,,,m,,,n,-,1,),),
+,end,
+,<EOF>"""
         self.assertTrue(TestLexer.test(input, expect, 199))

@@ -1,1 +1,10 @@
-<EOF>
+func,printArr,(,number,a,[,100,],,,number,length,),
+,begin,
+,var,i,<-,0,
+,for,i,until,i,>=,length,by,1,begin,
+,writeNumber,(,a,[,i,],),
+,writeString,(, ,),
+,end,
+,writeString,(,\n,),
+,end,
+,<EOF>

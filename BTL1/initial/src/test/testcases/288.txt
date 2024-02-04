@@ -1,0 +1,15 @@
+func bubbleSort(number arr[100], number length)
+begin
+    number i <- 1
+    for i until i >= length by 1 begin
+        number j <- length - 1
+        for j until j < i by -1
+            if (arr[j] < arr[j - 1]) swap(arr, j, j - 1)
+    end
+end
+
+func swap(number arr[100], number i, number j) begin
+    var tmp <- arr[i]
+    arr[i] <- arr[j]
+    arr[j] <- tmp
+end

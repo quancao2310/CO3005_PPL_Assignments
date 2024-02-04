@@ -1,0 +1,10 @@
+func max(number a[100], number length)
+begin
+    if (length <= 0)
+        return -1e9 ## Represent negative infinity
+    var max <- a[0]
+    var i <- 0
+    for i until i >= length by 1
+        if (a[i] > max) max <- a[i]
+    return max
+end

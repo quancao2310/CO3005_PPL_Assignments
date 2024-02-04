@@ -1,0 +1,11 @@
+func insertionSort(number arr[100], number length)
+begin
+    number i <- 1
+    for i until i >= length by 1 begin
+        number tmp <- arr[i]
+        number j <- i-1
+        for j until ((j < 0) or (tmp >= arr[j])) by -1
+            arr[j+1] <- arr[j]
+        arr[j+1] <- tmp
+    end
+end

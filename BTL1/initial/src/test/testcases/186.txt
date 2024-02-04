@@ -1,0 +1,8 @@
+func interpolationSearch(number arr[100], number element, number left, number right)
+begin
+    if ((left > right) or (element < arr[left]) or (element > arr[right])) return -1
+    number pos <- left + (right - left)*(element - arr[left])/(arr[right] - arr[left])
+    if (element = arr[pos]) return pos
+    else if (element < arr[pos]) return interpolationSearch(arr, element, left, pos-1)
+    return interpolationSearch(arr, element, pos+1, right)
+end

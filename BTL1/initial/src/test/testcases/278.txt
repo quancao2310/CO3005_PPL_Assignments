@@ -1,0 +1,20 @@
+number res[100]
+
+func fib(number n)
+begin
+    if (res[n] != -1) return res[n]
+    res[n] <- fib(n - 1) + fib(n - 2)
+    return res[n]
+end
+
+func main() begin
+    res[0] <- 0
+    res[1] <- 1
+    
+    var i <- 2
+    for i until i = 100 by 1 res[i] <- -1
+    
+    writeNumber(fib(5))
+    writeNumber(fib(10))
+    writeNumber(fib(50))
+end

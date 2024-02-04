@@ -1,0 +1,9 @@
+func removeHeap(number arr[100], number length)
+begin
+    if (length <= 0) return
+    var deleted <- arr[0]
+    arr[0] <- arr[length - 1]
+    length <- length - 1
+    reHeapDown(arr, length, 0)
+    return deleted
+end

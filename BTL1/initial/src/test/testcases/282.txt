@@ -1,0 +1,65 @@
+func printSolution(number board[100, 100], number n)
+begin
+    var i <- 0
+    var j <- 0
+	for i until i >= n by 1 begin
+		for j until j >= n by 1
+            if (board[i, j]) writeString("Q ")
+		    else writeString(". ")
+		printf("\n")
+	end
+end
+
+func isSafe(number board[100, 100], number n, number row, number col) begin
+	var i <- 0
+    var j <- 0
+	for i until i >= col by 1
+		if (board[row, i])
+			return false
+    
+    i <- row
+    j <- col
+	for i until ((i < 0) or (j < 0)) by -1 begin
+		if (board[i, j])
+			return false
+        j <- j - 1
+    end
+    
+    i <- row
+    j <- col
+	for i until ((i >= n) or (j < 0)) by 1 begin
+		if (board[i, j])
+			return false
+        j <- j - 1
+    end
+	
+    return true
+end
+
+func solverec(number board[100, 100], number col, number n) begin
+    if (col >= n) return true
+    
+    var i <- 0
+    for i until i >= n by 1 begin
+		if (isSafe(board, n, i, col)) begin
+			board[i, col] <- 1
+			if (solverec(board, col + 1, n)) return true
+			board[i, col] <- 0
+		end
+	end
+	
+    return false
+end
+
+func solve(number n)
+begin
+    number board[100, 100]
+    var i <- 0
+    var j <- 0
+    for i until i >= n by 1
+        for j until j >= n by 1
+            board[i, j] <- 0
+    
+    if (not solverec(board, 0, n)) writeString("No solution")
+    else printSolution(board, n)
+end

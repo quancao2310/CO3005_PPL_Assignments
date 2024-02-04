@@ -1,0 +1,8 @@
+func printArr(number a[100], number length)
+begin
+    if (length < 0)
+        return
+    printArr(a, length - 1)
+    writeNumber(a[length - 1])
+    writeString(" ")
+end

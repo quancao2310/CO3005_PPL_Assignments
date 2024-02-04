@@ -1,0 +1,13 @@
+func find(number arr[100], number length, number element)
+begin
+    var left <- 0
+    var right <- length - 1
+    number mid
+    for _ until left > right by 0 begin
+        mid <- (left + right) / 2
+        if (element = arr[mid]) return mid
+        elif (element > arr[mid]) left <- mid + 1
+        else right <- mid - 1
+    end
+    return -1
+end
