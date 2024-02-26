@@ -1,0 +1,50 @@
+func initTree(number tree[100,3]) begin 
+    var i<-0 
+    for i until i=100 by 1
+        begin 
+            tree[i,0] <- -1
+            tree[i,1] <- -1
+            tree[i,2] <- -1
+        end
+end
+
+func appendNode(number val,number head,number tree[100,3],bool freeNode[100])
+begin 
+number node <- 0 
+for node until node=100 by 1
+    if (freeNode[node]) break 
+freeNode[node] <- false 
+tree[node,0] <- val 
+if (head = -1) return node 
+var i <- 0 
+number currNode <- 0
+for i until i=100 by 1 
+begin 
+if (tree[node,0] < tree[currNode,0])
+    begin 
+        if (tree[currNode,1]!=-1) currNode <- tree[currNode,1]
+        else tree[currNode,1] <- node 
+    end
+else begin
+    if (tree[currNode,2]!=-1) currNode <- tree[currNode,2]
+    else tree[currNode,2] <- node
+end
+end 
+return head
+end 
+
+func main() begin 
+number tree[100,3]
+bool freeNode[100]
+number head <- -1
+initTree(tree)
+var i<-0 
+for i until i=100 by 1
+    freeNode[i] <- true
+i<-0 
+for i until i=100 by 1
+    begin 
+        number val <- readNumber()
+        head <- appendNode(val,head,tree, freeNode)
+    end
+end

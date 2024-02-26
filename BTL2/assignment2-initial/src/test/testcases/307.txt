@@ -1,0 +1,4 @@
+string a
+string b <- "PPL Assignment"
+string c <- "This is a string \n"
+

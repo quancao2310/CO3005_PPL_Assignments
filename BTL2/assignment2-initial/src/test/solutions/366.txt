@@ -1,0 +1,1 @@
+Program([FuncDecl(Id(C_to_F), [VarDecl(Id(celsius), NumberType, None, None)], Return(BinaryOp(+, BinaryOp(*, Id(celsius), NumLit(1.8)), NumLit(32.0))))])

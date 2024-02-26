@@ -1,0 +1,39 @@
+number QUEUE[100] <- [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+number HEAD <- 0
+number TAIL <- 0
+func push(number item) begin 
+    QUEUE[TAIL] <- item 
+    TAIL <- (TAIL + 1)%100
+end 
+func pop() begin 
+    number item <- QUEUE[HEAD]
+    HEAD <- (HEAD + 1)%100
+    return item
+end
+func main() begin
+bool graph[10,10] 
+var i<-0
+for i until i=10 by 1
+begin
+    var j<-0
+    for j until j=10 by 1
+        dynamic num <- readNumber()
+        if (num=1) graph[i,j] <- true
+        else graph[i,j] <- false 
+end
+dynamic start <- readNumber()
+dynamic des <- readNumber()
+bool visit[10]
+i<-0
+for i until i=10 by 1 visit[i] <- false
+push(start)
+for i until (HEAD = TAIL) by 0
+begin
+var top <- pop()
+visit[top] <- true 
+if (top = des) break 
+i<-0 
+for i until i=10 by 1
+    if (not visit[i]) push(i)
+end
+end

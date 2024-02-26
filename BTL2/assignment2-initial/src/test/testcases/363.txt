@@ -1,0 +1,10 @@
+func is_leap(number year)
+return (year % 4 = 0) and ((year % 100 != 0) or (year % 400 = 0))
+func main()
+begin
+    number year <- 2024
+    writeNumber(year)
+    if (is_leap(year))
+        writeString(" is a leap year")
+    else writeString(" is not a leap year")
+end

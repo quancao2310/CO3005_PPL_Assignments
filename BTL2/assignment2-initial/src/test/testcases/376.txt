@@ -1,0 +1,11 @@
+func gcd(number a, number b)
+begin
+    if (b = 0) return a
+    return gcd(b, a % b)
+end
+
+func main() begin
+    writeNumber(gcd(6, 9))
+    writeNumber(gcd(24, 16))
+    writeNumber(gcd(1, 7))
+end

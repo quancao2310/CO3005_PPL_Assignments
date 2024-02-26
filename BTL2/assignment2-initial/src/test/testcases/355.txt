@@ -1,0 +1,13 @@
+func main() begin
+    if (1)
+        for i until i > 3 by 1
+            if (2) LOOP_COUNT<- LOOP_COUNT ----1
+            elif (3)
+                for i until i > 3 by 1
+                    if (4) a <--a
+    for i until i = 4 by 1
+        if (5)
+            for j until j = 6 by -1.4
+                if (6) break
+                elif (7) continue
+end

@@ -1,0 +1,13 @@
+ func calculateSthComplicated(number a, number b, number c)
+begin
+    number result
+    result <- -a * b + (c % 3) - 5 / (a + 1) and not (b > c) or (a == b) * (c >= 0)
+    string finalText <- "Result: " ... result
+    writeString(finalText)
+end
+func main() begin
+    number a <- 26
+    number b <- 2
+    number c <- 2024
+    calculateSthComplicated(a, b, c)
+end

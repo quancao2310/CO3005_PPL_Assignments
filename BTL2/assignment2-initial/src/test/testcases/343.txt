@@ -1,0 +1,8 @@
+func main() begin
+    if (PPL_is_easy()) begin
+        writeString("u are lying")
+    end
+    else begin
+        writeString("coi SCORM di em")
+    end
+end

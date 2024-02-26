@@ -1,1 +1,1 @@
-Program([VarDecl(Id(a), NumberType, None, None)])
+Program([VarDecl(Id(a), BoolType, None, None)])

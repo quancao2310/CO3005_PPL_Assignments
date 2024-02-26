@@ -1,0 +1,1 @@
+number arr[4] <- [1, true, 3, "x"]

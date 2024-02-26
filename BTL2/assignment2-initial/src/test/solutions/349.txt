@@ -1,0 +1,1 @@
+Program([FuncDecl(Id(main), [], Block([VarDecl(Id(i), NumberType, None, NumLit(1.0)), For(Id(i), BinaryOp(=, Id(i), NumLit(20.0)), NumLit(1.0), Block([CallStmt(Id(writeBool), [BooleanLit(True)]), If((BinaryOp(=, Id(i), NumLit(10.0)), Break), [], None)]))]))])

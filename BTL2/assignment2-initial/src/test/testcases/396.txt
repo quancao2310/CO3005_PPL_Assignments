@@ -1,0 +1,16 @@
+func reHeapUp(number arr[100], number length, number index) begin
+    if (index = 0) return
+    number parent <- round((index - 1)/2)
+    if (arr[index] > arr[parent]) begin
+        swap(arr, index, parent)
+        reHeapUp(arr, length, parent)
+    end
+end
+
+func insertHeap(number arr[100], number length, number element)
+begin
+    arr[length] <- element
+    length <- length + 1
+    reHeapUp(arr, length, length - 1)
+    return length
+end

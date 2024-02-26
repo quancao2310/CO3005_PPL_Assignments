@@ -1,0 +1,8 @@
+func main () begin
+number a <- 10
+if (a > 0)
+    for a until a <= 0 by -1
+        if (a > 5) writeString("a > 5")
+        else continue
+return a
+end

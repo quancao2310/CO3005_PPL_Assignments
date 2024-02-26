@@ -1,0 +1,15 @@
+func main() begin 
+    number a[4,6,7,8]
+    a[3,true,1,ahahaha(4)] <- 1
+    if (a[31,32.1,3E+1,huhu((0))]) doNothing()
+    else for x until 3600 + s == 1 + h by 1e9+7 alsoDoNothing()
+    begin
+        x <- 234
+        begin
+            y <- 567
+            begin
+                print(x+y)
+            end
+        end
+    end
+end

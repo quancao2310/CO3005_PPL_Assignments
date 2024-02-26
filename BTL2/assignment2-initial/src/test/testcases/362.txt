@@ -1,0 +1,13 @@
+func main() begin
+var num <- readNumber()
+number count <- 1
+number core <- 10
+for core until false by 0
+    if (num < core) break
+    else core <- 10*core
+    count<-count+1
+writeNumber(num)
+writeString(" has ")
+writeNumber(count)
+writeString(" digits.")
+end 

@@ -1,0 +1,1 @@
+Program([FuncDecl(Id(a), [], Return(BinaryOp(..., StringLit(hello\\), BinaryOp(*, StringLit(world\'), UnaryOp(-, UnaryOp(-, NumLit(22.0))))))), FuncDecl(Id(main), [], Block([]))])

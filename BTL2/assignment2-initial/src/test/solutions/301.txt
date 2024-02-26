@@ -1,1 +1,1 @@
-Program([FuncDecl(Id(foo), [], Block([]))])
+Program([VarDecl(Id(a), NumberType, None, None)])

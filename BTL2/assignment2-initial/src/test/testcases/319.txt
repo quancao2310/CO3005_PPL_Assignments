@@ -1,0 +1,4 @@
+func a() return "hello\\"..."world\'"*--22
+func main()
+begin
+end

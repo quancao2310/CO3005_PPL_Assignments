@@ -1,0 +1,36 @@
+number sol[10, 10]
+number xMove[8] <- [ 2, 1, -1, -2, -2, -1,  1,  2 ]
+number yMove[8] <- [ 1, 2,  2,  1, -1, -2, -2, -1 ]
+
+func chkCell(number x, number y, number n)
+    return (x >= 0) and (x < n) and (y >= 0) and (y < n) and (sol[x, y] == -1)
+
+func solverec(number x, number y, number move_ith, number n) begin
+    if (move_ith == n*n) return true
+    number k <- 0
+    number xNext
+    number yNext
+    for k until k = 8 by 1 begin
+        xNext <- x + xMove[k]
+        yNext <- y + yMove[k]
+        if (chkCell(xNext, yNext, n)) begin
+            sol[xNext, yNext] <- move_ith
+            move_ith <- move_ith + 1
+            if (solverec(xNext, yNext, move_ith, n)) return true
+            move_ith <- move_ith - 1
+            sol[xNext, yNext] <- -1
+        end
+    end
+    return false
+end
+
+func solve(number n) begin
+    var i <- 0
+    var j <- 0
+    for i until i >= n by 1
+        for j until j >= n by 1
+            sol[i, j] <- -1
+    sol[0, 0] <- 0
+    
+    return solverec(0, 0, 1, n) = 1
+end

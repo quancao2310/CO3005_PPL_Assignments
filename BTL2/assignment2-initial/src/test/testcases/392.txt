@@ -1,0 +1,35 @@
+func round(number n) return n - n % 1
+func merge(number arr[100], number left, number right, number mid) begin
+    number left_length <- mid - left + 1
+    number right_length <- right - mid
+    number arr_left[50]
+    number arr_right[50]
+    
+    number i <- 0
+    number j <- 0
+    
+    for i until i >= left_length by 1
+        arr_left[i] <- arr[left + i]
+    for j until j >= right_length by 1
+        arr_right[j] <- arr[mid + 1 + j]
+    
+    number k <- left
+    for k until k > right by 1 begin
+        if ((i < left_length) and ((j >= right_length) or (arr_left[i] <= arr_right[j]))) begin
+            arr[k] <- arr_left[i]
+            i <- i + 1
+        end
+        else begin
+            arr[k] <- arr_right[j]
+            j <- j + 1
+        end
+    end
+end
+
+func mergeSort(number arr[100], number left, number right) begin
+    if (left >= right) return
+    number mid <- round((left + right) / 2)
+    mergeSort(arr, left, mid)
+    mergeSort(arr, mid + 1, right)
+    merge(arr, left, right, mid)
+end

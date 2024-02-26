@@ -1,0 +1,1 @@
+Program([FuncDecl(Id(main), [], Block([If((BinaryOp(=, Id(a), NumLit(1.0)), CallStmt(Id(writeBool), [BooleanLit(True)])), [], None)]))])

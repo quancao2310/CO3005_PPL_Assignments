@@ -1,0 +1,1 @@
+Program([FuncDecl(Id(main), [], Block([Block([VarDecl(Id(r), NumberType, None, None), VarDecl(Id(s), NumberType, None, NumLit(3.0)), AssignStmt(Id(r), NumLit(2.0)), Block([AssignStmt(Id(s), BinaryOp(-, BinaryOp(*, Id(r), Id(r)), Id(r))), CallStmt(Id(writeNumber), [Id(s)])]), CallStmt(Id(writeNumber), [Id(s)])])]))])

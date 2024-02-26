@@ -1,0 +1,1 @@
+Program([FuncDecl(Id(main), [], Block([If((CallExpr(Id(PPL_is_easy), []), Block([CallStmt(Id(writeString), [StringLit(u are lying)])])), [], Block([CallStmt(Id(writeString), [StringLit(coi SCORM di em)])]))]))])

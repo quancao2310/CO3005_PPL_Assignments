@@ -1,0 +1,1 @@
+Program([VarDecl(Id(x), ArrayType([2.0], NumberType), None, CallExpr(Id(foo), [Id(x)])), VarDecl(Id(y), ArrayType([2.0], NumberType), None, Id(x))])

@@ -1,0 +1,1 @@
+Program([VarDecl(Id(MOD), NumberType, None, BinaryOp(+, NumLit(1000000000.0), NumLit(7.0))), VarDecl(Id(_val1), NumberType, None, NumLit(1000.0)), VarDecl(Id(_val2), NumberType, None, NumLit(20.24)), FuncDecl(Id(main), [], Block([CallStmt(Id(writeNumber), [BinaryOp(%, Id(_val1), Id(MOD))]), CallStmt(Id(writeNumber), [BinaryOp(%, Id(_val2), Id(MOD))])]))])

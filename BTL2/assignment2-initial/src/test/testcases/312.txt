@@ -1,0 +1,2 @@
+number x[2] <- foo(x)
+number y[2] <- x

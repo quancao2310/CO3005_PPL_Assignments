@@ -1,0 +1,10 @@
+func min(number a[100], number length)
+begin
+    if (length <= 0)
+        return 1E+9 ## Represent possitive infinity
+    var min <- a[0]
+    var i <- 0
+    for i until i >= length by 1
+        if (a[i] < min) min <- a[i]
+    return min
+end

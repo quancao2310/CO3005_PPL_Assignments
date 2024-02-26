@@ -1,0 +1,12 @@
+func find_divisors(number n) begin
+number res[100]
+number i <- 0
+number x <- 1
+for x until x > n by 1
+    if (x = n) res[i] <- -1
+    elif (n % x = 0) begin
+        res[i] <- x
+        i <- i + 1
+    end
+return res
+end

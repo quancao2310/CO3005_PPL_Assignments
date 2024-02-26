@@ -1,0 +1,18 @@
+number status <- 404
+
+func main()
+begin
+    string msg
+    if (status = 200)
+        msg <- "OK"
+    elif (status = 400)
+        msg <- "Bad Request"
+    elif (status = 401) msg <- "Unauthorized"
+    elif (status = 404)
+        
+        msg <- "Not Found"
+    elif (status = 500)
+        msg <- "Internal Server Error"
+    else msg <- "Other messages"
+    printString(msg)
+end

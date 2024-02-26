@@ -1,0 +1,20 @@
+func print(string src, string dst, string aux)
+
+func tower_of_hanoi(number n, string src, string dst, string aux)
+begin
+    if (n = 1) print(src, dst)
+    else begin
+        tower_of_hanoi(n - 1, src, aux, dst)
+        tower_of_hanoi(1, src, dst, aux)
+        tower_of_hanoi(n - 1, aux, dst, src)
+    end
+end
+
+func print(string src, string dst) begin
+    output <- "Move 1 disk from tower "
+    output <- output ... src
+    output <- output ... " to tower "
+    output <- output ... des
+    output <- output ... "\n"
+    writeString(output)
+end

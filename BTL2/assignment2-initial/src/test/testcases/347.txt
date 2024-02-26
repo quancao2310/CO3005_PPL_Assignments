@@ -1,0 +1,14 @@
+func main() begin
+number arr[20, 10]
+var i <- 0
+var j <- 0
+
+for i until i >= 20 by 1
+begin
+    var tmp_10i <- 10*i
+    for j until j >= 10 by 1 begin
+        arr[i, j] <- tmp_10i + j
+        writeNumber(arr[i, j])
+    end
+end
+end

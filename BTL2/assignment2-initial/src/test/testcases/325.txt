@@ -1,0 +1,7 @@
+
+number a <- x + y
+number a <- x - y
+number a <- x * y
+number a <- x / y
+number a <- x % y
+number a <- -x

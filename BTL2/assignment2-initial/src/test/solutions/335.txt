@@ -1,0 +1,1 @@
+Program([FuncDecl(Id(main), [], Block([AssignStmt(Id(a), NumLit(100.0)), AssignStmt(Id(b), StringLit(oifj'"safjms'"fp)), AssignStmt(Id(c), BinaryOp(and, BooleanLit(True), BooleanLit(True))), AssignStmt(Id(d), NumLit(0.013))]))])

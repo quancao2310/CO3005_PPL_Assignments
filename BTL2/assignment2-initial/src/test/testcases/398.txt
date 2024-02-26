@@ -1,0 +1,15 @@
+func lis(number arr[100], number n) begin
+    number lis[100]
+    lis[0] <- 1
+    
+    number i <- 1
+    for i until i >= n by 1 begin
+        lis[i] <- 1
+        
+        number j <- 0
+        for j until j >= i by 1
+            if ((arr[i] > arr[j]) and (lis[j] + 1 > lis[i]))
+                lis[i] <- lis[j] + 1
+    end
+    return max(lis, n)
+end

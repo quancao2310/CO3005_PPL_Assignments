@@ -1,0 +1,1 @@
+Program([VarDecl(Id(a), StringType, None, None), VarDecl(Id(b), StringType, None, StringLit(PPL Assignment)), VarDecl(Id(c), StringType, None, StringLit(This is a string \n))])

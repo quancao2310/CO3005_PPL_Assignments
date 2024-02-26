@@ -1,0 +1,5 @@
+func main() begin
+l[3] <- value * aPi
+foo[x, y, z + 1] <- abc[231.e+9]
+rec[rec[rec[rec[rec[rec[rec[rec[rec[rec[rec["infinitely"]]]]]]]]]]] <- "stack"..."overflow"
+end

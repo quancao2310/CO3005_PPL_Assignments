@@ -1,0 +1,1 @@
+Program([FuncDecl(Id(xor), [VarDecl(Id(a), BoolType, None, None), VarDecl(Id(b), BoolType, None, None)], Return(BinaryOp(or, BinaryOp(and, Id(a), UnaryOp(not, Id(b))), BinaryOp(and, UnaryOp(not, Id(a)), Id(b)))))])
