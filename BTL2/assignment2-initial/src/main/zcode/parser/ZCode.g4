@@ -83,7 +83,7 @@ elif_stmt: ELIF LEFT_PAREN expression RIGHT_PAREN nullable_newline_list statemen
 elif_list: elif_stmt elif_list
          | 
          ;
-else_stmt: ELSE statement | ;
+else_stmt: ELSE nullable_newline_list statement | ;
 
 // For statement
 for_stmt: FOR IDENTIFIER UNTIL expression BY expression nullable_newline_list statement;
