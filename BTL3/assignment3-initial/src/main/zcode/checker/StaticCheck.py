@@ -66,6 +66,8 @@ class StaticChecker(BaseVisitor, Utils):
                 self.inferArray(expr, typ, env)
             else:
                 raise error if error else StaticError()
+        elif type(expr) is ArrayCell:
+            self.infer(expr.arr, ArrayType([0 for _ in range(len(expr.idx))], typ), env, error)
         else:
             print("This cannot be happening!!!")
         return typ
@@ -462,7 +464,8 @@ class StaticChecker(BaseVisitor, Utils):
         arr_t = ast.arr.accept(self, o)
         
         if type(arr_t) is Unknown:
-            raise TypeCannotBeInferred("") # Debatable
+            # raise TypeCannotBeInferred("")
+            return Unknown() # Debatable
         if type(arr_t) is not ArrayType:
             raise TypeMismatchInExpression(ast)
         if len(arr_t.size) != len(ast.idx):
@@ -497,8 +500,8 @@ class StaticChecker(BaseVisitor, Utils):
         for i in range(length):
             ele_t = ast.value[i].accept(self, o)
             
-            if self.isUnknown(ele_t):
-                ele_t = self.infer(ast.value[i], common_t, o, TypeCannotBeInferred(ast))
+            if self.isUnknown(ele_t) and not self.isUnknown(common_t):
+                ele_t = self.infer(ast.value[i], common_t, o, TypeMismatchInExpression(ast))
             
             if not self.isSameType(ele_t, common_t):
                 raise TypeMismatchInExpression(ast)
