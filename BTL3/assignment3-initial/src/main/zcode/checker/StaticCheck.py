@@ -31,7 +31,7 @@ class StaticChecker(BaseVisitor, Utils):
         FuncSymbol("readString", StringType(), []),
         FuncSymbol("writeNumber", VoidType(), [VarSymbol("<arg>", NumberType())]),
         FuncSymbol("writeBool", VoidType(), [VarSymbol("<arg>", BoolType())]),
-        FuncSymbol("writeString", VoidType(), [VarSymbol("<arg>", StringType())])
+        FuncSymbol("writeString", VoidType(), [VarSymbol("<arg>", StringType())]),
     ]
     
     def __init__(self, ast: AST):
@@ -40,7 +40,7 @@ class StaticChecker(BaseVisitor, Utils):
     def check(self):
         return self.ast.accept(self, StaticChecker.builtin_env)
     
-    def infer(self, name: str, typ: Type, env: List[List[Symbol]], symType = Symbol) -> Type:
+    def inferSymbol(self, name: str, typ: Type, env: List[List[Symbol]], symType = Symbol) -> Type:
         for symbol_list in env:
             for symbol in symbol_list:
                 if type(symbol) is symType and symbol.name == name:
@@ -48,47 +48,62 @@ class StaticChecker(BaseVisitor, Utils):
                     return typ
         return Unknown()
     
-    def inferArray(self, ast: ArrayLiteral, typ: ArrayType, env: List[List[Symbol]], skipIdx: int = -1):
-        # typ: Type instance of the array literal: ArrayType(size=[...], eleType=primitive_type)
+    def inferArray(self, ast: ArrayLiteral, typ: ArrayType, env: List[List[Symbol]]):
         eleType = typ.eleType if len(typ.size) == 1 else ArrayType(typ.size[1:], typ.eleType)
         
-        for i in range(len(ast.value)):
-            if i == skipIdx:
-                continue
-            
-            expr = ast.value[i]
-            if type(expr) is Id:
-                self.infer(expr.name, eleType, env, VarSymbol)
-            if type(expr) is CallExpr:
-                self.infer(expr.name.name, eleType, env, FuncSymbol)
-            if type(expr) is ArrayLiteral:
-                self.inferArray(expr, eleType, env)
+        for expr in ast.value:
+            self.infer(expr, eleType, env, TypeMismatchInExpression(ast))
         
         return typ
     
-    def isCompatibleArrayType(self, arr_typ1: ArrayType, arr_typ2: ArrayType) -> bool:
+    def infer(self, expr: Expr, typ: Type, env: List[List[Symbol]], error: StaticError):
+        if type(expr) is Id:
+            self.inferSymbol(expr.name, typ, env, VarSymbol)
+        elif type(expr) is CallExpr:
+            self.inferSymbol(expr.name.name, typ, env, FuncSymbol)
+        elif type(expr) is ArrayLiteral:
+            if type(typ) is ArrayType and self.isCompatibleArrayType(expr.accept(self, env), typ):
+                self.inferArray(expr, typ, env)
+            else:
+                raise error if error else StaticError()
+        else:
+            print("This cannot be happening!!!")
+        return typ
+    
+    def isCompatibleArrayType(self, arr_typ1: ArrayType, arr_typ2: ArrayType):
         """
         Check if the first array type is compatible with the second one.
         The latter must be fixed, that is, its eleType is already known.
         Its size should also be greater than the former's.
         """
         if len(arr_typ1.size) > len(arr_typ2.size):
-            return self.isCompatibleArrayType(arr_typ2, arr_typ1)
+            return False
         if type(arr_typ2.eleType) is Unknown:
             return False
         if type(arr_typ1.eleType) not in [Unknown, type(arr_typ2.eleType)]:
             return False
-        for i in range(len(arr_typ1.size)):
-            if arr_typ1.size[i] != arr_typ2.size[i]:
-                return False
-        return True
+        return all(arr_typ1.size[i] == arr_typ2.size[i] for i in range(len(arr_typ1.size)))
     
     def isUnknown(self, ast: Type):
         """
-        Check if the Type instance is related to Unknown
-        These kinds of Expr may have Unknown Type: Id, CallExpr, ArrayLiteral
+        Check if the Type instance is Unknown or has Unknown elements.
+        These kinds of Expr may have Unknown Type: Id, CallExpr, ArrayLiteral.
         """
         return (type(ast) is Unknown) or (type(ast) is ArrayType and type(ast.eleType) is Unknown)
+    
+    def isSameType(self, type1: Type, type2: Type) -> bool:
+        """
+        Check if two Types are exactly the same.
+        """
+        if type(type1) is ArrayType or type(type2) is ArrayType:
+            if type(type1) is not ArrayType or type(type2) is not ArrayType:
+                return False
+            if type(type1.eleType) is not type(type2.eleType):
+                return False
+            if len(type1.size) != len(type2.size):
+                return False
+            return all(type1.size[i] == type2.size[i] for i in range(len(type1.size)))
+        return type(type1) is type(type2)
     
     def visitProgram(self, ast: Program, o: List[FuncSymbol]):
         # o = StaticChecker.builtin_env
@@ -107,79 +122,65 @@ class StaticChecker(BaseVisitor, Utils):
             raise NoEntryPoint()
     
     def visitVarDecl(self, ast: VarDecl, o: List[List[Symbol]]):
-        # ast: name: Id(name: str), varType: Type, modifier: str, varInit: Expr
         # Check variable redeclaration (same scope)
         for symbol in o[0]:
             if type(symbol) is VarSymbol and symbol.name == ast.name.name:
                 raise Redeclared(Variable(), ast.name.name)
         
         # Create symbol and add to the environment
-        typ = ast.varType if ast.varType is not None else Unknown()
-        var_symbol = VarSymbol(ast.name.name, typ)
+        var_symbol = VarSymbol(ast.name.name, ast.varType if ast.varType else Unknown())
         ret_env = [o[0] + [var_symbol]] + o[1:]
         
         # Check/Infer type if initialized
         if ast.varInit:
             try:
                 init_t = ast.varInit.accept(self, ret_env)
+                var_t = var_symbol.typ
             except TypeCannotBeInferred:
                 raise TypeCannotBeInferred(ast)
             
-            if type(typ) is Unknown and self.isUnknown(init_t):
+            if type(var_t) is Unknown and self.isUnknown(init_t):
                 raise TypeCannotBeInferred(ast)
             
-            if type(typ) is Unknown:
-                var_symbol.typ = init_t
-                return ret_env
+            if type(var_t) is Unknown:
+                var_t = var_symbol.typ = init_t
             
             if self.isUnknown(init_t):
-                # varInit: Id | CallExpr | ArrayLiteral
-                if type(ast.varInit) is Id:
-                    self.infer(ast.varInit.name, typ, o, VarSymbol)
-                elif type(ast.varInit) is CallExpr:
-                    self.infer(ast.varInit.name.name, typ, o, FuncSymbol)
-                elif type(ast.varInit) is ArrayLiteral:
-                    if type(typ) is ArrayType and self.isCompatibleArrayType(init_t, typ):
-                        self.inferArray(ast.varInit, typ, o)
-                    else:
-                        raise TypeMismatchInStatement(ast)
-                else:
-                    print("This cannot be happening!!!")
-                return ret_env
+                init_t = self.infer(ast.varInit, var_t, ret_env, TypeCannotBeInferred(ast))
             
-            if type(init_t) is not type(typ):
+            if not self.isSameType(init_t, var_t):
                 raise TypeMismatchInStatement(ast)
         
         return ret_env
     
     def visitFuncDecl(self, ast: FuncDecl, o: List[List[Symbol]]):
-        # ast: name: Id(name: str), param: List[VarDecl], body: Stmt
         # Check function redeclaration (in global scope - the only place to declare functions)
         # If function was not defined/implemented yet, just get its symbol
         func_symbol = None
         for symbol in o[-1]:
             if type(symbol) is FuncSymbol and symbol.name == ast.name.name:
-                if not symbol.defined:
-                    func_symbol = symbol
-                    break
-                raise Redeclared(Function(), ast.name.name)
+                err = Redeclared(Function(), ast.name.name)
+                if symbol.defined or not ast.body or len(symbol.param_list) != len(ast.param):
+                    raise err
+                for i in range(len(symbol.param_list)):
+                    if not self.isSameType(symbol.param_list[i].typ, ast.param[i].varType):
+                        raise err
+                func_symbol = symbol
+                break
         
-        # If this function's AST doesn't have a body (no implementation part),
-        # create a symbol if not have yet and return
+        # If the AST does not have a body (no implementation part),
+        # create a symbol and return
         if not ast.body:
-            if not func_symbol:
-                func_symbol = FuncSymbol(
-                    ast.name.name, 
-                    Unknown(), 
-                    [VarSymbol("<param>", param_decl.varType) for param_decl in ast.param],
-                    False
-                )
-                return [o[0] + [func_symbol]] + o[1:]
-            else:
-                return o
+            func_symbol = FuncSymbol(
+                ast.name.name,
+                Unknown(),
+                [VarSymbol("<param>", param.varType) for param in ast.param],
+                False
+            )
+            return [o[0] + [func_symbol]] + o[1:]
         
         # Otherwise (AST has a body), process it
-        # Create a symbol and add it to the environment if not have yet
+        # Create a symbol and add it to the environment if there has not been one
         if not func_symbol:
             func_symbol = FuncSymbol(ast.name.name, Unknown(), [], True)
             ret_env = [o[0] + [func_symbol]] + o[1:]
@@ -193,11 +194,11 @@ class StaticChecker(BaseVisitor, Utils):
         except Redeclared as e:
             raise Redeclared(Parameter(), e.name)
         
-        # Change the func_symbol's param_list with the processed parameter list
+        # Change the func_symbol's param_list to the processed parameter list
         func_symbol.param_list = local_env[0]
         
         # Visit body
-        ast.body.accept(self, [[func_symbol]] + local_env)
+        ast.body.accept(self, [[func_symbol]] + local_env) # Add function environment for return statement
         
         if type(func_symbol.typ) is Unknown:
             func_symbol.typ = VoidType()
@@ -216,37 +217,27 @@ class StaticChecker(BaseVisitor, Utils):
         for symbol_list in o:
             if len(symbol_list) > 0 and type(symbol_list[0]) is FuncSymbol:
                 func_symbol = symbol_list[0]
+                func_t = func_symbol.typ
                 
-                if type(func_symbol.typ) is Unknown and self.isUnknown(expr_t):
+                if type(func_t) is Unknown and self.isUnknown(expr_t):
                     raise TypeCannotBeInferred(ast)
                 
-                if type(func_symbol.typ) is Unknown:
-                    func_symbol.typ = expr_t
+                if type(func_t) is Unknown:
+                    func_t = func_symbol.typ = expr_t
                     return o
                 
                 if self.isUnknown(expr_t):
-                    if type(ast.expr) is Id:
-                        self.infer(ast.expr.name, func_symbol.typ, o, VarSymbol)
-                    elif type(ast.expr) is CallExpr:
-                        self.infer(ast.expr.name.name, func_symbol.typ, o, FuncSymbol)
-                    elif type(ast.expr) is ArrayLiteral:
-                        if type(func_symbol.typ) is ArrayType and self.isCompatibleArrayType(expr_t, func_symbol.typ):
-                            self.inferArray(ast.expr, func_symbol.typ, o)
-                        else:
-                            raise TypeMismatchInStatement(ast)
-                    else:
-                        print("This cannot be happening!!!")
-                    return o
+                    expr_t = self.infer(ast.expr, func_t, o, TypeCannotBeInferred(ast))
                 
-                if type(expr_t) is not type(func_symbol.typ):
+                if not self.isSameType(expr_t, func_t):
                     raise TypeMismatchInStatement(ast)
                 break
         return o
     
     def visitAssign(self, ast: Assign, o: List[List[Symbol]]):
         try:
-            right_t = ast.rhs.accept(self, o) # Type
-            left_t = ast.lhs.accept(self, o) # Type
+            right_t = ast.rhs.accept(self, o)
+            left_t = ast.lhs.accept(self, o)
         except TypeCannotBeInferred:
             raise TypeCannotBeInferred(ast)
         
@@ -254,25 +245,14 @@ class StaticChecker(BaseVisitor, Utils):
             raise TypeCannotBeInferred(ast)
         
         if type(left_t) is Unknown:
-            # lhs: Id
-            left_t = self.infer(ast.lhs.name, right_t, o, VarSymbol)
+            left_t = self.inferSymbol(ast.lhs.name, right_t, o, VarSymbol)
         
         if self.isUnknown(right_t):
-            # rhs: Id | CallExpr | ArrayLiteral
-            if type(ast.rhs) is Id:
-                right_t = self.infer(ast.rhs.name, left_t, o, VarSymbol)
-            elif type(ast.rhs) is CallExpr:
-                right_t = self.infer(ast.rhs.name.name, left_t, o, FuncSymbol)
-            elif type(ast.rhs) is ArrayLiteral:
-                if type(left_t) is ArrayType and self.isCompatibleArrayType(right_t, left_t):
-                    right_t = self.inferArray(ast.rhs, left_t, o)
-                else:
-                    raise TypeMismatchInStatement(ast)
-            else:
-                print("This cannot be happening!!!")
+            right_t = self.infer(ast.rhs, left_t, o, TypeCannotBeInferred(ast))
         
-        if type(right_t) is not type(left_t):
+        if not self.isSameType(right_t, left_t):
             raise TypeMismatchInStatement(ast)
+        
         return o
     
     def visitIf(self, ast: If, o: List[List[Symbol]]):
@@ -285,12 +265,7 @@ class StaticChecker(BaseVisitor, Utils):
                 raise TypeCannotBeInferred(ast)
             
             if type(expr_t) is Unknown:
-                if type(expr) is Id:
-                    expr_t = self.infer(expr.name, BoolType(), o, VarSymbol)
-                elif type(expr) is CallExpr:
-                    expr_t = self.infer(expr.name.name, BoolType(), o, FuncSymbol)
-                else:
-                    print("This cannot be happening!!!")
+                expr_t = self.infer(expr, BoolType(), o, None)
             
             if type(expr_t) is not BoolType:
                 raise TypeMismatchInStatement(ast)
@@ -302,40 +277,42 @@ class StaticChecker(BaseVisitor, Utils):
         return ret_env
     
     def visitFor(self, ast: For, o: List[List[Symbol]]):
-        # Check type of all expressions
+        # Check/Infer type of the loop variable
         try:
             id_t = ast.name.accept(self, o)
+        except TypeCannotBeInferred:
+            raise TypeCannotBeInferred(ast)
+        if type(id_t) is Unknown:
+            id_t = self.inferSymbol(ast.name.name, NumberType(), o, VarSymbol)
+        if type(id_t) is not NumberType:
+            raise TypeMismatchInStatement(ast)
+        
+        # Check/Infer type of the conditional expression
+        try:
             cond_t = ast.condExpr.accept(self, o)
+        except TypeCannotBeInferred:
+            raise TypeCannotBeInferred(ast)
+        if type(cond_t) is Unknown:
+            cond_t = self.infer(ast.condExpr, BoolType(), o, None)
+        if type(cond_t) is not BoolType:
+            raise TypeMismatchInStatement(ast)
+        
+        # Check/Infer type of the update expression
+        try:
             upd_t = ast.updExpr.accept(self, o)
         except TypeCannotBeInferred:
             raise TypeCannotBeInferred(ast)
-        
-        if type(id_t) is Unknown:
-            id_t = self.infer(ast.name.name, NumberType(), o, VarSymbol)
-        if type(cond_t) is Unknown:
-            if type(ast.condExpr) is Id:
-                cond_t = self.infer(ast.condExpr.name, BoolType(), o, VarSymbol)
-            elif type(ast.condExpr) is CallExpr:
-                cond_t = self.infer(ast.condExpr.name.name, BoolType(), o, FuncSymbol)
-            else:
-                print("This cannot be happening!!!")
         if type(upd_t) is Unknown:
-            if type(ast.updExpr) is Id:
-                upd_t = self.infer(ast.updExpr.name, NumberType(), o, VarSymbol)
-            elif type(ast.updExpr) is CallExpr:
-                upd_t = self.infer(ast.updExpr.name.name, NumberType(), o, FuncSymbol)
-            else:
-                print("This cannot be happening!!!")
-        
-        if not all([type(id_t) is NumberType, type(cond_t) is BoolType, type(upd_t) is NumberType]):
+            upd_t = self.infer(ast.updExpr, NumberType(), o, None)
+        if type(upd_t) is not NumberType:
             raise TypeMismatchInStatement(ast)
         
         # Check the statement
         loop_env = [o[0] + [VarSymbol("<loop>", VoidType())]] + o[1:]
-        ret_env = ast.body.accept(self, loop_env) # ret_env: [[..., <loop>, (<var>)?], ...]
+        exit_env = ast.body.accept(self, loop_env) # exit_env: [[..., <loop>, (<var>)?], ...]
         
-        if ret_env[0][-1].name != "<loop>":
-            return [o[0] + [ret_env[0][-1]]] + o[1:]
+        if exit_env[0][-1].name != "<loop>":
+            return [o[0] + [exit_env[0][-1]]] + o[1:]
         return o
     
     def visitBreak(self, ast: Break, o: List[List[Symbol]]):
@@ -371,33 +348,18 @@ class StaticChecker(BaseVisitor, Utils):
             raise TypeMismatchInStatement(ast)
         
         for i in range(len(ast.args)):
-            arg = ast.args[i] # Expr
-            arg_type = arg.accept(self, o) # Type
-            param_type = func_symbol.param_list[i].typ # Type
+            arg_t = ast.args[i].accept(self, o)
+            param_t = func_symbol.param_list[i].typ
             
-            if self.isUnknown(arg_type):
-                if type(arg) is Id:
-                    self.infer(arg.name, param_type, o, VarSymbol)
-                elif type(arg) is CallExpr:
-                    self.infer(arg.name.name, param_type, o, FuncSymbol)
-                elif type(arg) is ArrayLiteral:
-                    if type(param_type) is ArrayType and self.isCompatibleArrayType(arg_type, param_type):
-                        self.inferArray(arg, param_type, o)
-                    else:
-                        raise TypeMismatchInStatement(ast)
-                else:
-                    print("This cannot be happening!!!")
-                continue
+            if self.isUnknown(arg_t):
+                arg_t = self.infer(ast.args[i], param_t, o, TypeCannotBeInferred(ast))
             
-            if type(arg_type) is not type(param_type):
+            if not self.isSameType(arg_t, param_t):
                 raise TypeMismatchInStatement(ast)
         
         return o
     
     def visitBinaryOp(self, ast: BinaryOp, o: List[List[Symbol]]) -> Type:
-        left_t = ast.left.accept(self, o)
-        right_t = ast.right.accept(self, o)
-        
         if ast.op in ['+', '-', '*', '/', '%', 'and', 'or', '...']:
             # The operators that can be applied to operands of the same type and produce a result of the same type
             if ast.op in ['+', '-', '*', '/', '%']:
@@ -407,20 +369,21 @@ class StaticChecker(BaseVisitor, Utils):
             else:
                 infer_type = StringType
             
+            # Check/Infer type of left operand
+            left_t = ast.left.accept(self, o)
             if type(left_t) is Unknown:
-                if type(ast.left) is Id:
-                    left_t = self.infer(ast.left.name, infer_type(), o, VarSymbol)
-                else:
-                    left_t = self.infer(ast.left.name.name, infer_type(), o, FuncSymbol)
-            if type(right_t) is Unknown:
-                if type(ast.right) is Id:
-                    left_t = self.infer(ast.right.name, infer_type(), o, VarSymbol)
-                else:
-                    left_t = self.infer(ast.right.name.name, infer_type(), o, FuncSymbol)
+                left_t = self.infer(ast.left, infer_type(), o, None)
+            if type(left_t) is not infer_type:
+                raise TypeMismatchInExpression(ast)
             
-            if type(left_t) is infer_type and type(right_t) is infer_type:
-                return infer_type()
-            raise TypeMismatchInExpression(ast)
+            # Check/Infer type of right operand
+            right_t = ast.right.accept(self, o)
+            if type(right_t) is Unknown:
+                right_t = self.infer(ast.right, infer_type(), o, None)
+            if type(right_t) is not infer_type:
+                raise TypeMismatchInExpression(ast)
+            
+            return infer_type()
         elif ast.op in ['=', '!=', '<', '>', '<=', '>=', '==']:
             # The (relational) operators that can be applied to operands of the same type and produce a result of BoolType
             if ast.op == '==':
@@ -428,39 +391,37 @@ class StaticChecker(BaseVisitor, Utils):
             else:
                 infer_type = NumberType
             
+            # Check/Infer type of left operand
+            left_t = ast.left.accept(self, o)
             if type(left_t) is Unknown:
-                if type(ast.left) is Id:
-                    left_t = self.infer(ast.left.name, infer_type(), o, VarSymbol)
-                else:
-                    left_t = self.infer(ast.left.name.name, infer_type(), o, FuncSymbol)
-            if type(right_t) is Unknown:
-                if type(ast.right) is Id:
-                    left_t = self.infer(ast.right.name, infer_type(), o, VarSymbol)
-                else:
-                    left_t = self.infer(ast.right.name.name, infer_type(), o, FuncSymbol)
+                left_t = self.infer(ast.left, infer_type(), o, None)
+            if type(left_t) is not infer_type:
+                raise TypeMismatchInExpression(ast)
             
-            if type(left_t) is infer_type and type(right_t) is infer_type:
-                return BoolType()
-            raise TypeMismatchInExpression(ast)
+            # Check/Infer type of right operand
+            right_t = ast.right.accept(self, o)
+            if type(right_t) is Unknown:
+                right_t = self.infer(ast.right, infer_type(), o, None)
+            if type(right_t) is not infer_type:
+                raise TypeMismatchInExpression(ast)
+            
+            return BoolType()
     
     def visitUnaryOp(self, ast: UnaryOp, o: List[List[Symbol]]) -> Type:
-        e_t = ast.operand.accept(self, o)
-        
         if ast.op in ['-', 'not']:
             if ast.op == '-':
                 infer_type = NumberType
             else:
                 infer_type = BoolType
             
-            if type(e_t) is Unknown:
-                if type(ast.operand) is Id:
-                    e_t = self.infer(ast.operand.name, infer_type(), o, VarSymbol)
-                else:
-                    e_t = self.infer(ast.operand.name.name, infer_type(), o, FuncSymbol)
+            # Check/Infer type of operand
+            expr_t = ast.operand.accept(self, o)
+            if type(expr_t) is Unknown:
+                expr_t = self.infer(ast.operand, infer_type(), o, None)
+            if type(expr_t) is not infer_type:
+                raise TypeMismatchInExpression(ast)
             
-            if type(e_t) is infer_type:
-                return infer_type()
-            raise TypeMismatchInExpression(ast)
+            return infer_type()
     
     def visitCallExpr(self, ast: CallExpr, o: List[List[Symbol]]):
         func_symbol = None
@@ -479,25 +440,13 @@ class StaticChecker(BaseVisitor, Utils):
             raise TypeMismatchInExpression(ast)
         
         for i in range(len(ast.args)):
-            arg = ast.args[i] # Expr
-            arg_type = arg.accept(self, o) # Type
-            param_type = func_symbol.param_list[i].typ # Type
+            arg_t = ast.args[i].accept(self, o)
+            param_t = func_symbol.param_list[i].typ
             
-            if self.isUnknown(arg_type):
-                if type(arg) is Id:
-                    self.infer(arg.name, param_type, o, VarSymbol)
-                elif type(arg) is CallExpr:
-                    self.infer(arg.name.name, param_type, o, FuncSymbol)
-                elif type(arg) is ArrayLiteral:
-                    if type(param_type) is ArrayType and self.isCompatibleArrayType(arg_type, param_type):
-                        self.inferArray(arg, param_type, o)
-                    else:
-                        raise TypeMismatchInExpression(ast)
-                else:
-                    print("This cannot be happening!!!")
-                continue
+            if self.isUnknown(arg_t):
+                arg_t = self.infer(ast.args[i], param_t, o, TypeCannotBeInferred(ast))
             
-            if type(arg_type) is not type(param_type):
+            if not self.isSameType(arg_t, param_t):
                 raise TypeMismatchInExpression(ast)
         
         return func_symbol.typ
@@ -510,62 +459,52 @@ class StaticChecker(BaseVisitor, Utils):
         raise Undeclared(Identifier(), ast.name)
     
     def visitArrayCell(self, ast: ArrayCell, o: List[List[Symbol]]) -> Type:
-        arr_type = ast.arr.accept(self, o)
-        idx_types = [expr.accept(self, o) for expr in ast.idx]
+        arr_t = ast.arr.accept(self, o)
         
-        if type(arr_type) is Unknown:
-            raise TypeCannotBeInferred("")
-        if type(arr_type) is not ArrayType:
+        if type(arr_t) is Unknown:
+            raise TypeCannotBeInferred("") # Debatable
+        if type(arr_t) is not ArrayType:
             raise TypeMismatchInExpression(ast)
-        if len(arr_type.size) != len(idx_types):
-            raise TypeMismatchInExpression(ast)
+        if len(arr_t.size) != len(ast.idx):
+            raise TypeMismatchInExpression(ast) # Will not be covered in testcases
         
-        for i in range(len(idx_types)):
-            if type(idx_types[i]) is Unknown:
-                if type(ast.idx[i]) is Id:
-                    self.infer(ast.idx[i].name, NumberType(), o, VarSymbol)
-                else:
-                    self.infer(ast.idx[i].name.name, NumberType(), o, FuncSymbol)
-                continue
+        for i in range(len(ast.idx)):
+            idx_t = ast.idx[i].accept(self, o)
             
-            if type(idx_types[i]) is not NumberType:
+            if self.isUnknown(idx_t):
+                idx_t = self.infer(ast.idx[i], NumberType(), o, TypeCannotBeInferred(ast))
+            
+            if type(idx_t) is not NumberType:
                 raise TypeMismatchInExpression(ast)
         
-        return arr_type.eleType
+        return arr_t.eleType
     
     def visitArrayLiteral(self, ast: ArrayLiteral, o: List[List[Symbol]]):
-        expr_list = ast.value # List[Expr]
-        length = len(expr_list)
+        length = len(ast.value)
         
         # Find the first known type
         expr_types = [expr.accept(self, o) for expr in ast.value] # List[Type]
-        common_type = next(filter(lambda typ: not self.isUnknown(typ), expr_types), None)
-        if common_type is None:
-            common_type = next(filter(lambda typ: type(typ) is not Unknown, expr_types), None)
-            size = [float(length)] + (common_type.size if type(common_type) is ArrayType else [])
-            return ArrayType(size, Unknown())
+        common_t = next(filter(lambda typ: not self.isUnknown(typ), expr_types), None)
         
-        # Check or infer elements' type from the common_type
-        for i in range(length):
-            expr = expr_list[i]
-            typ = expr_types[i]
-            # typ = expr.accept(self, o)
+        # If there is none, it may exist an array of Unknowns. Choose it instead to check size constraint.
+        if common_t is None:
+            common_t = next(filter(lambda typ: type(typ) is not Unknown, expr_types), None)
             
-            if type(typ) is ArrayType:
-                if type(common_type) is ArrayType and self.isCompatibleArrayType(typ, common_type):
-                    self.inferArray(expr, common_type, o)
-                raise TypeMismatchInExpression(expr)
-            elif type(typ) is Unknown:
-                # expr: Id | CallExpr
-                if type(expr) is Id:
-                    self.infer(expr.name, common_type, o, VarSymbol)
-                else:
-                    self.infer(expr.name.name, common_type, o, FuncSymbol)
-            elif type(typ) is not type(common_type):
-                raise TypeMismatchInExpression(expr)
+            if common_t is None:
+                return ArrayType([float(length)], Unknown())
         
-        size = [float(length)] + (common_type.size if type(common_type) is ArrayType else [])
-        eleType = common_type.eleType if type(common_type) is ArrayType else common_type
+        # Check/Infer elements' type from the common_t Type
+        for i in range(length):
+            ele_t = ast.value[i].accept(self, o)
+            
+            if self.isUnknown(ele_t):
+                ele_t = self.infer(ast.value[i], common_t, o, TypeCannotBeInferred(ast))
+            
+            if not self.isSameType(ele_t, common_t):
+                raise TypeMismatchInExpression(ast)
+        
+        size = [float(length)] + (common_t.size if type(common_t) is ArrayType else [])
+        eleType = common_t.eleType if type(common_t) is ArrayType else common_t
         return ArrayType(size, eleType)
     
     def visitNumberLiteral(self, ast: NumberLiteral, o):
