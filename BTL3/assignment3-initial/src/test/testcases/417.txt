@@ -1,0 +1,5 @@
+func main() return
+
+func writeNumber(number a) begin
+    number x <- readNumber()
+end

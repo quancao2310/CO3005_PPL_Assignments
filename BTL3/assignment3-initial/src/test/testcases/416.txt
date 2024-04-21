@@ -1,0 +1,5 @@
+func a(number x)
+func a(string x) return
+
+func main() begin
+end

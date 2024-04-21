@@ -1,0 +1,4 @@
+func bar(number a, bool b) return
+func bar(number a) return
+
+func main() return

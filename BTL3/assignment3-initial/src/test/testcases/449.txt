@@ -1,0 +1,6 @@
+func main() begin
+    dynamic x <- 3.456
+    begin
+        dynamic t <- t == (t < x)
+    end
+end

@@ -1,0 +1,7 @@
+func main() begin
+    dynamic a
+    begin
+        number c
+    end
+    var c <- a[100]
+end

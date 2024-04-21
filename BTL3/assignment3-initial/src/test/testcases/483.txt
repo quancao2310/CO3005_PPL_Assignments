@@ -1,0 +1,8 @@
+func main() begin
+    number i
+    
+    for i until i > 10 by 1
+    begin
+    end
+    continue
+end

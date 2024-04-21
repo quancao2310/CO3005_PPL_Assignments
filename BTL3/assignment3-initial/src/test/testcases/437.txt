@@ -1,0 +1,4 @@
+dynamic x
+func main() begin
+    number a[2, 2] <- [x, [x, x]]
+end

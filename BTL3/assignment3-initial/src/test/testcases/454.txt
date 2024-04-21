@@ -1,0 +1,8 @@
+dynamic x <- 3
+func main() begin
+    dynamic y
+    begin
+        dynamic x
+        x <- y
+    end
+end

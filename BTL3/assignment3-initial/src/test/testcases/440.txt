@@ -1,0 +1,4 @@
+func main() begin
+    string x
+    number y <- x[1, 2]
+end

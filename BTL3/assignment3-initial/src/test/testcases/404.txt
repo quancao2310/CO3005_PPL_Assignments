@@ -1,0 +1,8 @@
+func main() begin
+    number a
+    if (a > 0) begin
+        number a
+        number b
+        string b
+    end
+end

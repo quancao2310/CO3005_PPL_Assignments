@@ -1,0 +1,4 @@
+func main() begin
+    number a
+    if (false) number a
+end

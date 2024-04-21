@@ -1,0 +1,5 @@
+func foo()
+func main() return
+
+func foo() return
+func foo() return

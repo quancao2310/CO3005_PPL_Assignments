@@ -1,0 +1,1 @@
+Type Mismatch In Statement: CallStmt(Id(foo), [NumLit(98765.0), BooleanLit(True)])

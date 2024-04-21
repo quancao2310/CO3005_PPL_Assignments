@@ -1,0 +1,6 @@
+func foo()
+func main() begin
+    var y <- foo()
+end
+
+func foo() return 123

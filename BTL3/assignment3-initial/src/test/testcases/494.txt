@@ -1,0 +1,11 @@
+func is_leap(number year) return (year % 400 = 0) or ((year % 4 = 0) and (year % 100 != 0))
+
+func main() begin
+    number year <- readNumber()
+    
+    writeNumber(year)
+    if (is_leap(year))
+        writeString(" is a leap year\n")
+    else
+        writeString(" is not a leap year\n")
+end

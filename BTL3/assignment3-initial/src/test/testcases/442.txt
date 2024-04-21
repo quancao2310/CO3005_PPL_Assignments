@@ -1,0 +1,16 @@
+func main()
+begin
+    dynamic a
+    dynamic b
+    dynamic c
+    dynamic d
+    dynamic e
+    dynamic f
+    
+    number x[3, 3] <- [a, b, c]
+    a <- [1, 2, 3]
+    b <- [4, 5, 6]
+    c <- [7, 8, 9]
+    
+    writeNumber(a[d] + b[e] + c[f] + x[d, e])
+end

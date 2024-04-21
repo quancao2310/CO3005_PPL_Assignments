@@ -1,0 +1,27 @@
+func binary_search(number arr[20], number length, number element)
+begin
+    var left <- 0
+    var right <- length - 1
+    number mid
+    var _ <- 0
+    for _ until left > right by 0 begin
+        mid <- (left + right) / 2
+        if (element = arr[mid]) return mid
+        elif (element > arr[mid]) left <- mid + 1
+        else right <- mid - 1
+    end
+    return -1
+end
+
+func main() begin
+    dynamic arr <- [11, 22, 33, 44, 55, 66, 77, 88, 99, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200]
+    number x <- readNumber()
+    var pos <- binary_search(arr, 20, x)
+    
+    if (pos = -1) writeString("Not found")
+    else begin
+        writeString("Found at position ")
+        writeNumber(pos)
+        writeString("\n")
+    end
+end

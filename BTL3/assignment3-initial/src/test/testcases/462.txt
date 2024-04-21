@@ -1,0 +1,3 @@
+func main() begin
+    var x <- (x >= readNumber()) or ("a" == "b")
+end

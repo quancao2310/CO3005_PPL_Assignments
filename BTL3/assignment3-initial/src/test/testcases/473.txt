@@ -1,0 +1,7 @@
+func foo(number a, bool b) begin
+    writeBool((a > 0) and b)
+end
+func main() begin
+    dynamic z
+    foo(z, "false")
+end

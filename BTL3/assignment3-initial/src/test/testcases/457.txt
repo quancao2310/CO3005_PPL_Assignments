@@ -1,0 +1,7 @@
+dynamic a
+dynamic b
+dynamic c
+
+func main() begin
+    var x <- [a, b, c]
+end

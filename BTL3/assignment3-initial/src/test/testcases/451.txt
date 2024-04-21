@@ -1,0 +1,7 @@
+func foo(number a[1, 1, 2]) begin
+    var z <- a[0, 0, 0]
+end
+func main() begin
+    dynamic z
+    number x <- foo([[z]])
+end

@@ -1,0 +1,13 @@
+dynamic x
+
+func foo(number n) begin
+    for n until true by 1 begin
+        dynamic x <- n / 2
+        if (x % 2 = 0) break
+    end
+    return x
+end
+
+func main() begin
+    number x <- foo(10)
+end

@@ -1,0 +1,4 @@
+func foo(number a, bool b, string b) return
+
+func main() begin
+end

@@ -1,0 +1,6 @@
+func foo(number a, bool b, string z) begin
+    writeBool((a > 0) and b and (z == "true"))
+end
+func main() begin
+    foo(98765, true)
+end

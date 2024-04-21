@@ -1,0 +1,5 @@
+func foo(number a, bool b, string c) return
+func bar(number num) return num/2
+
+func main() begin
+end

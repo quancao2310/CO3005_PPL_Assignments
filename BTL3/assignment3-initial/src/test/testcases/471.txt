@@ -1,0 +1,10 @@
+dynamic res
+func foo(string s)
+func main() begin
+    var x <- foo("ABC") * 20
+end
+
+func foo(string s) begin
+    if (res) return 100
+    return res
+end

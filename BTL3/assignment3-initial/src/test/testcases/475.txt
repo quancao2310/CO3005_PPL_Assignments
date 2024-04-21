@@ -1,0 +1,4 @@
+func bar()
+func main() begin
+    bar()
+end

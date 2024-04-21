@@ -1,0 +1,6 @@
+func main() begin
+    if (true) number a <- 1
+    a <- 2
+    for a until (true) by -1 string s <- "abc"
+    s <- "def"
+end

@@ -1,0 +1,6 @@
+func main() begin
+    number i
+    for i until true by 1
+        number x
+    number x
+end

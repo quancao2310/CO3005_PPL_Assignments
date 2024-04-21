@@ -1,0 +1,4 @@
+func main() begin
+    number arr[2]
+    arr <- [1, 2, 3, 4]
+end

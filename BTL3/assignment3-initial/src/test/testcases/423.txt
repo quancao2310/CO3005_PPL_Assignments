@@ -1,0 +1,7 @@
+func foo(number x, bool y) begin
+    string x <- "str"
+    bool y <- true
+end
+
+func main() begin
+end

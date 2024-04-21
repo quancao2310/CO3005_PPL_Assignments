@@ -1,0 +1,5 @@
+func foo() return 1
+func main() begin
+    number foo <- foo()
+    number bar <- foo + 1 + foo()
+end

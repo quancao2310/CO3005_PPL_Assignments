@@ -1,0 +1,12 @@
+func main() begin
+    number i
+    number j
+    
+    for i until i > 10 by 1 begin
+        if (i = 5) continue
+        for j until j > 10 by 1 begin
+            if (i + j = 10) break
+        end
+        if (i = 9) break
+    end
+end

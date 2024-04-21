@@ -1,0 +1,9 @@
+func foo() begin
+    number a
+end
+
+func main() begin
+    foo()
+end
+
+func foo() return

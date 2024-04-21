@@ -1,0 +1,4 @@
+number foo <- 1
+func main() begin
+    number x <- foo()
+end

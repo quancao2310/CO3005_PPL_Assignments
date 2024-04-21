@@ -1,0 +1,4 @@
+func main() begin
+    string x[2, 3, 5]
+    var y <- x[1, 2, "3"]
+end

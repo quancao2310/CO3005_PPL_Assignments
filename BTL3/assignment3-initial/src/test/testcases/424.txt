@@ -1,0 +1,7 @@
+func foo() return
+func bar(number foo, number bar, string main) begin
+    foo()
+    number x <- bar
+end
+
+func main() return

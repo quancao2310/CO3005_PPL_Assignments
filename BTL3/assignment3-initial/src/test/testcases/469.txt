@@ -1,0 +1,8 @@
+func bar()
+func main() begin
+    bar()
+end
+
+func bar() begin
+    return readBool()
+end

@@ -1,0 +1,8 @@
+func main() begin
+    number a
+    string b
+    begin
+        number c
+        string c <- "Redeclared"
+    end
+end

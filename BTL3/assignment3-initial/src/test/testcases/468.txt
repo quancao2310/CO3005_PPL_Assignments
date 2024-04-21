@@ -1,0 +1,6 @@
+func main() begin
+    number j <- 0
+    number i
+    for j until j > 10 by i = 1 begin
+    end
+end

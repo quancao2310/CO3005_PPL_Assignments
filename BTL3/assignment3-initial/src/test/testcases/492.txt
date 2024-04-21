@@ -1,0 +1,15 @@
+func max(number a[10], number length)
+begin
+    if (length <= 0)
+        return -1e9 ## Represent negative infinity
+    var max <- a[0]
+    var i <- 0
+    for i until i >= length by 1
+        if (a[i] > max) max <- a[i]
+    return max
+end
+
+func main() begin
+    writeNumber(max([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 10))
+    writeNumber(max([2, 0, 2, 4, 0, 0, 0, 0, 0, 0], 10))
+end

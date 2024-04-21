@@ -1,0 +1,9 @@
+func main() begin
+    number x
+    bool y
+    begin
+        dynamic x
+        if (x) number y <- 1
+        elif (y) return
+    end
+end

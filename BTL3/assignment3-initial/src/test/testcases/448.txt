@@ -1,0 +1,9 @@
+func main() begin
+    dynamic x
+    var t <- true
+    x <- "3.456"
+    begin
+        string z
+        z <- t ... x
+    end
+end

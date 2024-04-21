@@ -1,0 +1,6 @@
+func main() begin
+    number a
+    string b
+    number c
+    dynamic c
+end

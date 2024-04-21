@@ -1,0 +1,7 @@
+func foo()
+func main() begin
+    number a
+    bool b <- foo() = 2.5
+end
+
+func foo() return 1.5

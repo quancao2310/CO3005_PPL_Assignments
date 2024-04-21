@@ -40,15 +40,19 @@ class StaticChecker(BaseVisitor, Utils):
     def check(self):
         return self.ast.accept(self, StaticChecker.builtin_env)
     
-    def inferSymbol(self, name: str, typ: Type, env: List[List[Symbol]], symType = Symbol) -> Type:
+    def infer_symbol(self, name: str, typ: Type, env: List[List[Symbol]], symType = Symbol) -> Type:
         for symbol_list in env:
-            for symbol in symbol_list:
-                if type(symbol) is symType and symbol.name == name:
-                    symbol.typ = typ
-                    return typ
+            symbol = self.lookup(
+                name,
+                filter(lambda symbol: type(symbol) is symType, symbol_list),
+                lambda symbol: symbol.name
+            )
+            if symbol:
+                symbol.typ = typ
+                return typ
         return Unknown()
     
-    def inferArray(self, ast: ArrayLiteral, typ: ArrayType, env: List[List[Symbol]]):
+    def infer_array(self, ast: ArrayLiteral, typ: ArrayType, env: List[List[Symbol]]):
         eleType = typ.eleType if len(typ.size) == 1 else ArrayType(typ.size[1:], typ.eleType)
         
         for expr in ast.value:
@@ -58,18 +62,16 @@ class StaticChecker(BaseVisitor, Utils):
     
     def infer(self, expr: Expr, typ: Type, env: List[List[Symbol]], error: StaticError):
         if type(expr) is Id:
-            self.inferSymbol(expr.name, typ, env, VarSymbol)
+            self.infer_symbol(expr.name, typ, env, VarSymbol)
         elif type(expr) is CallExpr:
-            self.inferSymbol(expr.name.name, typ, env, FuncSymbol)
+            self.infer_symbol(expr.name.name, typ, env, FuncSymbol)
         elif type(expr) is ArrayLiteral:
             if type(typ) is ArrayType and self.isCompatibleArrayType(expr.accept(self, env), typ):
-                self.inferArray(expr, typ, env)
+                self.infer_array(expr, typ, env)
             else:
                 raise error if error else StaticError()
         elif type(expr) is ArrayCell:
             self.infer(expr.arr, ArrayType([0 for _ in range(len(expr.idx))], typ), env, error)
-        else:
-            print("This cannot be happening!!!")
         return typ
     
     def isCompatibleArrayType(self, arr_typ1: ArrayType, arr_typ2: ArrayType):
@@ -125,9 +127,13 @@ class StaticChecker(BaseVisitor, Utils):
     
     def visitVarDecl(self, ast: VarDecl, o: List[List[Symbol]]):
         # Check variable redeclaration (same scope)
-        for symbol in o[0]:
-            if type(symbol) is VarSymbol and symbol.name == ast.name.name:
-                raise Redeclared(Variable(), ast.name.name)
+        var_symbol = self.lookup(
+            ast.name.name,
+            filter(lambda symbol: type(symbol) is VarSymbol, o[0]),
+            lambda symbol: symbol.name
+        )
+        if var_symbol:
+            raise Redeclared(Variable(), ast.name.name)
         
         # Create symbol and add to the environment
         var_symbol = VarSymbol(ast.name.name, ast.varType if ast.varType else Unknown())
@@ -158,17 +164,18 @@ class StaticChecker(BaseVisitor, Utils):
     def visitFuncDecl(self, ast: FuncDecl, o: List[List[Symbol]]):
         # Check function redeclaration (in global scope - the only place to declare functions)
         # If function was not defined/implemented yet, just get its symbol
-        func_symbol = None
-        for symbol in o[-1]:
-            if type(symbol) is FuncSymbol and symbol.name == ast.name.name:
-                err = Redeclared(Function(), ast.name.name)
-                if symbol.defined or not ast.body or len(symbol.param_list) != len(ast.param):
-                    raise err
-                for i in range(len(symbol.param_list)):
-                    if not self.isSameType(symbol.param_list[i].typ, ast.param[i].varType):
-                        raise err
-                func_symbol = symbol
-                break
+        func_symbol = self.lookup(
+            ast.name.name,
+            filter(lambda symbol: type(symbol) is FuncSymbol, o[-1]),
+            lambda symbol: symbol.name
+        )
+        if func_symbol:
+            error = Redeclared(Function(), ast.name.name)
+            if func_symbol.defined or not ast.body or len(func_symbol.param_list) != len(ast.param):
+                raise error
+            for i in range(len(func_symbol.param_list)):
+                if not self.isSameType(func_symbol.param_list[i].typ, ast.param[i].varType):
+                    raise error
         
         # If the AST does not have a body (no implementation part),
         # create a symbol and return
@@ -247,7 +254,7 @@ class StaticChecker(BaseVisitor, Utils):
             raise TypeCannotBeInferred(ast)
         
         if type(left_t) is Unknown:
-            left_t = self.inferSymbol(ast.lhs.name, right_t, o, VarSymbol)
+            left_t = self.infer_symbol(ast.lhs.name, right_t, o, VarSymbol)
         
         if self.isUnknown(right_t):
             right_t = self.infer(ast.rhs, left_t, o, TypeCannotBeInferred(ast))
@@ -257,24 +264,29 @@ class StaticChecker(BaseVisitor, Utils):
         
         return o
     
-    def visitIf(self, ast: If, o: List[List[Symbol]]):
-        # Check type of conditional expressions
-        expr_list = [ast.expr] + [expr for expr, _ in ast.elifStmt]
-        for expr in expr_list:
+    def visitIf(self, ast: If, o: List[List[Symbol]]) -> List[List[Symbol]]:
+        expr_stmt_list = [(ast.expr, ast.thenStmt)] + ast.elifStmt
+        ret_env = o
+        
+        for expr, stmt in expr_stmt_list:
+            # Check/Infer type of the conditional expression
             try:
-                expr_t = expr.accept(self, o)
+                expr_t = expr.accept(self, ret_env)
             except TypeCannotBeInferred:
                 raise TypeCannotBeInferred(ast)
             
             if type(expr_t) is Unknown:
-                expr_t = self.infer(expr, BoolType(), o, None)
+                expr_t = self.infer(expr, BoolType(), ret_env, None)
             
             if type(expr_t) is not BoolType:
                 raise TypeMismatchInStatement(ast)
+            
+            # Check the corresponding statement
+            ret_env = stmt.accept(self, ret_env)
         
-        # Check all statements
-        stmt_list = [ast.thenStmt] + [stmt for _, stmt in ast.elifStmt] + ([ast.elseStmt] if ast.elseStmt else [])
-        ret_env = reduce(lambda prev, curr: curr.accept(self, prev), stmt_list, o)
+        # Check the else-statement if exists
+        if ast.elseStmt:
+            ret_env = ast.elseStmt.accept(self, ret_env)
         
         return ret_env
     
@@ -285,7 +297,7 @@ class StaticChecker(BaseVisitor, Utils):
         except TypeCannotBeInferred:
             raise TypeCannotBeInferred(ast)
         if type(id_t) is Unknown:
-            id_t = self.inferSymbol(ast.name.name, NumberType(), o, VarSymbol)
+            id_t = self.infer_symbol(ast.name.name, NumberType(), o, VarSymbol)
         if type(id_t) is not NumberType:
             raise TypeMismatchInStatement(ast)
         
@@ -319,25 +331,22 @@ class StaticChecker(BaseVisitor, Utils):
     
     def visitBreak(self, ast: Break, o: List[List[Symbol]]):
         for symbol_list in o:
-            for symbol in symbol_list:
-                if symbol.name == "<loop>":
-                    return o
+            if self.lookup("<loop>", symbol_list, lambda symbol: symbol.name):
+                return o
         raise MustInLoop(ast)
     
     def visitContinue(self, ast: Continue, o: List[List[Symbol]]):
         for symbol_list in o:
-            for symbol in symbol_list:
-                if symbol.name == "<loop>":
-                    return o
+            if self.lookup("<loop>", symbol_list, lambda symbol: symbol.name):
+                return o
         raise MustInLoop(ast)
     
     def visitCallStmt(self, ast: CallStmt, o: List[List[Symbol]]):
-        func_symbol = None
-        for symbol in o[-1]: # All functions are in global scope
-            if type(symbol) is FuncSymbol and symbol.name == ast.name.name:
-                func_symbol = symbol
-                break
-        
+        func_symbol = self.lookup(
+            ast.name.name,
+            filter(lambda symbol: type(symbol) is FuncSymbol, o[-1]),
+            lambda symbol: symbol.name
+        )
         if not func_symbol:
             raise Undeclared(Function(), ast.name.name)
         
@@ -426,12 +435,11 @@ class StaticChecker(BaseVisitor, Utils):
             return infer_type()
     
     def visitCallExpr(self, ast: CallExpr, o: List[List[Symbol]]):
-        func_symbol = None
-        for symbol in o[-1]: # All functions are in global scope
-            if type(symbol) is FuncSymbol and symbol.name == ast.name.name:
-                func_symbol = symbol
-                break
-        
+        func_symbol = self.lookup(
+            ast.name.name,
+            filter(lambda symbol: type(symbol) is FuncSymbol, o[-1]),
+            lambda symbol: symbol.name
+        )
         if not func_symbol:
             raise Undeclared(Function(), ast.name.name)
         
@@ -453,11 +461,15 @@ class StaticChecker(BaseVisitor, Utils):
         
         return func_symbol.typ
     
-    def visitId(self, ast: Id, o: List[List[Symbol]]):
+    def visitId(self, ast: Id, o: List[List[Symbol]]) -> Type:
         for symbol_list in o:
-            for symbol in symbol_list:
-                if type(symbol) is VarSymbol and symbol.name == ast.name:
-                    return symbol.typ
+            symbol = self.lookup(
+                ast.name,
+                filter(lambda symbol: type(symbol) is VarSymbol, symbol_list),
+                lambda symbol: symbol.name
+            )
+            if symbol:
+                return symbol.typ
         raise Undeclared(Identifier(), ast.name)
     
     def visitArrayCell(self, ast: ArrayCell, o: List[List[Symbol]]) -> Type:

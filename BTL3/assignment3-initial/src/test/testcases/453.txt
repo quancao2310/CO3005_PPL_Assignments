@@ -1,0 +1,7 @@
+func foo(number a, bool b, string z) begin
+    return (a > 0) and b
+end
+func main() begin
+    dynamic z
+    bool x <- foo(z, false)
+end

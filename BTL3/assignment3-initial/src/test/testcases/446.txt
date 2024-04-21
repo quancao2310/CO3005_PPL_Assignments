@@ -1,0 +1,12 @@
+func main() begin
+    dynamic x
+    dynamic t
+    x <- 3.456
+    begin
+        begin
+            dynamic z
+            t <- true
+            z <- t - x
+        end
+    end
+end

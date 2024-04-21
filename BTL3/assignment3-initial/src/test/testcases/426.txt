@@ -1,0 +1,6 @@
+func main() begin
+    begin
+        number a <- 123
+    end
+    a <- 456
+end

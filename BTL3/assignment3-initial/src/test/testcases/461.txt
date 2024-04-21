@@ -1,0 +1,8 @@
+func main() begin
+    dynamic x
+    dynamic y
+    dynamic z
+    string a[3] <- [x, y, z]
+    number b
+    b <- x
+end

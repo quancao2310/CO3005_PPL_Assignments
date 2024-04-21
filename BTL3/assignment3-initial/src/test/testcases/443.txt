@@ -1,0 +1,17 @@
+func main() begin
+    dynamic x
+    dynamic y
+    dynamic z
+    dynamic t
+    dynamic u
+    dynamic v
+    number w[3, 2, 4, 2] <- [x, [y, z], [[t, t, t, t], [t, t, [100, 200], [u[0, 1], u[1, 2]]]]]
+    
+    dynamic a
+    dynamic b
+    dynamic c
+    var d <- 1
+    a <- [[[b]], [[[c, d]]]] ## a: ArrayType([2, 1, 1, 2])
+    b <- [2024, 10 / 10]
+    a <- [[[[1, 2]]], [[[3, 4]]]]
+end

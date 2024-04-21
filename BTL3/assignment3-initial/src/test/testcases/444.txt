@@ -1,0 +1,4 @@
+func main() begin
+    string a
+    bool b <- -a
+end

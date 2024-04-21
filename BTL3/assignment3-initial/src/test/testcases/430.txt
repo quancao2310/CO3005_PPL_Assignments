@@ -1,0 +1,3 @@
+func main() begin
+    number x <- foo()
+end

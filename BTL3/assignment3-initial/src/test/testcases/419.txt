@@ -1,0 +1,7 @@
+func foo(number a)
+
+func main() begin
+    number b <- foo(4)
+end
+
+func foo(number num) return num/2

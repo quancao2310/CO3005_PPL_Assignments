@@ -1,0 +1,5 @@
+func main() begin
+    string i
+    for i until "a" == "a" by 1 begin
+    end
+end

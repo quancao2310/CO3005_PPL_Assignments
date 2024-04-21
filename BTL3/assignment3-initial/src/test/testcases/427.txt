@@ -1,0 +1,5 @@
+func foo() return
+
+func main() begin
+    foo <- "Undeclared"
+end

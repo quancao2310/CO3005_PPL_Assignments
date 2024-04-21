@@ -1,0 +1,14 @@
+func foo() return 1
+
+func main() begin
+    number a <- -1 + 2 * 3 / 4 % 5 - 6
+    bool b <- true and false or not true
+    string c <- "Hello"..."World"
+    bool d <- (1 < 2) and (3 <= 4) and (5 > 6) and (7 >= 8) and (9 = 10) and (11 != 12) and ("ZCode" == "ZCode")
+    
+    number x[10] <- [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    number y <- x[0] + foo()
+    
+    string s[2, 3] <- [["1", "2", "3"], ["4", "5", "6"]]
+    var ss <- s[0, 0]
+end

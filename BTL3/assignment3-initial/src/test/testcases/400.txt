@@ -1,2 +1,13 @@
-number a
-        
+number a <- 1
+bool b <- true
+string c <- "Hello"
+number d
+
+func main() begin
+    number a <- 2
+    bool b <- false
+    begin
+        string c <- "World"
+        d <- 3
+    end
+end

@@ -1,0 +1,9 @@
+func fact(number n) begin
+    if (n = 1) return 1
+    return n * fact(n - 1)
+end
+
+func main() begin
+    number n <- readNumber()
+    writeNumber(fact(n))
+end

@@ -1,0 +1,31 @@
+func swap(number arr[10], number i, number j)
+
+func bubble_sort(number arr[10]) begin
+    var i <- 1
+    bool changed
+    for i until i = 10 by 1 begin
+        var j <- 9
+        changed <- false
+        for j until j < i by -1
+            if (arr[j] < arr[j - 1]) begin
+                swap(arr, j, j - 1)
+                changed <- true
+            end
+        if (not changed) break
+    end
+end
+
+func swap(number arr[10], number i, number j) begin
+    var tmp <- arr[i]
+    arr[i] <- arr[j]
+    arr[j] <- tmp
+end
+
+func main() begin
+    var arr <- [10.64, 11.26, 19.81, 30.66, 25.18, 54.68, 49.18, 54.36, 99.75, 12.82]
+    bubble_sort(arr)
+    
+    var i <- 0
+    for i until i = 10 by 1
+        writeNumber(arr[i])
+end

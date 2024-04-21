@@ -1,0 +1,4 @@
+func bar(string s)
+func main() begin
+    number z <- bar("Hola'"")
+end
