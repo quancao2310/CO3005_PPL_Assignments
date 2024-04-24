@@ -76,13 +76,10 @@ class StaticChecker(BaseVisitor, Utils):
     
     def isCompatibleArrayType(self, arr_typ1: ArrayType, arr_typ2: ArrayType):
         """
-        Check if the first array type is compatible with the second one.
-        The latter must be fixed, that is, its eleType is already known.
-        Its size should also be greater than the former's.
+        Check if the first array type is compatible with the second one,
+        so that it can be inferred to the latter.
         """
         if len(arr_typ1.size) > len(arr_typ2.size):
-            return False
-        if type(arr_typ2.eleType) is Unknown:
             return False
         if type(arr_typ1.eleType) not in [Unknown, type(arr_typ2.eleType)]:
             return False
@@ -275,8 +272,8 @@ class StaticChecker(BaseVisitor, Utils):
             except TypeCannotBeInferred:
                 raise TypeCannotBeInferred(ast)
             
-            if type(expr_t) is Unknown:
-                expr_t = self.infer(expr, BoolType(), ret_env, None)
+            if self.isUnknown(expr_t):
+                expr_t = self.infer(expr, BoolType(), ret_env, TypeCannotBeInferred(ast))
             
             if type(expr_t) is not BoolType:
                 raise TypeMismatchInStatement(ast)
@@ -306,8 +303,8 @@ class StaticChecker(BaseVisitor, Utils):
             cond_t = ast.condExpr.accept(self, o)
         except TypeCannotBeInferred:
             raise TypeCannotBeInferred(ast)
-        if type(cond_t) is Unknown:
-            cond_t = self.infer(ast.condExpr, BoolType(), o, None)
+        if self.isUnknown(cond_t):
+            cond_t = self.infer(ast.condExpr, BoolType(), o, TypeCannotBeInferred(ast))
         if type(cond_t) is not BoolType:
             raise TypeMismatchInStatement(ast)
         
@@ -316,8 +313,8 @@ class StaticChecker(BaseVisitor, Utils):
             upd_t = ast.updExpr.accept(self, o)
         except TypeCannotBeInferred:
             raise TypeCannotBeInferred(ast)
-        if type(upd_t) is Unknown:
-            upd_t = self.infer(ast.updExpr, NumberType(), o, None)
+        if self.isUnknown(upd_t):
+            upd_t = self.infer(ast.updExpr, NumberType(), o, TypeCannotBeInferred(ast))
         if type(upd_t) is not NumberType:
             raise TypeMismatchInStatement(ast)
         
@@ -382,15 +379,15 @@ class StaticChecker(BaseVisitor, Utils):
             
             # Check/Infer type of left operand
             left_t = ast.left.accept(self, o)
-            if type(left_t) is Unknown:
-                left_t = self.infer(ast.left, infer_type(), o, None)
+            if self.isUnknown(left_t):
+                left_t = self.infer(ast.left, infer_type(), o, TypeCannotBeInferred(ast))
             if type(left_t) is not infer_type:
                 raise TypeMismatchInExpression(ast)
             
             # Check/Infer type of right operand
             right_t = ast.right.accept(self, o)
-            if type(right_t) is Unknown:
-                right_t = self.infer(ast.right, infer_type(), o, None)
+            if self.isUnknown(right_t):
+                right_t = self.infer(ast.right, infer_type(), o, TypeCannotBeInferred(ast))
             if type(right_t) is not infer_type:
                 raise TypeMismatchInExpression(ast)
             
@@ -404,15 +401,15 @@ class StaticChecker(BaseVisitor, Utils):
             
             # Check/Infer type of left operand
             left_t = ast.left.accept(self, o)
-            if type(left_t) is Unknown:
-                left_t = self.infer(ast.left, infer_type(), o, None)
+            if self.isUnknown(left_t):
+                left_t = self.infer(ast.left, infer_type(), o, TypeCannotBeInferred(ast))
             if type(left_t) is not infer_type:
                 raise TypeMismatchInExpression(ast)
             
             # Check/Infer type of right operand
             right_t = ast.right.accept(self, o)
-            if type(right_t) is Unknown:
-                right_t = self.infer(ast.right, infer_type(), o, None)
+            if self.isUnknown(right_t):
+                right_t = self.infer(ast.right, infer_type(), o, TypeCannotBeInferred(ast))
             if type(right_t) is not infer_type:
                 raise TypeMismatchInExpression(ast)
             
@@ -427,8 +424,8 @@ class StaticChecker(BaseVisitor, Utils):
             
             # Check/Infer type of operand
             expr_t = ast.operand.accept(self, o)
-            if type(expr_t) is Unknown:
-                expr_t = self.infer(ast.operand, infer_type(), o, None)
+            if self.isUnknown(expr_t):
+                expr_t = self.infer(ast.operand, infer_type(), o, TypeCannotBeInferred(ast))
             if type(expr_t) is not infer_type:
                 raise TypeMismatchInExpression(ast)
             
@@ -512,7 +509,7 @@ class StaticChecker(BaseVisitor, Utils):
         for i in range(length):
             ele_t = ast.value[i].accept(self, o)
             
-            if self.isUnknown(ele_t) and not self.isUnknown(common_t):
+            if self.isUnknown(ele_t):
                 ele_t = self.infer(ast.value[i], common_t, o, TypeMismatchInExpression(ast))
             
             if not self.isSameType(ele_t, common_t):

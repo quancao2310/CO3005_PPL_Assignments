@@ -451,7 +451,6 @@ end
     
     def test_437(self):
         # Type Mismatch In Expression: Array Literal: Type inference 1
-        # https://lms.hcmut.edu.vn/mod/forum/discuss.php?d=11332
         input = """dynamic x
 func main() begin
     number a[2, 2] <- [x, [x, x]]
@@ -542,6 +541,10 @@ end
     a <- [[[b]], [[[c, d]]]] ## a: ArrayType([2, 1, 1, 2])
     b <- [2024, 10 / 10]
     a <- [[[[1, 2]]], [[[3, 4]]]]
+    
+    dynamic e
+    dynamic f
+    number g[2, 2] <- [[e, e], f]
 end
 """
         expect = ""
@@ -739,8 +742,7 @@ end
         self.assertTrue(TestChecker.test(input, expect, 457))
     
     def test_458(self):
-        # Type Cannot Be Inferred: Array Literal 2
-        # https://lms.hcmut.edu.vn/mod/forum/discuss.php?d=10964
+        # Type Cannot Be Inferred: Array Literal 2 (Forum said so...)
         input = """dynamic a
 dynamic b
 dynamic c

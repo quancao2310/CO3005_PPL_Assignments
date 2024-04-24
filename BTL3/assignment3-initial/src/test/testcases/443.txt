@@ -14,4 +14,8 @@ func main() begin
     a <- [[[b]], [[[c, d]]]] ## a: ArrayType([2, 1, 1, 2])
     b <- [2024, 10 / 10]
     a <- [[[[1, 2]]], [[[3, 4]]]]
+    
+    dynamic e
+    dynamic f
+    number g[2, 2] <- [[e, e], f]
 end
