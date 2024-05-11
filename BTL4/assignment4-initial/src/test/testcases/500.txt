@@ -1,12 +1,24 @@
-number a <- 5
-        string b <- "hello"
-        bool c <- true
-        dynamic d <- a
-        dynamic e
-        func main()
-        begin
-            e <- d
-            writeNumber(e)
-            return
-        end
+number a <- 16
+string b <- "hello"
+bool c <- true
+dynamic d <- a
+dynamic e
+
+func foo(bool g, string a, number b) begin
+    bool f
+    dynamic e
+    return d
+end
+
+func main()
+begin
+    begin
+        number b
+        number c
+    end
+    e <- d
+    number g <- e
+    writeNumber(g)
+    return
+end
         

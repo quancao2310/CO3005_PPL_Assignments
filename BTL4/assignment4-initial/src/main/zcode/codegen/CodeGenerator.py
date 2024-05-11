@@ -43,15 +43,13 @@ class CName(Val):
 
 # Symbol class
 class Symbol:
-    def __init__(self, name: str, mtype: Type, value: Val, startLabel = None, endLabel = None, defined = True):
+    def __init__(self, name: str, mtype: Type, value: Val, defined = True):
         self.name = name
         self.mtype = mtype
         self.value = value
-        self.startLabel = startLabel
-        self.endLabel = endLabel
         self.defined = defined
     def __str__(self):
-        return f"Symbol({self.name}, {str(self.mtype)}, {str(self.value)}, {self.startLabel}, {self.endLabel}, {self.defined})"
+        return f"Symbol({self.name}, {str(self.mtype)}, {str(self.value)}, {self.defined})"
 
 class Access():
     def __init__(self, frame: Frame, sym: List[Symbol], isLeft: bool, isFirst = False):
@@ -113,14 +111,14 @@ class CodeGenVisitor(BaseVisitor):
         elif type(expr) is ArrayCell:
             self.infer(expr.arr, ArrayType([0 for _ in range(len(expr.idx))], typ), env)
     
-    def emit_var_after_inference(self, symbol: Symbol, frame: Frame) -> str:
-        if type(symbol.value) is Index:
-            return self.emit.emitVAR(symbol.value.value, symbol.name, symbol.mtype, symbol.startLabel, symbol.endLabel, frame)
-        else:
-            return self.emit.emitATTRIBUTE(symbol.name, symbol.mtype, False)
+    # def emit_var_after_inference(self, symbol: Symbol, frame: Frame) -> str:
+    #     if type(symbol.value) is Index:
+    #         return self.emit.emitVAR(symbol.value.value, symbol.name, symbol.mtype, symbol.startLabel, symbol.endLabel, frame)
+    #     else:
+    #         return self.emit.emitATTRIBUTE(symbol.name, symbol.mtype, False)
     
     def isUnknown(self, ast: Type):
-        return (type(ast) is Unknown) or (type(ast) is ArrayType and type(ast.eleType) is Unknown) or (type(ast) is MType and type(ast.rettype) is Unknown)
+        return (type(ast) is Unknown) or (type(ast) is ArrayType and type(ast.eleType) is Unknown)
     
     def get_default_value(self, typ: Type):
         if type(typ) is NumberType:
@@ -133,25 +131,21 @@ class CodeGenVisitor(BaseVisitor):
             return self.get_default_array(typ.size, typ.eleType)
     
     def get_default_array(self, dimensions: List[float], eleType: Type):
-        if len(dimensions) == 1:
-            return ArrayLiteral([self.get_default_value(eleType) for _ in range(int(dimensions[0]))])
-        else:
-            return ArrayLiteral([self.get_default_array(dimensions[1:], eleType) for _ in range(int(dimensions[0]))])
+        ele = self.get_default_value(eleType) if len(dimensions) == 1 else self.get_default_array(dimensions[1:], eleType)
+        return ArrayLiteral([ele for _ in range(int(dimensions[0]))])
     
     def genMETHOD(self, funcdecl: FuncDecl, o: List[Symbol], frame: Frame):
         """
         Generate code as a method for the equivalent function declaration in ZCode.
         If the function has a declaration-only part, do not generate anything.
         """
-        func_symbol = next(filter(lambda sym: sym.name == funcdecl.name.name and type(sym.mtype) is MType, o), None)
+        func_symbol = next(filter(lambda sym: sym.name == funcdecl.name.name and type(sym.mtype) is MType, o))
         isClinit = funcdecl.name.name == "<clinit>"
         isInit = funcdecl.name.name == "<init>"
         isMain = funcdecl.name.name == "main"
         code = ""
         
-        if isInit or isClinit:
-            mtype = MType([], VoidType())
-        elif isMain:
+        if isMain:
             mtype = MType([ArrayType([0.0], StringType())], VoidType())
         else:
             mtype = func_symbol.mtype # MType, might have Unknown return type
@@ -160,7 +154,7 @@ class CodeGenVisitor(BaseVisitor):
         frame.enterScope(True)
         startLabel = frame.getStartLabel()
         endLabel = frame.getEndLabel()
-        local_subbody = SubBody(frame, [Symbol("!!!", None, None)] + o)
+        local_subbody = SubBody(frame, [Symbol("<func>", None, None)] + o)
         
         # Generate parameter declarations
         if isInit:
@@ -168,7 +162,8 @@ class CodeGenVisitor(BaseVisitor):
         elif isMain:
             code += self.emit.emitVAR(frame.getNewIndex(), "args", mtype.partype[0], startLabel, endLabel, frame)
         else:
-            local_subbody = reduce(lambda prev, curr: curr.accept(self, prev), funcdecl.param, local_subbody)
+            for param in funcdecl.param:
+                _, local_subbody = param.accept(self, local_subbody)
         
         code += self.emit.emitLABEL(startLabel, frame)
         
@@ -186,11 +181,11 @@ class CodeGenVisitor(BaseVisitor):
         # Let's call emitVAR and emitMETHOD
         if not any([isInit, isClinit, isMain]):
             for sym in local_subbody.sym:
-                if sym.name == "!!!":
+                if sym.name == "<func>":
                     break
                 if type(sym.mtype) is Unknown:
                     sym.mtype = NumberType() # Not used anyway so doesn't matter
-                code = self.emit_var_after_inference(sym, frame) + code
+                code = self.emit.emitVAR(sym.value.value, sym.name, sym.mtype, startLabel, endLabel, frame) + code
         
         if type(mtype.rettype) is Unknown:
             mtype.rettype = VoidType()
@@ -205,31 +200,31 @@ class CodeGenVisitor(BaseVisitor):
         self.className = "ZCodeClass"
         self.emit = Emitter(self.path + "/" + self.className + ".j")
         self.clinit = FuncDecl(Id("<clinit>"), [], Block([]))
-        self.init = FuncDecl(Id("<init>"), [], Block([]))
+        init = FuncDecl(Id("<init>"), [], Block([]))
         
-        o = SubBody(None, [])
+        # Visit all global variables first to get the symbols
+        global_subbody = SubBody(None, self.env)
         for decl in ast.decl:
             if type(decl) is VarDecl:
-                o = decl.accept(self, o)
-        static_vars = [sym for sym in o.sym]
-        o.sym += self.env
+                _, global_subbody = decl.accept(self, global_subbody)
         
-        # Generate static initializer (class constructor)
+        # Generate static initializer and default constructor
         self.clinit.body.stmt.append(Return())
-        self.genMETHOD(self.clinit, [Symbol("<clinit>", MType([], VoidType()), CName(self.className))] + o.sym, Frame("<clinit>", VoidType()))
-        
-        # Generate default constructor
-        self.genMETHOD(self.init, [], Frame("<init>", VoidType()))
+        self.genMETHOD(self.clinit, [Symbol("<clinit>", MType([], VoidType()), CName(self.className))] + global_subbody.sym, Frame("<clinit>", VoidType()))
+        self.genMETHOD(init, [Symbol("<init>", MType([], VoidType()), CName(self.className))], Frame("<init>", VoidType()))
         
         # Generate static methods for functions
         for decl in ast.decl:
             if type(decl) is FuncDecl:
-                o = decl.accept(self, o)
+                global_subbody = decl.accept(self, global_subbody)
         
-        # Generate static fields for global variables
+        # Generate static fields for global variables (after inference)
         code = ""
-        for var in static_vars:
-            code = self.emit.emitATTRIBUTE(var.name, var.mtype, False) + code
+        for var in global_subbody.sym:
+            if type(var.mtype) is not MType:
+                if type(var.mtype) is Unknown:
+                    var.mtype = NumberType()
+                code = self.emit.emitATTRIBUTE(var.name, var.mtype, False) + code
         self.emit.printout_prepend(code)
         self.emit.printout_prepend(self.emit.emitPROLOG(self.className, ""))
         self.emit.emitEPILOG()
@@ -237,31 +232,26 @@ class CodeGenVisitor(BaseVisitor):
     def visitVarDecl(self, ast: VarDecl, o: SubBody):
         var_symbol = Symbol(ast.name.name, ast.varType if ast.varType else Unknown(), None)
         ret_subbody = SubBody(o.frame, [var_symbol] + o.sym)
+        code = ""
         
         if o.frame:
             # Local variable
-            idx = o.frame.getNewIndex()
+            var_symbol.value = Index(o.frame.getNewIndex())
             var_symbol.startLabel = o.frame.getStartLabel()
             var_symbol.endLabel = o.frame.getEndLabel()
             if ast.varInit:
                 code = self.visit(Assign(ast.name, ast.varInit), ret_subbody)
-                self.emit.printout(code)
             elif ast.varType:
                 code = self.visit(Assign(ast.name, self.get_default_value(ast.varType)), ret_subbody)
-                self.emit.printout(code)
-            val = Index(idx)
         else:
             # Global variable
+            var_symbol.value = CName(self.className)
             if ast.varInit:
-                _, init_t = ast.varInit.accept(self, Access(Frame("", Unknown()), ret_subbody.sym, False))
-                var_symbol.mtype = init_t
                 self.clinit.body.stmt.append(Assign(ast.name, ast.varInit))
             elif ast.varType:
                 self.clinit.body.stmt.append(Assign(ast.name, self.get_default_value(ast.varType)))
-            val = CName(self.className)
         
-        var_symbol.value = val
-        return ret_subbody
+        return code, ret_subbody
     
     def visitFuncDecl(self, ast: FuncDecl, o: SubBody):
         # If the AST does not have a body (no implementation part), create a symbol and return
@@ -270,8 +260,6 @@ class CodeGenVisitor(BaseVisitor):
                 ast.name.name,
                 MType([param.varType for param in ast.param], Unknown()),
                 CName(self.className),
-                None,
-                None,
                 False,
             )
             return SubBody(None, [func_symbol] + o.sym)
@@ -297,18 +285,36 @@ class CodeGenVisitor(BaseVisitor):
         return ret_subbody
     
     def visitBlock(self, ast: Block, o: SubBody):
+        frame = o.frame
+        local_subbody = SubBody(frame, [Symbol("<block>", None, None)] + o.sym)
         code = ""
-        o.frame.enterScope(False)
+        frame.enterScope(False)
+        startLabel = frame.getStartLabel()
+        endLabel = frame.getEndLabel()
+        
+        code += self.emit.emitLABEL(startLabel, frame)
         for stmt in ast.stmt:
-            code += stmt.accept(self, o)
-        o.frame.exitScope()
+            if type(stmt) is VarDecl:
+                init_c, local_subbody = stmt.accept(self, local_subbody)
+                code += init_c
+            else:
+                code += stmt.accept(self, local_subbody)
+        code += self.emit.emitLABEL(endLabel, frame)
+        
+        for sym in local_subbody.sym:
+            if sym.name == "<block>":
+                break
+            if type(sym.mtype) is Unknown:
+                sym.mtype = NumberType() # Not used anyway so doesn't matter
+            code = self.emit.emitVAR(sym.value.value, sym.name, sym.mtype, startLabel, endLabel, frame) + code
+        frame.exitScope()
         return code
     
     def visitReturn(self, ast: Return, o: SubBody):
         func_symbol = next(filter(lambda sym: sym.name == o.frame.name and type(sym.mtype) is MType, o.sym))
         expr_c, expr_t = ast.expr.accept(self, Access(o.frame, o.sym, False)) if ast.expr else ("", VoidType())
         
-        if self.isUnknown(func_symbol.mtype):
+        if self.isUnknown(func_symbol.mtype.rettype):
             func_symbol.mtype.rettype = expr_t
         
         return expr_c + self.emit.emitRETURN(expr_t, o.frame)
@@ -350,7 +356,6 @@ class CodeGenVisitor(BaseVisitor):
         return
     
     def visitCallStmt(self, ast: CallStmt, o: SubBody):
-        # print([str(sym) for sym in o.sym])
         func_symbol = next(filter(lambda sym: sym.name == ast.name.name and type(sym.mtype) is MType, o.sym))
         if type(func_symbol.mtype.rettype) is Unknown:
             func_symbol.mtype.rettype = VoidType()
@@ -367,9 +372,6 @@ class CodeGenVisitor(BaseVisitor):
             
             code += arg_c
         code += self.emit.emitINVOKESTATIC(cname + "/" + ast.name.name, ctype, o.frame)
-        
-        # code = self.emit.emitGETSTATIC("ZCodeClass.e", NumberType(), o.frame)
-        # code += self.emit.emitINVOKESTATIC("io.writeNumber", MType([NumberType()], VoidType()), o.frame)
         return code
     
     def visitBinaryOp(self, ast: BinaryOp, o: Access):

@@ -10,17 +10,29 @@ class CheckCodeGenSuite(unittest.TestCase):
     * 5xx-599:
     """
     def test_number(self):
-        input = """number a <- 5
-        string b <- "hello"
-        bool c <- true
-        dynamic d <- a
-        dynamic e
-        func main()
-        begin
-            e <- d
-            writeNumber(e)
-            return
-        end
+        input = """number a <- 16
+string b <- "hello"
+bool c <- true
+dynamic d <- a
+dynamic e
+
+func foo(bool g, string a, number b) begin
+    bool f
+    dynamic e
+    return d
+end
+
+func main()
+begin
+    begin
+        number b
+        number c
+    end
+    e <- d
+    number g <- e
+    writeNumber(g)
+    return
+end
         """
-        expect = "5.0"
+        expect = "16.0"
         self.assertTrue(TestCodeGen.test(input, expect, 500))
