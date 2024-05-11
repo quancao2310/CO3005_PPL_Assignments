@@ -1,5 +1,12 @@
-func main()
+number a <- 5
+        string b <- "hello"
+        bool c <- true
+        dynamic d <- a
+        dynamic e
+        func main()
         begin
-            writeNumber(1)
+            e <- d
+            writeNumber(e)
+            return
         end
         

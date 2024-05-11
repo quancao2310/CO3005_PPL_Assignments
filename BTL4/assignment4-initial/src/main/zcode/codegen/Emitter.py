@@ -22,13 +22,13 @@ class Emitter():
         elif typeIn is VoidType:
             return "V"
         elif typeIn is ArrayType:
-            return "[" + self.getJVMType(inType.eleType)
+            return "[" * len(inType.size) + self.getJVMType(inType.eleType)
         elif typeIn is cgen.MType:
             return "(" + "".join(list(map(lambda x: self.getJVMType(x), inType.partype))) + ")" + self.getJVMType(inType.rettype)
         elif typeIn is cgen.ClassType:
             return "L" + inType.className + ";"
     
-    def getFullType(inType):
+    def getFullType(self, inType):
         typeIn = type(inType)
         
         if typeIn is NumberType:
@@ -46,8 +46,8 @@ class Emitter():
         # in: Int or String
         # frame: Frame
         
-        frame.push()
         if type(in_) is int:
+            frame.push()
             i = in_
             if i >= -1 and i <= 5:
                 return self.jvm.emitICONST(i)
@@ -71,9 +71,8 @@ class Emitter():
         
         f = float(in_)
         frame.push()
-        rst = "{0:.4f}".format(f)
-        if rst == "0.0000" or rst == "1.0000" or rst == "2.0000":
-            return self.jvm.emitFCONST(rst[:3])
+        if f == 0.0 or f == 1.0 or f == 2.0:
+            return self.jvm.emitFCONST(str(f))
         else:
             return self.jvm.emitLDC(in_)
     
@@ -95,6 +94,30 @@ class Emitter():
             return self.jvm.emitLDC(in_)
         else:
             raise IllegalOperandException(in_)
+    
+    ''' generate code to push an array reference onto the operand stack.
+    *   only generate array for the first dimension.
+    *   @param in the type of the array (dimensions and element type)
+    '''
+    def emitPUSHARRAY(self, in_: ArrayType, frame):
+        # in_: ArrayType([x], NumberType/BoolType) -> newarray
+        # in_: ArrayType([x], StringType) -> anewarray
+        # in_: ArrayType([x, y, z...], any) -> anewarray
+        result = list()
+        result.append(self.emitPUSHFCONST(str(in_.size[0]), frame))
+        result.append(self.jvm.emitF2I())
+        
+        if len(in_.size) > 1:
+            typ = self.getJVMType(in_.eleType)
+        else:
+            typ = self.getFullType(in_.eleType)
+        
+        frame.pop()
+        if len(in_.size) > 1 and type(in_.eleType) in [NumberType, BoolType]:
+            result.append(self.jvm.emitNEWARRAY(typ))
+        else:
+            result.append(self.jvm.emitANEWARRAY(typ))
+        return ''.join(result)
     
     ##############################################################
     
@@ -478,20 +501,6 @@ class Emitter():
         buffer.append(self.jvm.emitENDMETHOD())
         return ''.join(buffer)
     
-    def getConst(self, ast):
-        # ast: Literal
-        if type(ast) is NumberLiteral:
-            return (str(ast.value), NumberType())
-    
-    ''' generate code to initialize a local array variable.
-    *   @param index the index of the local variable.
-    *   @param in the type of the local array variable.
-    '''
-    def emitNEWARRAY(self, in_, frame):
-        # result = list()
-        # return ''.join(result)
-        pass
-    
     ''' generate code to initialize local array variables.
     *   @param in the list of symbol entries corresponding to local array variable.    
     '''
@@ -624,6 +633,10 @@ class Emitter():
     def printout(self, in_):
         # in_: String
         self.buff.append(in_)
+    
+    def printout_prepend(self, in_):
+        # in_: String
+        self.buff.insert(0, in_)
     
     def clearBuff(self):
         self.buff.clear()

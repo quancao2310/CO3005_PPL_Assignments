@@ -651,6 +651,9 @@ class JasminCode(MachineCode):
     def emitI2F(self):
         return JasminCode.INDENT + "i2f" + JasminCode.END
 
+    def emitF2I(self):
+        return JasminCode.INDENT + "f2i" + JasminCode.END
+
     def emitNEW(self, lexeme):
         # lexeme: String
         return JasminCode.INDENT + "new " + lexeme + JasminCode.END
