@@ -4,9 +4,6 @@ from Frame import Frame
 from abc import ABC
 from AST import *
 from Visitor import *
-from Utils import Utils
-
-from functools import reduce
 from typing import List
 
 # Additional types
@@ -111,12 +108,6 @@ class CodeGenVisitor(BaseVisitor):
         elif type(expr) is ArrayCell:
             self.infer(expr.arr, ArrayType([0 for _ in range(len(expr.idx))], typ), env)
     
-    # def emit_var_after_inference(self, symbol: Symbol, frame: Frame) -> str:
-    #     if type(symbol.value) is Index:
-    #         return self.emit.emitVAR(symbol.value.value, symbol.name, symbol.mtype, symbol.startLabel, symbol.endLabel, frame)
-    #     else:
-    #         return self.emit.emitATTRIBUTE(symbol.name, symbol.mtype, False)
-    
     def isUnknown(self, ast: Type):
         return (type(ast) is Unknown) or (type(ast) is ArrayType and type(ast.eleType) is Unknown)
     
@@ -143,14 +134,9 @@ class CodeGenVisitor(BaseVisitor):
         isClinit = funcdecl.name.name == "<clinit>"
         isInit = funcdecl.name.name == "<init>"
         isMain = funcdecl.name.name == "main"
+        mtype = MType([ArrayType([0.0], StringType())], VoidType()) if isMain else func_symbol.mtype # MType, might have Unknown return type
         code = ""
         
-        if isMain:
-            mtype = MType([ArrayType([0.0], StringType())], VoidType())
-        else:
-            mtype = func_symbol.mtype # MType, might have Unknown return type
-        
-        # Enter scope of function and generate parameter and body first
         frame.enterScope(True)
         startLabel = frame.getStartLabel()
         endLabel = frame.getEndLabel()
@@ -189,6 +175,7 @@ class CodeGenVisitor(BaseVisitor):
         
         if type(mtype.rettype) is Unknown:
             mtype.rettype = VoidType()
+        if type(mtype.rettype) is VoidType:
             code += self.emit.emitRETURN(VoidType(), frame)
         code = self.emit.emitMETHOD(funcdecl.name.name, mtype, not isInit, frame) + code
         code += self.emit.emitENDMETHOD(frame)
@@ -344,52 +331,159 @@ class CodeGenVisitor(BaseVisitor):
             return right_c + left_c
     
     def visitIf(self, ast: If, o: SubBody):
-        return
+        code = ""
+        expr_c, expr_t = ast.expr.accept(self, Access(o.frame, o.sym, False))
+        code += expr_c
+        exitLabel = o.frame.getNewLabel()
+        if len(ast.elifStmt) == 0:
+            if not ast.elseStmt:
+                code += self.emit.emitIFFALSE(exitLabel, o.frame)
+                code += ast.thenStmt.accept(self, o)
+            else:
+                elseLabel = o.frame.getNewLabel()
+                code += self.emit.emitIFFALSE(elseLabel, o.frame)
+                code += ast.thenStmt.accept(self, o)
+                code += self.emit.emitGOTO(exitLabel, o.frame)
+                code += self.emit.emitLABEL(elseLabel, o.frame)
+                code += ast.elseStmt.accept(self, o)
+        else:
+            length = len(ast.elifStmt)
+            elifLabel = o.frame.getNewLabel()
+            code += self.emit.emitIFFALSE(elifLabel, o.frame)
+            code += ast.thenStmt.accept(self, o)
+            code += self.emit.emitGOTO(exitLabel, o.frame)
+            if not ast.elseStmt:
+                for i in range(length):
+                    code += self.emit.emitLABEL(elifLabel, o.frame)
+                    expr, stmt = ast.elifStmt[i]
+                    expr_c, expr_t = expr.accept(self, Access(o.frame, o.sym, False))
+                    code += expr_c
+                    elifLabel = o.frame.getNewLabel()
+                    code += self.emit.emitIFFALSE(elifLabel if i != length - 1 else exitLabel, o.frame)
+                    code += stmt.accept(self, o)
+                    if i != length - 1:
+                        code += self.emit.emitGOTO(exitLabel, o.frame)
+            else:
+                elseLabel = o.frame.getNewLabel()
+                for i in range(length):
+                    code += self.emit.emitLABEL(elifLabel, o.frame)
+                    expr, stmt = ast.elifStmt[i]
+                    expr_c, expr_t = expr.accept(self, Access(o.frame, o.sym, False))
+                    code += expr_c
+                    elifLabel = o.frame.getNewLabel()
+                    code += self.emit.emitIFFALSE(elifLabel if i != length - 1 else elseLabel, o.frame)
+                    code += stmt.accept(self, o)
+                    code += self.emit.emitGOTO(exitLabel, o.frame)
+                code += self.emit.emitLABEL(elseLabel, o.frame)
+                code += ast.elseStmt.accept(self, o)
+        code += self.emit.emitLABEL(exitLabel, o.frame)
+        return code
     
     def visitFor(self, ast: For, o: SubBody):
-        return
+        # Store the initial value to reset it after the loop
+        id_c, id_t = ast.name.accept(self, Access(o.frame, o.sym, False))
+        code = id_c
+        
+        o.frame.enterLoop()
+        breakLabel = o.frame.getBreakLabel()
+        continueLabel = o.frame.getContinueLabel()
+        conditionLabel = o.frame.getNewLabel()
+        
+        code += self.emit.emitLABEL(conditionLabel, o.frame)
+        cond_c, cond_t = ast.condExpr.accept(self, Access(o.frame, o.sym, False))
+        code += cond_c
+        code += self.emit.emitIFTRUE(breakLabel, o.frame)
+        code += ast.body.accept(self, o)
+        code += self.emit.emitLABEL(continueLabel, o.frame)
+        code += self.visit(Assign(ast.name, BinaryOp('+', ast.name, ast.updExpr)), o)
+        code += self.emit.emitGOTO(conditionLabel, o.frame)
+        code += self.emit.emitLABEL(breakLabel, o.frame)
+        o.frame.exitLoop()
+        
+        # Reset the initial value
+        id_c, id_t = ast.name.accept(self, Access(o.frame, o.sym, True))
+        code += id_c
+        return code
     
     def visitBreak(self, ast: Break, o: SubBody):
-        return
+        return self.emit.emitGOTO(o.frame.getBreakLabel(), o.frame)
     
     def visitContinue(self, ast: Continue, o: SubBody):
-        return
+        return self.emit.emitGOTO(o.frame.getContinueLabel(), o.frame)
     
     def visitCallStmt(self, ast: CallStmt, o: SubBody):
         func_symbol = next(filter(lambda sym: sym.name == ast.name.name and type(sym.mtype) is MType, o.sym))
         if type(func_symbol.mtype.rettype) is Unknown:
             func_symbol.mtype.rettype = VoidType()
         cname = func_symbol.value.value
-        ctype = func_symbol.mtype
-        
+        ftype = func_symbol.mtype
         code = ""
+        
         for i in range(len(ast.args)):
             arg_c, arg_t = ast.args[i].accept(self, Access(o.frame, o.sym, False))
             param_t = func_symbol.mtype.partype[i]
             
             if self.isUnknown(arg_t):
-                arg_t = self.infer(ast.args[i], param_t, o)
+                arg_t = self.infer(ast.args[i], param_t, o.sym)
+                # arg_c, arg_t = ast.args[i].accept(self, o)
             
             code += arg_c
-        code += self.emit.emitINVOKESTATIC(cname + "/" + ast.name.name, ctype, o.frame)
+        code += self.emit.emitINVOKESTATIC(cname + "/" + ast.name.name, ftype, o.frame)
         return code
     
     def visitBinaryOp(self, ast: BinaryOp, o: Access):
-        return
+        left_c, left_t = ast.left.accept(self, o)
+        right_c, right_t = ast.right.accept(self, o)
+        
+        if ast.op in ['+', '-']:
+            op_c = self.emit.emitADDOP(ast.op, left_t, o.frame)
+        elif ast.op in ['*', '/']:
+            op_c = self.emit.emitMULOP(ast.op, left_t, o.frame)
+        elif ast.op == "%":
+            op_c = self.emit.emitMOD(left_t, o.frame)
+        elif ast.op == 'and':
+            op_c = self.emit.emitANDOP(o.frame)
+        elif ast.op == 'or':
+            op_c = self.emit.emitOROP(o.frame)
+        elif ast.op == "...":
+            op_c = self.emit.emitCONCAT(o.frame)
+        elif ast.op in ['=', '!=', '<', '>', '<=', '>=', '==']:
+            op_c = self.emit.emitREOP(ast.op, left_t, o.frame)
+            left_t = BoolType()
+        
+        return left_c + right_c + op_c, left_t
     
     def visitUnaryOp(self, ast: UnaryOp, o: Access):
-        return
+        expr_c, expr_t = ast.operand.accept(self, o)
+        
+        if ast.op == '-':
+            op_c = self.emit.emitNEGOP(expr_t, o.frame)
+        elif ast.op == 'not':
+            op_c = self.emit.emitNOT(expr_t, o.frame)
+        
+        return expr_c + op_c, expr_t
     
     def visitCallExpr(self, ast: CallExpr, o: Access):
-        # symbol = next(filter(lambda sym: sym.name == ast.name.name and type(sym.mtype) is MType, o.sym))
-        # for i in range(len(ast.args)):
-        #     arg_c, arg_t = ast.args[i].accept(self, o)
-        #     # tmpp: MType = symbol.mtype
-        #     param_t = symbol.mtype.partype[i]
+        func_symbol = next(filter(lambda sym: sym.name == ast.name.name and type(sym.mtype) is MType, o.sym))
+        cname = func_symbol.value.value
+        ftype = func_symbol.mtype
+        rtype = func_symbol.mtype.rettype
+        code = ""
+        
+        if type(rtype) is Unknown:
+            return code, Unknown()
+        
+        for i in range(len(ast.args)):
+            arg_c, arg_t = ast.args[i].accept(self, o)
+            param_t = func_symbol.mtype.partype[i]
             
-        #     if self.isUnknown(arg_t):
-        #         self.infer(ast.args[i], param_t, o.sym)
-        return
+            if self.isUnknown(arg_t):
+                self.infer(ast.args[i], param_t, o.sym)
+                # arg_c, arg_t = ast.args[i].accept(self, o)
+            
+            code += arg_c
+        code += self.emit.emitINVOKESTATIC(cname + "/" + ast.name.name, ftype, o.frame)
+        return code, rtype
     
     def visitId(self, ast: Id, o: Access):
         symbol = next(filter(lambda sym: sym.name == ast.name and type(sym.mtype) is not MType, o.sym))
@@ -404,7 +498,7 @@ class CodeGenVisitor(BaseVisitor):
                 code = self.emit.emitWRITEVAR(ast.name, typ, idx, o.frame)
             else:
                 code = self.emit.emitREADVAR(ast.name, typ, idx, o.frame)
-        elif type(symbol.value) is CName:
+        else:
             lexeme = symbol.value.value + "." + ast.name
             if o.isLeft:
                 code = self.emit.emitPUTSTATIC(lexeme, typ, o.frame)
@@ -414,7 +508,7 @@ class CodeGenVisitor(BaseVisitor):
         return code, typ
     
     def visitArrayCell(self, ast: ArrayCell, o: Access):
-        arr_c, arr_t = ast.arr.accept(self, Access(o.frame, o.sym, False)) # For Id or CallExpr
+        arr_c, arr_t = ast.arr.accept(self, Access(o.frame, o.sym, False)) # Id or CallExpr
         length = len(ast.idx)
         
         if type(arr_t) is Unknown:
@@ -425,14 +519,17 @@ class CodeGenVisitor(BaseVisitor):
             
             if self.isUnknown(idx_t):
                 self.infer(ast.idx[i], NumberType(), o.sym)
+                # arr_c += self.visit(Assign(ast.idx[i], self.get_default_value(NumberType())), SubBody(o.frame, o.sym))
         
         for i in range(length - 1):
             idx_c, _ = ast.idx[i].accept(self, Access(o.frame, o.sym, False))
             arr_c += idx_c
+            arr_c += self.emit.emitF2I(o.frame)
             arr_c += self.emit.emitALOAD(arr_t, o.frame)
         
         last_idx_c, _ = ast.idx[-1].accept(self, Access(o.frame, o.sym, False))
         arr_c += last_idx_c
+        arr_c += self.emit.emitF2I(o.frame)
         if o.isLeft:
             # Left-hand side of assignment
             code = [arr_c, self.emit.emitASTORE(arr_t.eleType, o.frame)]

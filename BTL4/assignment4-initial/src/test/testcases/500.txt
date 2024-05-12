@@ -19,6 +19,5 @@ begin
     e <- d
     number g <- e
     writeNumber(g)
-    return
 end
         

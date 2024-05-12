@@ -113,7 +113,7 @@ class Emitter():
             typ = self.getFullType(in_.eleType)
         
         frame.pop()
-        if len(in_.size) > 1 and type(in_.eleType) in [NumberType, BoolType]:
+        if len(in_.size) == 1 and type(in_.eleType) in [NumberType, BoolType]:
             result.append(self.jvm.emitNEWARRAY(typ))
         else:
             result.append(self.jvm.emitANEWARRAY(typ))
@@ -333,6 +333,7 @@ class Emitter():
         # ..., value -> ..., result
         if type(in_) is NumberType:
             return self.jvm.emitFNEG()
+        return self.jvm.emitINEG()
     
     def emitNOT(self, in_, frame):
         # in_: Type
@@ -343,6 +344,7 @@ class Emitter():
         result = list()
         result.append(self.emitIFTRUE(label1, frame))
         result.append(self.emitPUSHCONST("True", in_, frame))
+        frame.pop()
         result.append(self.emitGOTO(label2, frame))
         result.append(self.emitLABEL(label1, frame))
         result.append(self.emitPUSHCONST("False", in_, frame))
@@ -415,6 +417,12 @@ class Emitter():
         frame.pop()
         return self.jvm.emitIOR()
     
+    ''' generate code to concat strings
+    '''
+    def emitCONCAT(self, frame):
+        # frame: Frame
+        return self.emitINVOKEVIRTUAL("java/lang/String/concat", cgen.MType([StringType()], StringType()), frame)
+    
     def emitREOP(self, op, in_, frame):
         # op: String
         # in_: Type
@@ -441,12 +449,15 @@ class Emitter():
                 result.append(self.jvm.emitIFEQ(labelF))
             elif op == "=":
                 result.append(self.jvm.emitIFNE(labelF))
-        result.append(self.emitPUSHCONST("True", BoolType(), frame))
-        frame.pop()
-        result.append(self.emitGOTO(labelO, frame))
-        result.append(self.emitLABEL(labelF, frame))
-        result.append(self.emitPUSHCONST("False", BoolType(), frame))
-        result.append(self.emitLABEL(labelO, frame))
+            result.append(self.emitPUSHCONST("True", BoolType(), frame))
+            frame.pop()
+            result.append(self.emitGOTO(labelO, frame))
+            result.append(self.emitLABEL(labelF, frame))
+            result.append(self.emitPUSHCONST("False", BoolType(), frame))
+            result.append(self.emitLABEL(labelO, frame))
+        elif type(in_) is StringType:
+            frame.push()
+            result.append(self.jvm.emitINVOKEVIRTUAL("java/lang/String/equals", "(Ljava/lang/Object;)Z"))
         return ''.join(result)
     
     def emitRELOP(self, op, in_, trueLabel, falseLabel, frame):
@@ -563,6 +574,12 @@ class Emitter():
     def emitI2F(self, frame):
         # frame: Frame
         return self.jvm.emitI2F()
+    
+    ''' generate code to exchange a floating-point number on top of stack to an integer.
+    '''
+    def emitF2I(self, frame):
+        # frame: Frame
+        return self.jvm.emitF2I()
     
     ''' generate code to return.
     *   @param in the type of the returned expression.

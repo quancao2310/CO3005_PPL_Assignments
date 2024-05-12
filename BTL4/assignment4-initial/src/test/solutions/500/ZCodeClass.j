@@ -21,6 +21,7 @@ Label2:
 	return
 Label3:
 Label1:
+	return
 .limit stack 1
 .limit locals 0
 .end method
@@ -32,6 +33,7 @@ Label0:
 	invokespecial java/lang/Object/<init>()V
 	return
 Label1:
+	return
 .limit stack 1
 .limit locals 1
 .end method
@@ -73,9 +75,9 @@ Label5:
 	fstore_1
 	fload_1
 	invokestatic io/writeNumber(F)V
-	return
 Label3:
 Label1:
+	return
 .limit stack 1
 .limit locals 3
 .end method
