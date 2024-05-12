@@ -1,0 +1,13 @@
+number a
+string b
+bool c
+
+func main() begin
+    number a <- 2
+    bool b <- true
+    string c <- "ABC"
+    
+    writeNumber(a)
+    writeBool(b)
+    writeString(c)
+end

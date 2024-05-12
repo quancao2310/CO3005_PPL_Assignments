@@ -1,1 +1,1 @@
-16.0
+10.0 123.456 true false Hello"World

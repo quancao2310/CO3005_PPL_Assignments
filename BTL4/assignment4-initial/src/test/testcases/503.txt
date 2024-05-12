@@ -1,0 +1,22 @@
+number a
+string b
+bool c
+
+func main() begin
+    a <- 20e4
+    b <- " Hello "
+    c <- false
+    
+    writeNumber(a)
+    writeString(b)
+    writeBool(c)
+    writeString("\n")
+    
+    a <- 2.5e-1
+    b <- " ABC "
+    c <- true
+    
+    writeNumber(a)
+    writeString(b)
+    writeBool(c)
+end

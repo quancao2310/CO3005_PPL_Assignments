@@ -1,0 +1,6 @@
+func foo() return
+func bar() begin
+end
+
+func main() begin
+end

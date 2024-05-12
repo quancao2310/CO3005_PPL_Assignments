@@ -1,0 +1,11 @@
+dynamic a
+func init()
+func main() begin
+    init()
+    ## dynamic b <- a + 1
+    number b <- a
+    writeNumber(b)
+end
+func init() begin
+    a <- 1.23
+end

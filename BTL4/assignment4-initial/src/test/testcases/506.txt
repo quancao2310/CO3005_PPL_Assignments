@@ -1,0 +1,7 @@
+func foo()
+func main() begin
+    number a <- foo()
+    writeNumber(a)
+end
+
+func foo() return 1.5

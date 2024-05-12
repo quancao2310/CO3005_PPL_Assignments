@@ -1,0 +1,2 @@
+200000.0 Hello false
+0.25 ABC true

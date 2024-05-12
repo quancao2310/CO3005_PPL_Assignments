@@ -1,0 +1,6 @@
+number a <- 100
+func main() begin
+    writeNumber(a)
+    number a <- 200
+    writeNumber(a)
+end

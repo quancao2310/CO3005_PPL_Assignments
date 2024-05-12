@@ -1,13 +1,12 @@
-number a[5] <- [1, 2, 3, 4, 5]
-number b[5] <- a
-dynamic c
+number a <- 1
+bool b <- true
+string c <- "ABC"
+number d
+string e
+bool f
 
-func main()
-begin
-    c <- readNumber()
-    if (c = 0) writeNumber(a[0])
-    elif (c = 1) writeNumber(a[1])
-    elif (c = 2) writeNumber(a[2])
-    else writeNumber(a[3])
+func main() begin
+    writeNumber(a)
+    writeBool(b)
+    writeString(c)
 end
-        

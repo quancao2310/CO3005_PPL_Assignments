@@ -1,23 +1,11 @@
-number a <- 16
-string b <- "hello"
-bool c <- true
-dynamic d <- a
-dynamic e
-
-func foo(bool g, string a, number b) begin
-    bool f
-    dynamic e
-    return d
+func main() begin
+    writeNumber(10)
+    writeString(" ")
+    writeNumber(123.456)
+    writeString(" ")
+    writeBool(true)
+    writeString(" ")
+    writeBool(false)
+    writeString(" ")
+    writeString("Hello'"World")
 end
-
-func main()
-begin
-    begin
-        number b
-        number c
-    end
-    e <- d
-    number g <- e
-    writeNumber(g)
-end
-        

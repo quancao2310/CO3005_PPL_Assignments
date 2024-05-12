@@ -4,6 +4,7 @@ from Frame import Frame
 from abc import ABC
 from AST import *
 from Visitor import *
+from CodeGenError import *
 from typing import List
 
 # Additional types
@@ -91,7 +92,10 @@ class CodeGenVisitor(BaseVisitor):
         else:
             symbol_list = filter(lambda symbol: type(symbol.mtype) is not MType, env)
         symbol = next(filter(lambda sym: sym.name == name, symbol_list))
-        symbol.mtype = typ
+        if isMType:
+            symbol.mtype.rettype = typ
+        else:
+            symbol.mtype = typ
     
     def infer_array(self, ast: ArrayLiteral, typ: ArrayType, env: List[Symbol]):
         eleType = typ.eleType if len(typ.size) == 1 else ArrayType(typ.size[1:], typ.eleType)
@@ -308,26 +312,19 @@ class CodeGenVisitor(BaseVisitor):
     
     def visitAssign(self, ast: Assign, o: SubBody):
         right_c, right_t = ast.rhs.accept(self, Access(o.frame, o.sym, False))
+        left_c, left_t = ast.lhs.accept(self, Access(o.frame, o.sym, True))
+        if type(left_t) is Unknown:
+            self.infer(ast.lhs, right_t, o.sym)
+            left_c, left_t = ast.lhs.accept(self, Access(o.frame, o.sym, True))
+        if self.isUnknown(right_t):
+            self.infer(ast.rhs, left_t, o.sym)
+            right_c, right_t = ast.rhs.accept(self, Access(o.frame, o.sym, False))
+            left_c, left_t = ast.lhs.accept(self, Access(o.frame, o.sym, True))
         
         if type(ast.lhs) is ArrayCell:
-            left_c, left_t = ast.lhs.accept(self, Access(o.frame, o.sym, True))
             left_c_arr, left_c_store = left_c
-            
-            if type(left_t) is Unknown:
-                self.infer(ast.lhs, right_t, o.sym)
-            if self.isUnknown(right_t):
-                self.infer(ast.rhs, left_t, o.sym)
-            
             return left_c_arr + right_c + left_c_store
         if type(ast.lhs) is Id:
-            left_c, left_t = ast.lhs.accept(self, Access(o.frame, o.sym, True))
-            
-            if type(left_t) is Unknown:
-                self.infer(ast.lhs, right_t, o.sym)
-                left_c, left_t = ast.lhs.accept(self, Access(o.frame, o.sym, True))
-            if self.isUnknown(right_t):
-                self.infer(ast.rhs, left_t, o.sym)
-            
             return right_c + left_c
     
     def visitIf(self, ast: If, o: SubBody):
@@ -465,13 +462,11 @@ class CodeGenVisitor(BaseVisitor):
     
     def visitCallExpr(self, ast: CallExpr, o: Access):
         func_symbol = next(filter(lambda sym: sym.name == ast.name.name and type(sym.mtype) is MType, o.sym))
-        cname = func_symbol.value.value
-        ftype = func_symbol.mtype
-        rtype = func_symbol.mtype.rettype
+        return_t = func_symbol.mtype.rettype
         code = ""
         
-        if type(rtype) is Unknown:
-            return code, Unknown()
+        if type(return_t) is Unknown:
+            return "", return_t
         
         for i in range(len(ast.args)):
             arg_c, arg_t = ast.args[i].accept(self, o)
@@ -482,28 +477,30 @@ class CodeGenVisitor(BaseVisitor):
                 # arg_c, arg_t = ast.args[i].accept(self, o)
             
             code += arg_c
-        code += self.emit.emitINVOKESTATIC(cname + "/" + ast.name.name, ftype, o.frame)
-        return code, rtype
+        code += self.emit.emitINVOKESTATIC(func_symbol.value.value + "/" + ast.name.name, func_symbol.mtype, o.frame)
+        return code, return_t
     
     def visitId(self, ast: Id, o: Access):
         symbol = next(filter(lambda sym: sym.name == ast.name and type(sym.mtype) is not MType, o.sym))
         typ = symbol.mtype
         
         if type(typ) is Unknown:
-            return "", Unknown()
+            return "", typ
         
-        if type(symbol.value) is Index:
-            idx = symbol.value.value
-            if o.isLeft:
-                code = self.emit.emitWRITEVAR(ast.name, typ, idx, o.frame)
-            else:
-                code = self.emit.emitREADVAR(ast.name, typ, idx, o.frame)
+        if o.isLeft:
+            try:
+                if type(symbol.value) is Index:
+                    code = self.emit.emitWRITEVAR(ast.name, typ, symbol.value.value, o.frame)
+                else:
+                    code = self.emit.emitPUTSTATIC(symbol.value.value + "." + ast.name, typ, o.frame)
+            except IllegalRuntimeException: # Illegal Runtime: Pop empty stack
+                o.frame.push()
+                return "", typ
         else:
-            lexeme = symbol.value.value + "." + ast.name
-            if o.isLeft:
-                code = self.emit.emitPUTSTATIC(lexeme, typ, o.frame)
+            if type(symbol.value) is Index:
+                code = self.emit.emitREADVAR(ast.name, typ, symbol.value.value, o.frame)
             else:
-                code = self.emit.emitGETSTATIC(lexeme, typ, o.frame)
+                code = self.emit.emitGETSTATIC(symbol.value.value + "." + ast.name, typ, o.frame)
         
         return code, typ
     

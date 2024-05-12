@@ -169,6 +169,10 @@ class MachineCode(ABC):
         pass
 
     @abstractmethod
+    def emitFREM(self):
+        pass
+
+    @abstractmethod
     def emitIFACMPEQ(self, label):
         # label: Int
         pass
@@ -270,6 +274,10 @@ class MachineCode(ABC):
 
     @abstractmethod
     def emitI2F(self):
+        pass
+
+    @abstractmethod
+    def emitF2I(self):
         pass
 
     @abstractmethod
