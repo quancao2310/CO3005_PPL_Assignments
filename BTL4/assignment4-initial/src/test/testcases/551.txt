@@ -1,3 +1,9 @@
 func main() begin
-
+    number a <- 10
+    if (a > 5) begin
+        number a <- 0
+        writeNumber(a)
+        a <- a + 5
+    end
+    writeNumber(a)
 end

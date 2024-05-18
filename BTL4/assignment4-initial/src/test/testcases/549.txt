@@ -2,12 +2,12 @@ func bar(number x1, number x2, number x3, number x4, number x5, number x6, numbe
 dynamic arr
 
 func pushIndices() begin
-    ## The stack size of this function should be at least 10
+    ## The max stack size of this function should be at least 10
     arr[bar(1, 2, 3, 4, 5, 6, 7, 8, 9)] <- 10 * 10
 end
 
 func pushRhs() begin
-    ## The stack size of this function should be at least 12
+    ## The max stack size of this function should be at least 12
     arr[9] <- arr[bar(1, 2, 3, 4, 5, 6, 7, 8, 9)] - 10
 end
 

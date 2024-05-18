@@ -1,3 +1,14 @@
-func main() begin
+func init()
+dynamic a
 
+func main() begin
+    init()
+    var i <- 0
+    for i until i > 10 by a begin
+        writeNumber(i)
+    end
+end
+
+func init() begin
+    a <- 1.5
 end

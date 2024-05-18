@@ -1,3 +1,20 @@
 func main() begin
-
+    number arr[3, 5] <- [[10, 2, 3, 4, 5], [6, 7, 8, 9, 10], [11, 12, 13, 14, 10]]
+    var i <- 0
+    var j <- 0
+    var chk10 <- false
+    
+    for i until i = 3 by 1 begin
+        for j until j = 5 by 1 begin
+            if (j = 0) continue
+            if (arr[i, j] = 10) begin
+                chk10 <- true
+                writeNumber(i)
+                writeNumber(j)
+                break
+            end
+        end
+        writeString("End of inner loop ")
+        if (chk10) break
+    end
 end

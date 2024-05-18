@@ -1,3 +1,12 @@
-func main() begin
+func init()
+dynamic a
 
+func main() begin
+    init()
+    for a until a >= 10 by 3
+        writeNumber(a)
+end
+
+func init() begin
+    a <- 1
 end

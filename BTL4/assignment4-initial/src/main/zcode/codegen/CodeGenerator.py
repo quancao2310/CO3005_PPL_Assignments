@@ -130,10 +130,7 @@ class CodeGenVisitor(BaseVisitor):
         return ArrayLiteral([ele for _ in range(int(dimensions[0]))])
     
     def genMETHOD(self, funcdecl: FuncDecl, o: List[Symbol], frame: Frame):
-        """
-        Generate code as a method for the equivalent function declaration in ZCode.
-        If the function has a declaration-only part, do not generate anything.
-        """
+        """Generate code as a method for the equivalent function declaration in ZCode."""
         func_symbol = next(filter(lambda sym: sym.name == funcdecl.name.name and type(sym.mtype) is MType, o))
         isClinit = funcdecl.name.name == "<clinit>"
         isInit = funcdecl.name.name == "<init>"
@@ -161,7 +158,6 @@ class CodeGenVisitor(BaseVisitor):
         if isInit:
             code += self.emit.emitREADVAR("this", ClassType(self.className), 0, frame)
             code += self.emit.emitINVOKESPECIAL(frame)
-            code += self.emit.emitRETURN(VoidType(), frame)
         else:
             code += funcdecl.body.accept(self, local_subbody)
         
@@ -200,7 +196,6 @@ class CodeGenVisitor(BaseVisitor):
                 _, global_subbody = decl.accept(self, global_subbody)
         
         # Generate static initializer and default constructor
-        self.clinit.body.stmt.append(Return())
         self.genMETHOD(self.clinit, [Symbol("<clinit>", MType([], VoidType()), CName(self.className))] + global_subbody.sym, Frame("<clinit>", VoidType()))
         self.genMETHOD(init, [Symbol("<init>", MType([], VoidType()), CName(self.className))], Frame("<init>", VoidType()))
         
@@ -228,8 +223,6 @@ class CodeGenVisitor(BaseVisitor):
         if o.frame:
             # Local variable
             var_symbol.value = Index(o.frame.getNewIndex())
-            var_symbol.startLabel = o.frame.getStartLabel()
-            var_symbol.endLabel = o.frame.getEndLabel()
             if ast.varInit:
                 code = self.visit(Assign(ast.name, ast.varInit), ret_subbody)
             elif ast.varType:
@@ -335,10 +328,13 @@ class CodeGenVisitor(BaseVisitor):
         return right_c + left_c
     
     def visitIf(self, ast: If, o: SubBody):
-        code = ""
         expr_c, expr_t = ast.expr.accept(self, Access(o.frame, o.sym, False))
-        code += expr_c
+        if self.isUnknown(expr_t):
+            self.infer(ast.expr, BoolType(), o.sym)
+            expr_c, expr_t = ast.expr.accept(self, Access(o.frame, o.sym, False))
+        code = expr_c
         exitLabel = o.frame.getNewLabel()
+        
         if len(ast.elifStmt) == 0:
             if not ast.elseStmt:
                 code += self.emit.emitIFFALSE(exitLabel, o.frame)
@@ -361,6 +357,9 @@ class CodeGenVisitor(BaseVisitor):
                     code += self.emit.emitLABEL(elifLabel, o.frame)
                     expr, stmt = ast.elifStmt[i]
                     expr_c, expr_t = expr.accept(self, Access(o.frame, o.sym, False))
+                    if self.isUnknown(expr_t):
+                        self.infer(ast.expr, BoolType(), o.sym)
+                        expr_c, expr_t = ast.expr.accept(self, Access(o.frame, o.sym, False))
                     code += expr_c
                     elifLabel = o.frame.getNewLabel()
                     code += self.emit.emitIFFALSE(elifLabel if i != length - 1 else exitLabel, o.frame)
@@ -373,6 +372,9 @@ class CodeGenVisitor(BaseVisitor):
                     code += self.emit.emitLABEL(elifLabel, o.frame)
                     expr, stmt = ast.elifStmt[i]
                     expr_c, expr_t = expr.accept(self, Access(o.frame, o.sym, False))
+                    if self.isUnknown(expr_t):
+                        self.infer(ast.expr, BoolType(), o.sym)
+                        expr_c, expr_t = ast.expr.accept(self, Access(o.frame, o.sym, False))
                     code += expr_c
                     elifLabel = o.frame.getNewLabel()
                     code += self.emit.emitIFFALSE(elifLabel if i != length - 1 else elseLabel, o.frame)
@@ -386,6 +388,9 @@ class CodeGenVisitor(BaseVisitor):
     def visitFor(self, ast: For, o: SubBody):
         # Store the initial value to reset it after the loop
         id_c, id_t = ast.name.accept(self, Access(o.frame, o.sym, False))
+        if type(id_t) is Unknown:
+            self.infer_symbol(ast.name.name, NumberType(), o.sym, False)
+            id_c, id_t = ast.name.accept(self, Access(o.frame, o.sym, False))
         code = id_c
         
         o.frame.enterLoop()
@@ -395,6 +400,9 @@ class CodeGenVisitor(BaseVisitor):
         
         code += self.emit.emitLABEL(conditionLabel, o.frame)
         cond_c, cond_t = ast.condExpr.accept(self, Access(o.frame, o.sym, False))
+        if self.isUnknown(cond_t):
+            self.infer(ast.condExpr, BoolType(), o.sym)
+            cond_c, cond_t = ast.condExpr.accept(self, Access(o.frame, o.sym, False))
         code += cond_c
         code += self.emit.emitIFTRUE(breakLabel, o.frame)
         code += ast.body.accept(self, o)
@@ -426,7 +434,7 @@ class CodeGenVisitor(BaseVisitor):
             param_t = func_symbol.mtype.partype[i]
             
             if self.isUnknown(arg_t):
-                arg_t = self.infer(ast.args[i], param_t, o.sym)
+                self.infer(ast.args[i], param_t, o.sym)
                 arg_c, arg_t = ast.args[i].accept(self, Access(o.frame, o.sym, False))
             
             code += arg_c

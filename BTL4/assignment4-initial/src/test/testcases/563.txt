@@ -1,3 +1,25 @@
-func main() begin
+func init()
+dynamic a
+func a()
 
+func main() begin
+    init()
+    if (a)
+    begin
+        writeString("true")
+    end
+    else
+    begin
+        writeString("false")
+    end
+    if (a())
+        writeString("true")
+    else
+        writeString("false")
+end
+
+func a() return false
+
+func init() begin
+    a <- true
 end

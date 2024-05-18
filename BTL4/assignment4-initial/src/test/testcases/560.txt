@@ -1,3 +1,21 @@
 func main() begin
-
+    number a <- 4
+    
+    if (a > 0) begin
+        if (a > 10) begin
+            writeString("a > 10")
+        end
+        elif ((a > 5) and (a <= 10)) begin
+            writeString("5 < a <= 10")
+        end
+        else begin
+            writeString("0 < a <= 5")
+        end
+    end
+    else begin
+        if (a = 0) begin
+            writeString("a = 0")
+        end
+        else writeString("a < 0")
+    end
 end

@@ -5,7 +5,6 @@
 .method public static <clinit>()V
 Label0:
 Label2:
-	return
 Label3:
 Label1:
 	return
@@ -18,7 +17,6 @@ Label1:
 Label0:
 	aload_0
 	invokespecial java/lang/Object/<init>()V
-	return
 Label1:
 	return
 .limit stack 1
@@ -28,10 +26,37 @@ Label1:
 .method public static main([Ljava/lang/String;)V
 .var 0 is args [Ljava/lang/String; from Label0 to Label1
 Label0:
+.var 1 is a F from Label2 to Label3
 Label2:
+	ldc 10.0
+	fstore_1
+	fload_1
+	ldc 5.0
+	fcmpl
+	ifle Label4
+	iconst_1
+	goto Label5
+Label4:
+	iconst_0
+Label5:
+	ifle Label6
+.var 2 is a F from Label7 to Label8
+Label7:
+	fconst_0
+	fstore_2
+	fload_2
+	invokestatic io/writeNumber(F)V
+	fload_2
+	ldc 5.0
+	fadd
+	fstore_2
+Label8:
+Label6:
+	fload_1
+	invokestatic io/writeNumber(F)V
 Label3:
 Label1:
 	return
-.limit stack 0
-.limit locals 1
+.limit stack 2
+.limit locals 3
 .end method

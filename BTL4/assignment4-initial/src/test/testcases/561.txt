@@ -1,3 +1,26 @@
 func main() begin
-
+    number a <- 7
+    begin
+        if (a > 10) begin
+            writeString("a > 10;")
+            begin
+                a <- a * 2
+            end
+        end
+        else if ((a <= 10) and (a >= 5)) begin
+            begin
+                a <- a + 1
+                writeString("5 <= a <= 10;")
+            end
+            a <- a + 1
+        end
+        else begin
+            begin
+                a <- a - 6
+            end
+            writeString("a < 5;")
+        end
+        a <- a - 1
+    end
+    writeNumber(a)
 end

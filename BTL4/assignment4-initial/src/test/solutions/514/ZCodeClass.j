@@ -8,7 +8,6 @@ Label0:
 Label2:
 	ldc 12300.0
 	putstatic ZCodeClass.abc F
-	return
 Label3:
 Label1:
 	return
@@ -21,7 +20,6 @@ Label1:
 Label0:
 	aload_0
 	invokespecial java/lang/Object/<init>()V
-	return
 Label1:
 	return
 .limit stack 1

@@ -23,7 +23,6 @@ Label2:
 	putstatic ZCodeClass.e Ljava/lang/String;
 	iconst_0
 	putstatic ZCodeClass.f Z
-	return
 Label3:
 Label1:
 	return
@@ -36,7 +35,6 @@ Label1:
 Label0:
 	aload_0
 	invokespecial java/lang/Object/<init>()V
-	return
 Label1:
 	return
 .limit stack 1

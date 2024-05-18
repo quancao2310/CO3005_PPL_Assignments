@@ -1,3 +1,15 @@
-func main() begin
+func init()
+dynamic a
 
+func main() begin
+    init()
+    var i <- 0
+    for i until a by 2 begin
+        writeNumber(i)
+        a <- i > 10
+    end
+end
+
+func init() begin
+    a <- false
 end

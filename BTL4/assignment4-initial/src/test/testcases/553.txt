@@ -1,3 +1,6 @@
 func main() begin
-
+    number a <- 0
+    if (a > 5) a <- a + 5
+    elif (a = 0) a <- a - 5
+    writeNumber(a)
 end

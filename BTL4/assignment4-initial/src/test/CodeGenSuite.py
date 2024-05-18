@@ -11,9 +11,8 @@ class CheckCodeGenSuite(unittest.TestCase):
     * 506-519: Function Declarations + Function calls (Statement + Expression) + Return Statement + Block Statement
     * 520-529: Binary/Unary expressions
     * 530-549: Array expressions + Index operator
-    * 550-5: Statements
-    * 5-5: Mixed statements
-    * 5-599: Solve algorithms/problems in ZCode (simplified due to lack of features)
+    * 550-574: Other Statements (If, For, Break, Continue)
+    * 575-599: Solve algorithms/problems in ZCode (simplified due to lack of features)
     """
     
     # Built-in function calls
@@ -1038,19 +1037,19 @@ end
         self.assertTrue(TestCodeGen.test(input, expect, 548))
     
     def test_549(self):
-        # Index operator: Securing the max stack size
+        # Index operator: Securing the max stack size with Type inference
         # This testcase is designed to ensure that the max stack size is calculated correctly
-        # when generating code for ArrayCell
+        # when inferring type and generating code for ArrayCell
         input = """func bar(number x1, number x2, number x3, number x4, number x5, number x6, number x7, number x8, number x9)
 dynamic arr
 
 func pushIndices() begin
-    ## The stack size of this function should be at least 10
+    ## The max stack size of this function should be at least 10
     arr[bar(1, 2, 3, 4, 5, 6, 7, 8, 9)] <- 10 * 10
 end
 
 func pushRhs() begin
-    ## The stack size of this function should be at least 12
+    ## The max stack size of this function should be at least 12
     arr[9] <- arr[bar(1, 2, 3, 4, 5, 6, 7, 8, 9)] - 10
 end
 
@@ -1067,232 +1066,450 @@ func bar(number x1, number x2, number x3, number x4, number x5, number x6, numbe
         expect = "100.090.0"
         self.assertTrue(TestCodeGen.test(input, expect, 549))
     
-    # Statements
-#     def test_550(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 550))
+    # Other Statements (If, For, Break, Continue)
+    def test_550(self):
+        # If statement: Single if without block
+        input = """func main() begin
+    number a <- 10
+    if (a > 5) a <- a + 5
+    writeNumber(a)
+end
+"""
+        expect = "15.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 550))
     
-#     def test_551(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 551))
+    def test_551(self):
+        # If statement: Single if with block
+        input = """func main() begin
+    number a <- 10
+    if (a > 5) begin
+        number a <- 0
+        writeNumber(a)
+        a <- a + 5
+    end
+    writeNumber(a)
+end
+"""
+        expect = "0.010.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 551))
     
-#     def test_552(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 552))
+    def test_552(self):
+        # If statement: If-else
+        input = """func main() begin
+    number a <- 0
+    if (a > 5) a <- a + 5
+    else a <- a - 5
+    writeNumber(a)
+end
+"""
+        expect = "-5.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 552))
     
-#     def test_553(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 553))
+    def test_553(self):
+        # If statement: If-elif (1 elif)
+        input = """func main() begin
+    number a <- 0
+    if (a > 5) a <- a + 5
+    elif (a = 0) a <- a - 5
+    writeNumber(a)
+end
+"""
+        expect = "-5.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 553))
     
-#     def test_554(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 554))
+    def test_554(self):
+        # If statement: If-elif (multi elif, branched at middle elif)
+        input = """func main() begin
+    number a <- 1
+    if (a > 5) a <- a + 5
+    elif (a < 0) a <- a - 5
+    elif (a = 0) a <- a + 1
+    elif (a = 1) a <- a + 2
+    elif (a = 2) a <- a - 3
+    writeNumber(a)
+end
+"""
+        expect = "3.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 554))
     
-#     def test_555(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 555))
+    def test_555(self):
+        # If statement: If-elif (multi elif, branched at last elif)
+        input = """func main() begin
+    number a <- 2
+    if (a > 5) a <- a + 5
+    elif (a < 0) a <- a - 5
+    elif (a = 0) a <- a + 1
+    elif (a = 1) a <- a + 2
+    elif (a = 2) a <- a - 3
+    writeNumber(a)
+end
+"""
+        expect = "-1.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 555))
     
-#     def test_556(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 556))
+    def test_556(self):
+        # If statement: If-elif-else (1 elif)
+        input = """func main() begin
+    number a <- 2
+    if (a > 5) a <- a + 5
+    elif (a < 0) a <- a - 5
+    else a <- a * 5
+    writeNumber(a)
+end
+"""
+        expect = "10.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 556))
     
-#     def test_557(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 557))
+    def test_557(self):
+        # If statement: If-elif-else (multi elif, branched at if)
+        input = """func main() begin
+    number a <- 20
+    if (a > 5) a <- a + 5
+    elif (a < 0) a <- a - 5
+    elif (a = 0) a <- a + 1
+    elif (a = 1) a <- a + 2
+    elif (a = 2) a <- a + 3
+    else a <- a * 5
+    writeNumber(a)
+end
+"""
+        expect = "25.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 557))
     
-#     def test_558(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 558))
+    def test_558(self):
+        # If statement: If-elif-else (multi elif, branched at elif)
+        input = """func main() begin
+    number a <- 0
+    if (a > 5) a <- a + 5
+    elif (a < 0) a <- a - 5
+    elif (a = 0) a <- a + 1
+    elif (a = 1) a <- a + 2
+    elif (a = 2) a <- a + 3
+    else a <- a * 5
+    writeNumber(a)
+end
+"""
+        expect = "1.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 558))
     
-#     def test_559(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 559))
+    def test_559(self):
+        # If statement: If-elif-else (multi elif, branched at else)
+        input = """func main() begin
+    number a <- 4
+    if (a > 5) a <- a + 5
+    elif (a < 0) a <- a - 5
+    elif (a = 0) a <- a + 1
+    elif (a = 1) a <- a + 2
+    elif (a = 2) a <- a + 3
+    else a <- a * 5
+    writeNumber(a)
+end
+"""
+        expect = "20.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 559))
     
-#     def test_560(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 560))
+    def test_560(self):
+        # If statement: Nested if
+        input = """func main() begin
+    number a <- 4
     
-#     def test_561(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 561))
+    if (a > 0) begin
+        if (a > 10) begin
+            writeString("a > 10")
+        end
+        elif ((a > 5) and (a <= 10)) begin
+            writeString("5 < a <= 10")
+        end
+        else begin
+            writeString("0 < a <= 5")
+        end
+    end
+    else begin
+        if (a = 0) begin
+            writeString("a = 0")
+        end
+        else writeString("a < 0")
+    end
+end
+"""
+        expect = "0 < a <= 5"
+        self.assertTrue(TestCodeGen.test(input, expect, 560))
     
-#     def test_562(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 562))
+    def test_561(self):
+        # If statement: Nested block
+        input = """func main() begin
+    number a <- 7
+    begin
+        if (a > 10) begin
+            writeString("a > 10;")
+            begin
+                a <- a * 2
+            end
+        end
+        else if ((a <= 10) and (a >= 5)) begin
+            begin
+                a <- a + 1
+                writeString("5 <= a <= 10;")
+            end
+            a <- a + 1
+        end
+        else begin
+            begin
+                a <- a - 6
+            end
+            writeString("a < 5;")
+        end
+        a <- a - 1
+    end
+    writeNumber(a)
+end
+"""
+        expect = "5 <= a <= 10;8.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 561))
     
-#     def test_563(self):
-#         # 
-#         input = """func main() begin
+    def test_562(self):
+        # If statement: Check unexecuted branch
+        input = """number a <- 10
+func foo() begin
+    a <- a - 1
+    return a
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 563))
+func main() begin
+    number b <- 0
+    if (b > 0) b <- foo()
+    elif (b = 0) b <- foo() + 1
+    elif (foo() > 7) b <- b + 1
+    else b <- b + 2
+    writeNumber(a)
+    writeNumber(b)
+end
+"""
+        expect = "9.010.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 562))
     
-#     def test_564(self):
-#         # 
-#         input = """func main() begin
+    def test_563(self):
+        # If statement: Type inference 1
+        input = """func init()
+dynamic a
+func a()
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 564))
-    
-#     def test_565(self):
-#         # 
-#         input = """func main() begin
+func main() begin
+    init()
+    if (a)
+    begin
+        writeString("true")
+    end
+    else
+    begin
+        writeString("false")
+    end
+    if (a())
+        writeString("true")
+    else
+        writeString("false")
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 565))
-    
-#     def test_566(self):
-#         # 
-#         input = """func main() begin
+func a() return false
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 566))
+func init() begin
+    a <- true
+end
+"""
+        expect = "truefalse"
+        self.assertTrue(TestCodeGen.test(input, expect, 563))
     
-#     def test_567(self):
-#         # 
-#         input = """func main() begin
+    def test_564(self):
+        # If statement: Type inference 2
+        input = """func init()
+dynamic a
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 567))
-    
-#     def test_568(self):
-#         # 
-#         input = """func main() begin
+func main() begin
+    init()
+    if (a[1, 2])
+        writeString("true")
+    else
+        writeString("false")
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 568))
+func init() begin
+    a <- [[true, false, false], [false, true, false], [false, false, true]]
+end
+"""
+        expect = "false"
+        self.assertTrue(TestCodeGen.test(input, expect, 564))
     
-#     def test_569(self):
-#         # 
-#         input = """func main() begin
+    def test_565(self):
+        # For statement: Without block
+        input = """func main() begin
+    var i <- 0
+    for i until i >= 10 by 1
+        writeNumber(i)
+end
+"""
+        expect = "0.01.02.03.04.05.06.07.08.09.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 565))
+    
+    def test_566(self):
+        # For statement: Check reset of loop variable
+        input = """func main() begin
+    var i <- 0
+    for i until i >= 10 by 1
+        i <- i + 1
+    writeNumber(i)
+end
+"""
+        expect = "0.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 566))
+    
+    def test_567(self):
+        # For statement: With block
+        input = """func main() begin
+    var i <- 0
+    for i until i >= 10 by 1 begin
+        writeNumber(i)
+        i <- i + 1
+    end
+    writeNumber(i)
+end
+"""
+        expect = "0.02.04.06.08.00.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 567))
+    
+    def test_568(self):
+        # For statement: Nested for
+        input = """func main() begin
+    number arr[3, 5]
+    var i <- 0
+    var j <- 0
+    for i until i = 3 by 1
+    begin
+        var tmp_10i <- 10 * (i + 1)
+        for j until j = 5 by 1 begin
+            arr[i, j] <- tmp_10i + j
+            writeNumber(arr[i, j])
+        end
+    end
+end
+"""
+        expect = "10.011.012.013.014.020.021.022.023.024.030.031.032.033.034.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 568))
+    
+    def test_569(self):
+        # For statement: Break statement
+        input = """func main() begin
+    number i <- 1
+    for i until i = 20 by 1
+    begin
+        writeNumber(i)
+        if (i = 10) break
+    end
+end
+"""
+        expect = "1.02.03.04.05.06.07.08.09.010.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 569))
+    
+    def test_570(self):
+        # For statement: Continue statement
+        input = """func main() begin
+    number i <- 20
+    for i until i = 0 by -1
+    begin
+        if (i >= 10)
+            continue
+        writeNumber(i)
+    end
+end
+"""
+        expect = "9.08.07.06.05.04.03.02.01.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 570))
+    
+    def test_571(self):
+        # For statement: Break/Continue in nested for
+        input = """func main() begin
+    number arr[3, 5] <- [[10, 2, 3, 4, 5], [6, 7, 8, 9, 10], [11, 12, 13, 14, 10]]
+    var i <- 0
+    var j <- 0
+    var chk10 <- false
+    
+    for i until i = 3 by 1 begin
+        for j until j = 5 by 1 begin
+            if (j = 0) continue
+            if (arr[i, j] = 10) begin
+                chk10 <- true
+                writeNumber(i)
+                writeNumber(j)
+                break
+            end
+        end
+        writeString("End of inner loop ")
+        if (chk10) break
+    end
+end
+"""
+        expect = "End of inner loop 1.04.0End of inner loop "
+        self.assertTrue(TestCodeGen.test(input, expect, 571))
+    
+    def test_572(self):
+        # For statement: Type inference of loop variable
+        input = """func init()
+dynamic a
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 569))
-    
-#     def test_570(self):
-#         # 
-#         input = """func main() begin
+func main() begin
+    init()
+    for a until a >= 10 by 3
+        writeNumber(a)
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 570))
+func init() begin
+    a <- 1
+end
+"""
+        expect = "1.04.07.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 572))
     
-#     def test_571(self):
-#         # 
-#         input = """func main() begin
+    def test_573(self):
+        # For statement: Type inference of condition expression
+        input = """func init()
+dynamic a
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 571))
-    
-#     def test_572(self):
-#         # 
-#         input = """func main() begin
+func main() begin
+    init()
+    var i <- 0
+    for i until a by 2 begin
+        writeNumber(i)
+        a <- i > 10
+    end
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 572))
+func init() begin
+    a <- false
+end
+"""
+        expect = "0.02.04.06.08.010.012.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 573))
     
-#     def test_573(self):
-#         # 
-#         input = """func main() begin
+    def test_574(self):
+        # For statement: Type inference of update expression
+        input = """func init()
+dynamic a
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 573))
-    
-#     def test_574(self):
-#         # 
-#         input = """func main() begin
+func main() begin
+    init()
+    var i <- 0
+    for i until i > 10 by a begin
+        writeNumber(i)
+    end
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 574))
+func init() begin
+    a <- 1.5
+end
+"""
+        expect = "0.01.53.04.56.07.59.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 574))
     
+    # Solve algorithms/problems in ZCode (simplified due to lack of features)
 #     def test_575(self):
 #         # 
 #         input = """func main() begin

@@ -1,3 +1,14 @@
-func main() begin
+func init()
+dynamic a
 
+func main() begin
+    init()
+    if (a[1, 2])
+        writeString("true")
+    else
+        writeString("false")
+end
+
+func init() begin
+    a <- [[true, false, false], [false, true, false], [false, false, true]]
 end
