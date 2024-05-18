@@ -1,3 +1,14 @@
-func main() begin
+func init()
+dynamic e
+dynamic f
 
+func main() begin
+    init()
+    number g[2, 2] <- [[e, e], f]
+    writeNumber(g[0, 0] + g[1, 1])
+end
+
+func init() begin
+    e <- 1
+    f <- [2, 3]
 end

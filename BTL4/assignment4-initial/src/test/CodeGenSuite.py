@@ -10,8 +10,8 @@ class CheckCodeGenSuite(unittest.TestCase):
     * 501-505: Variable Declarations + Assignment Statement
     * 506-519: Function Declarations + Function calls (Statement + Expression) + Return Statement + Block Statement
     * 520-529: Binary/Unary expressions
-    * 530-5: Array expressions + Index operator
-    * 5-5: Statements
+    * 530-549: Array expressions + Index operator
+    * 550-5: Statements
     * 5-5: Mixed statements
     * 5-599: Solve algorithms/problems in ZCode (simplified due to lack of features)
     """
@@ -662,192 +662,412 @@ end
     
     # Array expressions + Index operator
     def test_530(self):
-        # 
+        # Array Literal: 1-dimensional array
         input = """func main() begin
-
+    number a[10] <- [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    bool b[5] <- [true, false, true, false, true]
+    string c[4] <- ["PPL", "is", "very", "hard"]
+    
+    writeNumber(a[5])
+    writeBool(b[3])
+    writeString(c[0])
 end
 """
-        expect = "1"
+        expect = "6.0falsePPL"
         self.assertTrue(TestCodeGen.test(input, expect, 530))
     
-#     def test_531(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 531))
+    def test_531(self):
+        # Array Literal: Multi-dimensional array
+        input = """func main() begin
+    number a[1, 2, 3]
+    number b[2, 3] <- [[1, 2, 3], [4, 5, 6]]
+    bool c[2, 2, 3] <- [[[true, true, false], [true, true, false]], [[true, true, false], [true, true, false]]]
+    string d[2, 2] <- [["PPL", "is"], ["very", "hard"]]
     
-#     def test_532(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 532))
+    writeNumber(b[1, 0])
+    writeBool(c[1, 1, 1])
+    writeString(d[0, 0])
+end
+"""
+        expect = "4.0truePPL"
+        self.assertTrue(TestCodeGen.test(input, expect, 531))
     
-#     def test_533(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 533))
+    def test_532(self):
+        # Array Literal: With other expressions
+        input = """func main() begin
+    number a[2, 3] <- [[1 + 2, 2 * 3, 3 / 4], [4 - 5, 5 % 2, 6 / 3]]
+    bool b[3] <- [true or true, false and false, not true]
+    string c[2] <- ["PPL " ... "is ", "very " ... "hard"]
     
-#     def test_534(self):
-#         # 
-#         input = """func main() begin
-# string __s[9312e1202]
-# number a[5] <- [2, 3, 5, 7, 11]
-# string sss[4] <- ["PPL", "is", "very", "hard"]
-# bool abc[4] <- [true, true, false, false]
-
-# number b[2, 3] <- [[1, 2, 3], [4, 5, 6]]
-# bool c[2, 2, 3] <- [[[true, true, false], [true, true, false]], [[true, true, false], [true, true, false]]]
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 534))
+    writeNumber(a[0, 2])
+    writeBool(b[1])
+    writeString(c[1])
+end
+"""
+        expect = "0.75falsevery hard"
+        self.assertTrue(TestCodeGen.test(input, expect, 532))
     
-#     def test_535(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 535))
+    def test_533(self):
+        # Index operator: Array access from variable
+        input = """func main() begin
+    number a[2, 3] <- [[1 + 2, 2 * 3, 3 / 4], [4 - 5, 5 % 2, 6 / 3]]
+    number b <- a[1, 2]
+    number c <- 1 + a[1, 1]
+    number d <- a[0, 2] * 2
     
-#     def test_536(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 536))
+    writeNumber(b)
+    writeNumber(c)
+    writeNumber(d)
+end
+"""
+        expect = "2.02.01.5"
+        self.assertTrue(TestCodeGen.test(input, expect, 533))
     
-#     def test_537(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 537))
+    def test_534(self):
+        # Index operator: Array write
+        input = """func main() begin
+    number a[2, 3]
+    a[0, 0] <- 1
+    a[0, 1] <- 2
+    a[0, 2] <- 3 + 4
+    a[1, 0] <- 5 * 6
+    a[1, 1] <- 7 - 8
+    a[1, 2] <- 9 / 10
     
-#     def test_538(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 538))
+    writeNumber(a[0, 0])
+    writeNumber(a[0, 1])
+    writeNumber(a[0, 2])
+    writeNumber(a[1, 0] + a[1, 1] + a[1, 2])
+end
+"""
+        expect = "1.02.07.029.9"
+        self.assertTrue(TestCodeGen.test(input, expect, 534))
     
-#     def test_539(self):
-#         # 
-#         input = """func main() begin
+    def test_535(self):
+        # Index operator: Read-write array
+        input = """func foo(number x) return x + 1
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 539))
+func main() begin
+    number a[15] <- [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    number b[3, 4] <- [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]]
+    a[3 + foo(2)] <- a[b[2, 3]] + 4
+    writeNumber(a[6])
+end
+"""
+        expect = "17.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 535))
     
-#     def test_540(self):
-#         # 
-#         input = """func main() begin
+    def test_536(self):
+        # Array as function parameter
+        input = """func foo(number a[4], bool b[3, 2], string c[2]) begin
+    a[1] <- 5
+    b[1, 0] <- true
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 540))
+func main() begin
+    number x[4] <- [1, 2, 3, 4]
+    bool y[3, 2] <- [[true, false], [false, true], [true, true]]
     
-#     def test_541(self):
-#         # 
-#         input = """func main() begin
+    writeNumber(x[1])
+    writeBool(y[1, 0])
+    
+    foo(x, y, ["PPL", "hard"])
+    
+    writeNumber(x[1])
+    writeBool(y[1, 0])
+end
+"""
+        expect = "2.0false5.0true"
+        self.assertTrue(TestCodeGen.test(input, expect, 536))
+    
+    def test_537(self):
+        # Array as function return value
+        input = """func createArray()
+begin
+    number x[10] <- [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    return x
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 541))
+func main() begin
+    dynamic arr <- createArray()
+    number brr[10] <- createArray()
+    writeNumber(arr[5] + brr[5])
+end
+"""
+        expect = "12.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 537))
     
-#     def test_542(self):
-#         # 
-#         input = """func main() begin
+    def test_538(self):
+        # Array as reference
+        input = """func main() begin
+    number a[3] <- [1, 2, 3]
+    number b[3] <- a
+    b[1] <- 5
+    writeNumber(a[1])
+end
+"""
+        expect = "5.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 538))
+    
+    def test_539(self):
+        # Array in array
+        input = """func main() begin
+    number a[3] <- [1, 2, 3]
+    number b[3] <- [4, 5, 6]
+    number c[3] <- [7, 8, 9]
+    number x[3, 3] <- [a, b, c]
+    
+    writeNumber(a[0] + b[1] + c[2] + x[2, 0])
+end
+"""
+        expect = "22.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 539))
+    
+    def test_540(self):
+        # Index operator: Array access from function call
+        input = """func foo()
+begin
+    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 542))
+func main() begin
+    number a <- foo()[2]
+    writeNumber(a)
+end
+"""
+        expect = "3.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 540))
     
-#     def test_543(self):
-#         # 
-#         input = """func main() begin
+    def test_541(self):
+        # Array Literal: Type inference of whole array
+        input = """func main() begin
+    dynamic a <- [1, 2, 3, 4, 5]
+    dynamic b <- [[1, 2, 3], [4, 5, 6]]
+    dynamic c <- [[[true, true, false], [true, true, false]], [[true, true, false], [true, true, false]]]
+    dynamic d <- ["PPL", "is", "very", "hard"]
+    
+    writeNumber(a[2] * a[3] + b[1, 2] * b[0, 1])
+    writeBool(c[1, 1, 1])
+    writeString(d[0] ... (" " ... d[1]))
+end
+"""
+        expect = "24.0truePPL is"
+        self.assertTrue(TestCodeGen.test(input, expect, 541))
+    
+    def test_542(self):
+        # Array Literal: Type inference of array elements 1
+        input = """func init()
+dynamic x
+dynamic y
+dynamic z
+dynamic t
+dynamic u
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 543))
+func main() begin
+    init()
+    number w[3, 2, 4, 2] <- [x, [y, z], [[t, t, t, t], [t, t, [100, 200], [u[0], u[1]]]]]
     
-#     def test_544(self):
-#         # 
-#         input = """func main() begin
+    writeNumber(w[0, 0, 0, 0]) ## 1.0
+    writeNumber(w[1, 1, 2, 1]) ## 3.0
+    writeNumber(w[2, 1, 3, 1]) ## u[1] = 400.0
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 544))
+func init() begin
+    x <- [[[1, 2], [3, 4], [5, 6], [7, 8]], [[8, 7], [6, 5], [4, 3], [2, 1]]]
+    y <- [[1, 2], [3, 4], [5, 6], [7, 8]]
+    z <- [[8, 7], [6, 5], [4, 3], [2, 1]]
+    t <- [100, 200]
+    u <- [300, 400]
+end
+"""
+        expect = "1.03.0400.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 542))
     
-#     def test_545(self):
-#         # 
-#         input = """func main() begin
+    def test_543(self):
+        # Array Literal: Type inference of array elements 2
+        input = """func init()
+dynamic e
+dynamic f
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 545))
-    
-#     def test_546(self):
-#         # 
-#         input = """func main() begin
+func main() begin
+    init()
+    number g[2, 2] <- [[e, e], f]
+    writeNumber(g[0, 0] + g[1, 1])
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 546))
+func init() begin
+    e <- 1
+    f <- [2, 3]
+end
+"""
+        expect = "4.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 543))
     
-#     def test_547(self):
-#         # 
-#         input = """func main() begin
+    def test_544(self):
+        # Array Literal: Type inference of array elements 3
+        input = """func init()
+dynamic a
+dynamic b
+dynamic c
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 547))
-    
-#     def test_548(self):
-#         # 
-#         input = """func main() begin
+func main() begin
+    init()
+    var d <- 4
+    a <- [[[b]], [[[c, d]]]] ## a: ArrayType([2, 1, 1, 2]) = [[[[1, 2]]], [[[3, 4]]]]
+    writeNumber(a[0, 0, 0, 0] + a[0, 0, 0, 1] + a[1, 0, 0, 0] + a[1, 0, 0, 1]) ## 10.0
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 548))
+func init() begin
+    b <- [1, 2]
+    c <- 3
+end
+"""
+        expect = "10.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 544))
     
-#     def test_549(self):
-#         # 
-#         input = """func main() begin
+    def test_545(self):
+        # Index operator: Type inference for variable
+        input = """func init()
+dynamic a
+dynamic b
+dynamic c
+dynamic i
+dynamic j
+dynamic k
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 549))
+func main() begin
+    init()
+    number x1 <- a[i]
+    bool x2 <- b[i, j]
+    string x3 <- c[j, i]
     
+    writeNumber(x1)
+    writeBool(x2)
+    writeString(x3)
+    writeNumber(a[k])
+end
+
+func init() begin
+    a <- [5, 4, 3, 2, 1]
+    c <- [["PPL", "is"], ["very", "hard"]]
+    b <- [[a[0] > a[1], c[0, 0] == "PPL"], [false, true], [2 = 2, 1 != 3]]
+    i <- 0
+    j <- 1
+    k <- 2
+end
+"""
+        expect = "5.0truevery3.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 545))
+    
+    def test_546(self):
+        # Index operator: Type inference for function call
+        input = """func init()
+func a()
+func b()
+func c()
+dynamic i
+dynamic j
+dynamic k
+
+func main() begin
+    init()
+    number x1 <- a()[i]
+    bool x2 <- b()[i, k]
+    string x3 <- c()[j, i]
+    
+    writeNumber(x1)
+    writeBool(x2)
+    writeString(x3)
+    writeNumber(a()[k])
+end
+
+func a() return [5, 4, 3, 2, 1]
+func b()
+    return [[a()[0] > a()[1], c()[0, 0] == "PPL"], [false, true], [2 = 2, 1 != 3]]
+func c() return [["PPL", "is"], ["very", "hard"]]
+func init() begin
+    i <- 0
+    j <- 1
+    k <- 1
+end
+"""
+        expect = "5.0truevery4.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 546))
+    
+    def test_547(self):
+        # Index operator: Type inference for array write
+        input = """func init()
+dynamic a
+
+func main() begin
+    init()
+    a[0] <- 5
+    a[1] <- 4
+    
+    writeNumber(a[0])
+    writeNumber(a[1])
+    writeNumber(a[2])
+end
+
+func init() begin
+    a <- [1, 2, 3, 4, 5]
+end
+"""
+        expect = "5.04.03.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 547))
+    
+    def test_548(self):
+        # Index operator: Type inference for read-write array
+        input = """func init()
+func foo(number x) return x + 1
+dynamic a
+dynamic b
+
+func main() begin
+    init()
+    a[3 + foo(2)] <- a[b[2, 3]] + 4
+    writeNumber(a[6])
+end
+
+func init() begin
+    a <- [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    b <- [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]]
+end
+"""
+        expect = "17.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 548))
+    
+    def test_549(self):
+        # Index operator: Securing the max stack size
+        # This testcase is designed to ensure that the max stack size is calculated correctly
+        # when generating code for ArrayCell
+        input = """func bar(number x1, number x2, number x3, number x4, number x5, number x6, number x7, number x8, number x9)
+dynamic arr
+
+func pushIndices() begin
+    ## The stack size of this function should be at least 10
+    arr[bar(1, 2, 3, 4, 5, 6, 7, 8, 9)] <- 10 * 10
+end
+
+func pushRhs() begin
+    ## The stack size of this function should be at least 12
+    arr[9] <- arr[bar(1, 2, 3, 4, 5, 6, 7, 8, 9)] - 10
+end
+
+func main() begin
+    arr <- [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    pushIndices()
+    pushRhs()
+    writeNumber(arr[1])
+    writeNumber(arr[9])
+end
+
+func bar(number x1, number x2, number x3, number x4, number x5, number x6, number x7, number x8, number x9) return 1
+"""
+        expect = "100.090.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 549))
+    
+    # Statements
 #     def test_550(self):
 #         # 
 #         input = """func main() begin

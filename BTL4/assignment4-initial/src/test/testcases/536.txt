@@ -1,3 +1,17 @@
-func main() begin
+func foo(number a[4], bool b[3, 2], string c[2]) begin
+    a[1] <- 5
+    b[1, 0] <- true
+end
 
+func main() begin
+    number x[4] <- [1, 2, 3, 4]
+    bool y[3, 2] <- [[true, false], [false, true], [true, true]]
+    
+    writeNumber(x[1])
+    writeBool(y[1, 0])
+    
+    foo(x, y, ["PPL", "hard"])
+    
+    writeNumber(x[1])
+    writeBool(y[1, 0])
 end

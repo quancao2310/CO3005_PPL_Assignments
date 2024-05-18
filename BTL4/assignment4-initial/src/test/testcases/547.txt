@@ -1,3 +1,16 @@
-func main() begin
+func init()
+dynamic a
 
+func main() begin
+    init()
+    a[0] <- 5
+    a[1] <- 4
+    
+    writeNumber(a[0])
+    writeNumber(a[1])
+    writeNumber(a[2])
+end
+
+func init() begin
+    a <- [1, 2, 3, 4, 5]
 end

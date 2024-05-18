@@ -50,11 +50,11 @@ class Symbol:
         return f"Symbol({self.name}, {str(self.mtype)}, {str(self.value)}, {self.defined})"
 
 class Access():
-    def __init__(self, frame: Frame, sym: List[Symbol], isLeft: bool, isFirst = False):
+    def __init__(self, frame: Frame, sym: List[Symbol], isLeft: bool, expr = None):
         self.frame = frame
         self.sym = sym
         self.isLeft = isLeft
-        self.isFirst = isFirst
+        self.expr = expr
 
 class SubBody():
     def __init__(self, frame: Frame, sym: List[Symbol]):
@@ -314,21 +314,25 @@ class CodeGenVisitor(BaseVisitor):
         return expr_c + self.emit.emitRETURN(expr_t, o.frame)
     
     def visitAssign(self, ast: Assign, o: SubBody):
-        right_c, right_t = ast.rhs.accept(self, Access(o.frame, o.sym, False))
-        left_c, left_t = ast.lhs.accept(self, Access(o.frame, o.sym, True))
+        if type(ast.lhs) is ArrayCell:
+            cell_c, _ = ast.lhs.accept(self, Access(o.frame, o.sym, True, ast.rhs))
+            return cell_c
+        
+        readAccess = Access(o.frame, o.sym, False)
+        writeAccess = Access(o.frame, o.sym, True)
+        
+        right_c, right_t = ast.rhs.accept(self, readAccess)
+        left_c, left_t = ast.lhs.accept(self, writeAccess)
+        
         if type(left_t) is Unknown:
             self.infer(ast.lhs, right_t, o.sym)
-            left_c, left_t = ast.lhs.accept(self, Access(o.frame, o.sym, True))
+            left_c, left_t = ast.lhs.accept(self, writeAccess)
         if self.isUnknown(right_t):
             self.infer(ast.rhs, left_t, o.sym)
-            right_c, right_t = ast.rhs.accept(self, Access(o.frame, o.sym, False))
-            left_c, left_t = ast.lhs.accept(self, Access(o.frame, o.sym, True))
+            right_c, right_t = ast.rhs.accept(self, readAccess)
+            left_c, left_t = ast.lhs.accept(self, writeAccess)
         
-        if type(ast.lhs) is ArrayCell:
-            left_c_arr, left_c_store = left_c
-            return left_c_arr + right_c + left_c_store
-        if type(ast.lhs) is Id:
-            return right_c + left_c
+        return right_c + left_c
     
     def visitIf(self, ast: If, o: SubBody):
         code = ""
@@ -531,32 +535,50 @@ class CodeGenVisitor(BaseVisitor):
         return code, typ
     
     def visitArrayCell(self, ast: ArrayCell, o: Access):
-        arr_c, arr_t = ast.arr.accept(self, Access(o.frame, o.sym, False)) # Id or CallExpr
         length = len(ast.idx)
+        code = ""
         
-        if type(arr_t) is Unknown:
-            return "", arr_t
+        if o.isLeft:
+            rhs = o.expr
+            o.frame.push() # Simulate pushing the array reference
+            o.frame.push() # Simulate pushing the array index
+            
+            right_c, right_t = rhs.accept(self, Access(o.frame, o.sym, False))
+            o.frame.pop() # Pop simulated-array to actually push the array reference
+            arr_c, arr_t = ast.arr.accept(self, Access(o.frame, o.sym, False)) # Id or CallExpr
+            
+            if type(arr_t) is Unknown:
+                self.infer(ast, right_t, o.sym)
+                arr_c, arr_t = ast.arr.accept(self, Access(o.frame, o.sym, False))
+            if self.isUnknown(right_t):
+                self.infer(ast.rhs, arr_t.eleType, o.sym)
+                right_c, right_t = ast.rhs.accept(self, Access(o.frame, o.sym, False))
+            
+            o.frame.pop() # Pop simulated-index to actually push the index
+            o.frame.pop() # Simulate not pushing the rhs yet
+        else:
+            arr_c, arr_t = ast.arr.accept(self, Access(o.frame, o.sym, False)) # Id or CallExpr
+            if type(arr_t) is Unknown:
+                return "", arr_t
         
         for i in range(length):
             idx_c, idx_t = ast.idx[i].accept(self, Access(o.frame, o.sym, False))
-            
             if self.isUnknown(idx_t):
                 self.infer(ast.idx[i], NumberType(), o.sym)
                 idx_c, idx_t = ast.idx[i].accept(self, Access(o.frame, o.sym, False))
             
-            arr_c += idx_c
-            arr_c += self.emit.emitF2I(o.frame)
+            code += idx_c
+            code += self.emit.emitF2I(o.frame)
             if i != length - 1:
-                arr_c += self.emit.emitALOAD(arr_t, o.frame)
+                code += self.emit.emitALOAD(ArrayType([], None), o.frame)
         
         if o.isLeft:
-            try:
-                code = (arr_c, self.emit.emitASTORE(arr_t.eleType, o.frame))
-            except IllegalRuntimeException: # Illegal Runtime: Pop empty stack
-                o.frame.push()
-                return "", arr_t.eleType
+            o.frame.push() # Push the rhs again
+            code = arr_c + code + right_c
+            code += self.emit.emitASTORE(arr_t.eleType, o.frame)
         else:
-            code = arr_c + self.emit.emitALOAD(arr_t.eleType, o.frame)
+            code = arr_c + code
+            code += self.emit.emitALOAD(arr_t.eleType, o.frame)
         return code, arr_t.eleType
     
     def visitArrayLiteral(self, ast: ArrayLiteral, o: Access):
@@ -569,25 +591,8 @@ class CodeGenVisitor(BaseVisitor):
             if not self.isUnknown(expr_t):
                 common_t = expr_t
                 break
-        
-        # If there is none, it may exist an array of Unknowns
-        # Choose it instead to check size constraint
         if common_t is None:
-            for i in range(length):
-                _, expr_t = ast.value[i].accept(self, o)
-                if type(expr_t) is ArrayType:
-                    common_t = expr_t
-                    break
-            
-            if common_t is None:
-                return "", ArrayType([float(length)], Unknown())
-        
-        # Infer elements' type from the common_t Type
-        for i in range(length):
-            ele_c, ele_t = ast.value[i].accept(self, o)
-            
-            if self.isUnknown(ele_t):
-                self.infer(ast.value[i], common_t, o.sym)
+            return "", ArrayType([float(length)], Unknown())
         
         # Create the ArrayType of this array literal
         size = [float(length)] + (common_t.size if type(common_t) is ArrayType else [])
@@ -599,9 +604,15 @@ class CodeGenVisitor(BaseVisitor):
         for i in range(length):
             code += self.emit.emitDUP(o.frame)
             code += self.emit.emitPUSHICONST(i, o.frame)
+            
             ele_c, ele_t = ast.value[i].accept(self, o)
+            if self.isUnknown(ele_t):
+                self.infer(ast.value[i], common_t, o.sym)
+                ele_c, ele_t = ast.value[i].accept(self, o)
+            
             code += ele_c
             code += self.emit.emitASTORE(ele_t, o.frame)
+        
         return code, arrayType
     
     def visitNumberLiteral(self, ast: NumberLiteral, o: Access):

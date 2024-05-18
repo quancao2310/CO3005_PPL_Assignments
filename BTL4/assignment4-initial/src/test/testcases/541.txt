@@ -1,3 +1,10 @@
 func main() begin
-
+    dynamic a <- [1, 2, 3, 4, 5]
+    dynamic b <- [[1, 2, 3], [4, 5, 6]]
+    dynamic c <- [[[true, true, false], [true, true, false]], [[true, true, false], [true, true, false]]]
+    dynamic d <- ["PPL", "is", "very", "hard"]
+    
+    writeNumber(a[2] * a[3] + b[1, 2] * b[0, 1])
+    writeBool(c[1, 1, 1])
+    writeString(d[0] ... (" " ... d[1]))
 end

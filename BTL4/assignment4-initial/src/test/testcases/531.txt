@@ -1,3 +1,10 @@
 func main() begin
-
+    number a[1, 2, 3]
+    number b[2, 3] <- [[1, 2, 3], [4, 5, 6]]
+    bool c[2, 2, 3] <- [[[true, true, false], [true, true, false]], [[true, true, false], [true, true, false]]]
+    string d[2, 2] <- [["PPL", "is"], ["very", "hard"]]
+    
+    writeNumber(b[1, 0])
+    writeBool(c[1, 1, 1])
+    writeString(d[0, 0])
 end

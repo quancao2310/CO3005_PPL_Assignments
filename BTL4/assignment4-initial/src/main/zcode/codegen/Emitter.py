@@ -108,7 +108,7 @@ class Emitter():
         result.append(self.jvm.emitF2I())
         
         if len(in_.size) > 1:
-            typ = self.getJVMType(in_.eleType)
+            typ = self.getJVMType(ArrayType(in_.size[1:], in_.eleType))
         else:
             typ = self.getFullType(in_.eleType)
         

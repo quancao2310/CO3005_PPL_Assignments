@@ -1,3 +1,6 @@
 func main() begin
-
+    number a[3] <- [1, 2, 3]
+    number b[3] <- a
+    b[1] <- 5
+    writeNumber(a[1])
 end

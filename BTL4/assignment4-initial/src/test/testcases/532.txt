@@ -1,3 +1,9 @@
 func main() begin
-
+    number a[2, 3] <- [[1 + 2, 2 * 3, 3 / 4], [4 - 5, 5 % 2, 6 / 3]]
+    bool b[3] <- [true or true, false and false, not true]
+    string c[2] <- ["PPL " ... "is ", "very " ... "hard"]
+    
+    writeNumber(a[0, 2])
+    writeBool(b[1])
+    writeString(c[1])
 end

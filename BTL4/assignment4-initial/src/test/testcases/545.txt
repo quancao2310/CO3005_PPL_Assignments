@@ -1,3 +1,28 @@
-func main() begin
+func init()
+dynamic a
+dynamic b
+dynamic c
+dynamic i
+dynamic j
+dynamic k
 
+func main() begin
+    init()
+    number x1 <- a[i]
+    bool x2 <- b[i, j]
+    string x3 <- c[j, i]
+    
+    writeNumber(x1)
+    writeBool(x2)
+    writeString(x3)
+    writeNumber(a[k])
+end
+
+func init() begin
+    a <- [5, 4, 3, 2, 1]
+    c <- [["PPL", "is"], ["very", "hard"]]
+    b <- [[a[0] > a[1], c[0, 0] == "PPL"], [false, true], [2 = 2, 1 != 3]]
+    i <- 0
+    j <- 1
+    k <- 2
 end

@@ -1,3 +1,22 @@
-func main() begin
+func bar(number x1, number x2, number x3, number x4, number x5, number x6, number x7, number x8, number x9)
+dynamic arr
 
+func pushIndices() begin
+    ## The stack size of this function should be at least 10
+    arr[bar(1, 2, 3, 4, 5, 6, 7, 8, 9)] <- 10 * 10
 end
+
+func pushRhs() begin
+    ## The stack size of this function should be at least 12
+    arr[9] <- arr[bar(1, 2, 3, 4, 5, 6, 7, 8, 9)] - 10
+end
+
+func main() begin
+    arr <- [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    pushIndices()
+    pushRhs()
+    writeNumber(arr[1])
+    writeNumber(arr[9])
+end
+
+func bar(number x1, number x2, number x3, number x4, number x5, number x6, number x7, number x8, number x9) return 1

@@ -1,13 +1,5 @@
-..............................F
-======================================================================
-FAIL: test_530 (CodeGenSuite.CheckCodeGenSuite)
+..................................................
 ----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "D:\Quan\ĐAI HOC BACH KHOA\Học kỳ 232\Nguyên lý ngôn ngữ lập trình\BTL_PPL\BTL4\assignment4-initial\src\./test\CodeGenSuite.py", line 671, in test_530
-    self.assertTrue(TestCodeGen.test(input, expect, 530))
-AssertionError: False is not true
+Ran 50 tests in 16.455s
 
-----------------------------------------------------------------------
-Ran 31 tests in 7.812s
-
-FAILED (failures=1)
+OK
