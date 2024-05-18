@@ -1,1 +1,32 @@
+func init()
+dynamic a
+dynamic b
+dynamic c
+dynamic d
+dynamic e
+dynamic f
 
+func main() begin
+    init()
+    dynamic x1 <- -a
+    dynamic x2 <- --b
+    dynamic x3 <- -c + d
+    dynamic x4 <- -e * f
+    
+    writeNumber(x1)
+    writeString(" ")
+    writeNumber(x2)
+    writeString(" ")
+    writeNumber(x3)
+    writeString(" ")
+    writeNumber(x4)
+end
+
+func init() begin
+    a <- 100
+    b <- -----------1 ## -1
+    c <- ----------a ## 100
+    d <- 1
+    e <- 2
+    f <- 3
+end

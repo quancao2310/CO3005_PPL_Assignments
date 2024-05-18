@@ -1,1 +1,1 @@
-1.0an inferred string false1.0
+100.0200.0

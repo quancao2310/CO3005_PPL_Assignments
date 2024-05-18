@@ -1,1 +1,6 @@
-
+func main() begin
+    string a <- "Hello"
+    string b <- " World"
+    dynamic c <- a ... b
+    writeString(("\t" ... c) ..."\n")
+end

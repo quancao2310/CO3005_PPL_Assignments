@@ -1,1 +1,11 @@
+func foo(number a, bool b, string c) begin
+    writeNumber(a)
+    writeBool(b)
+    writeString(c ... "\n")
+end
+func bar(number num) return num/2
 
+func main() begin
+    foo(1, true, "a random string")
+    writeNumber(bar(10))
+end

@@ -1,1 +1,23 @@
-
+func main() begin
+    writeBool(10 = 20)
+    writeBool(20 = 20)
+    writeBool(10 != 20)
+    writeBool(20 != 20)
+    
+    writeString(" ")
+    
+    writeBool(10 < 20)
+    writeBool(10 > 20)
+    writeBool(20 > 20)
+    writeBool(10 <= 20)
+    writeBool(20 <= 20)
+    writeBool(10 >= 20)
+    writeBool(20 >= 20)
+    
+    writeString(" ")
+    
+    writeBool("" == "")
+    writeBool("abc" == "abc")
+    writeBool("abc" == "abd")
+    writeBool("123\'456" == "123'456")
+end

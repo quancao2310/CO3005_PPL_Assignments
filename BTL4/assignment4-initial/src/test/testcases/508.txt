@@ -1,6 +1,15 @@
-number a <- 100
+func init()
+func foo() return false
+dynamic a
+
 func main() begin
-    writeNumber(a)
-    number a <- 200
-    writeNumber(a)
+    init()
+    number b <- a ## Infer rhs
+    dynamic c <- foo() ## Infer lhs
+    writeNumber(b)
+    writeBool(c)
+end
+
+func init() begin
+    a <- 1.23
 end

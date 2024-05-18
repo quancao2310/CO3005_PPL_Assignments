@@ -1,1 +1,20 @@
+func init()
+dynamic a
+dynamic b
+dynamic c
 
+func main() begin
+    init()
+    dynamic x1 <- a ... " str"
+    dynamic x2 <- b ... c
+    
+    writeString(x1)
+    writeString("\n")
+    writeString(x2)
+end
+
+func init() begin
+    a <- "abc"
+    b <- "fed"
+    c <- "ghi"
+end

@@ -1,1 +1,32 @@
+func init()
+dynamic a
+dynamic b
+dynamic c
+dynamic d
+dynamic e
+dynamic f
 
+func main() begin
+    init()
+    var x1 <- a + b - 1
+    var x2 <- 3 * c - d
+    var x3 <- e / 2
+    var x4 <- f % 5
+    
+    writeNumber(x1)
+    writeString(" ")
+    writeNumber(x2)
+    writeString(" ")
+    writeNumber(x3)
+    writeString(" ")
+    writeNumber(x4)
+end
+
+func init() begin
+    a <- 100
+    b <- 10.18
+    c <- a - 10
+    d <- b + 0.82
+    e <- a / 2
+    f <- 57
+end

@@ -1,1 +1,6 @@
+func foo(number a, bool a, bool a)
 
+func foo(number x, bool y, bool z) return
+func main() begin
+    foo(1, true, false)
+end

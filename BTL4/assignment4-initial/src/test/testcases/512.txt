@@ -1,1 +1,12 @@
+func foo() return 123
 
+func bar(number foo, number bar, string main) begin
+    number x <- bar + foo
+    writeNumber(x)
+    writeString(main)
+    writeNumber(foo())
+end
+
+func main() begin
+    bar(321, 123, "main")
+end

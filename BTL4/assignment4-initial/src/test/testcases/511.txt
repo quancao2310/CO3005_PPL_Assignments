@@ -1,1 +1,9 @@
-
+func foo(number x, bool y) begin
+    string x <- "str "
+    bool y <- true
+    writeString(x)
+    writeBool(y)
+end
+func main() begin
+    foo(1, false)
+end

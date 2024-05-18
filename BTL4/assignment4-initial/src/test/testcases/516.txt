@@ -1,1 +1,20 @@
+func init()
+func bar()
+dynamic d
 
+func foo(number a, number b) begin
+    if (a = b) return 123 ## Return value infers function type
+    return bar() ## Function type infers another function
+end
+
+func bar() return d ## Function type infers the returned variable
+
+func main() begin
+    init()
+    writeNumber(foo(120, 121))
+    writeNumber(bar())
+end
+
+func init() begin
+    d <- 12.34e5
+end

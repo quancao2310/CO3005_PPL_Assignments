@@ -1,7 +1,11 @@
-func foo()
-func main() begin
-    number a <- foo()
-    writeNumber(a)
+func foo() return "Hello"
+func bar() begin
+    number a <- 1
+    dynamic b
 end
 
-func foo() return 1.5
+func main() begin
+    bar()
+    var x <- foo()
+    writeString(x)
+end

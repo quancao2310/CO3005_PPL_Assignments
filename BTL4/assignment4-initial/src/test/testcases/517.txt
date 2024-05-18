@@ -1,1 +1,10 @@
-
+func main() begin
+    number a <- 100
+    begin
+        number a <- 200
+        writeNumber(a)
+    end
+    string b <- " false"
+    writeNumber(a)
+    writeString(b)
+end

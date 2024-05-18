@@ -1,1 +1,27 @@
+func init()
+dynamic a
+dynamic b
+dynamic c
+dynamic d
+dynamic e
 
+func main() begin
+    init()
+    dynamic x1 <- a and not b
+    dynamic x2 <- not not c or d
+    dynamic x3 <- a or not e and d
+    
+    writeBool(x1)
+    writeString(" ")
+    writeBool(x2)
+    writeString(" ")
+    writeBool(x3)
+end
+
+func init() begin
+    a <- false
+    b <- not not not not not not not false ## true
+    c <- not not not not not not a ## false
+    d <- true
+    e <- false
+end

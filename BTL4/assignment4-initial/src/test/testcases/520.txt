@@ -1,1 +1,22 @@
-
+func main() begin
+    number a <- 47.25
+    number b <- 10.5
+    var c <- a + b
+    var d <- a - b
+    var e <- -a + b
+    var f <- -a * -b
+    var g <- a / b
+    var h <- a % b
+    
+    writeNumber(c)
+    writeString(" ")
+    writeNumber(d)
+    writeString(" ")
+    writeNumber(e)
+    writeString(" ")
+    writeNumber(f)
+    writeString(" ")
+    writeNumber(g)
+    writeString(" ")
+    writeNumber(h)
+end

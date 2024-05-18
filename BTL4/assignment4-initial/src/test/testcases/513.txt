@@ -1,1 +1,8 @@
+number a <- 100.
 
+func a() return "string"
+
+func main() begin
+    writeNumber(a)
+    writeString(a())
+end

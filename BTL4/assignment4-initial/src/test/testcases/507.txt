@@ -1,11 +1,7 @@
-dynamic a
-func init()
+func foo()
 func main() begin
-    init()
-    ## dynamic b <- a + 1
-    number b <- a
-    writeNumber(b)
+    number a <- foo()
+    writeNumber(a)
 end
-func init() begin
-    a <- 1.23
-end
+
+func foo() return 1.5

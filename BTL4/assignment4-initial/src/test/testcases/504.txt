@@ -1,11 +1,6 @@
-var a <- 1
-dynamic b <- "an inferred string "
-dynamic c <- false
-dynamic d <- a
-
+number a <- 100
 func main() begin
     writeNumber(a)
-    writeString(b)
-    writeBool(c)
-    writeNumber(d)
+    number a <- 200
+    writeNumber(a)
 end

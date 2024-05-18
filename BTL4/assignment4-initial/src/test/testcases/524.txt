@@ -1,1 +1,13 @@
-
+func main() begin
+    number a <- 1
+    number b <- 2
+    bool c <- a >= b
+    number x <- ((a + a - b) * (a / b)) + ((a % b) - ((b % a) + (b / a) * (a + a) / (b - a))) + (a * a)
+    bool y <- ((a + a * a) / (a - b) < a + a) and not c or (a + a >= a)
+    y <- y and (not (a < a) or ((a <= a) and ((a >= a) or ((a = a) and (a != a)))))
+    
+    writeNumber(x)
+    writeString("\n")
+    writeBool(y)
+    writeString(" This " ... (("is " ... ("a " ... "string ")) ... ("concatenation" ... "!")))
+end

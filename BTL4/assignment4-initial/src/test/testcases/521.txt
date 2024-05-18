@@ -1,1 +1,14 @@
-
+func main() begin
+    writeBool(true and true)
+    writeBool(true and false)
+    writeBool(false and true)
+    writeBool(false and false)
+    
+    writeBool(true or true)
+    writeBool(true or false)
+    writeBool(false or true)
+    writeBool(false or false)
+    
+    writeBool(not true)
+    writeBool(not false)
+end

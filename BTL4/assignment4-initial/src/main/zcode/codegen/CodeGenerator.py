@@ -307,6 +307,9 @@ class CodeGenVisitor(BaseVisitor):
         
         if self.isUnknown(func_symbol.mtype.rettype):
             func_symbol.mtype.rettype = expr_t
+        if self.isUnknown(expr_t):
+            self.infer(ast.expr, func_symbol.mtype.rettype, o.sym)
+            expr_c, expr_t = ast.expr.accept(self, Access(o.frame, o.sym, False))
         
         return expr_c + self.emit.emitRETURN(expr_t, o.frame)
     
@@ -412,8 +415,6 @@ class CodeGenVisitor(BaseVisitor):
         func_symbol = next(filter(lambda sym: sym.name == ast.name.name and type(sym.mtype) is MType, o.sym))
         if type(func_symbol.mtype.rettype) is Unknown:
             func_symbol.mtype.rettype = VoidType()
-        cname = func_symbol.value.value
-        ftype = func_symbol.mtype
         code = ""
         
         for i in range(len(ast.args)):
@@ -422,15 +423,33 @@ class CodeGenVisitor(BaseVisitor):
             
             if self.isUnknown(arg_t):
                 arg_t = self.infer(ast.args[i], param_t, o.sym)
-                # arg_c, arg_t = ast.args[i].accept(self, o)
+                arg_c, arg_t = ast.args[i].accept(self, Access(o.frame, o.sym, False))
             
             code += arg_c
-        code += self.emit.emitINVOKESTATIC(cname + "/" + ast.name.name, ftype, o.frame)
+        code += self.emit.emitINVOKESTATIC(func_symbol.value.value + "/" + ast.name.name, func_symbol.mtype, o.frame)
         return code
     
     def visitBinaryOp(self, ast: BinaryOp, o: Access):
+        if ast.op in ['+', '-', '*', '/', '%']:
+            in_t = out_t = NumberType()
+        elif ast.op in ['and', 'or']:
+            in_t = out_t = BoolType()
+        elif ast.op == "...":
+            in_t = out_t = StringType()
+        elif ast.op in ['=', '!=', '<', '>', '<=', '>=']:
+            in_t, out_t = NumberType(), BoolType()
+        else:
+            in_t, out_t = StringType(), BoolType()
+        
         left_c, left_t = ast.left.accept(self, o)
+        if self.isUnknown(left_t):
+            self.infer(ast.left, in_t, o.sym)
+            left_c, left_t = ast.left.accept(self, o)
+        
         right_c, right_t = ast.right.accept(self, o)
+        if self.isUnknown(right_t):
+            self.infer(ast.right, in_t, o.sym)
+            right_c, right_t = ast.right.accept(self, o)
         
         if ast.op in ['+', '-']:
             op_c = self.emit.emitADDOP(ast.op, left_t, o.frame)
@@ -444,18 +463,25 @@ class CodeGenVisitor(BaseVisitor):
             op_c = self.emit.emitOROP(o.frame)
         elif ast.op == "...":
             op_c = self.emit.emitCONCAT(o.frame)
-        elif ast.op in ['=', '!=', '<', '>', '<=', '>=', '==']:
+        else:
             op_c = self.emit.emitREOP(ast.op, left_t, o.frame)
-            left_t = BoolType()
         
-        return left_c + right_c + op_c, left_t
+        return left_c + right_c + op_c, out_t
     
     def visitUnaryOp(self, ast: UnaryOp, o: Access):
+        if ast.op == '-':
+            res_t = NumberType()
+        else:
+            res_t = BoolType()
+        
         expr_c, expr_t = ast.operand.accept(self, o)
+        if self.isUnknown(expr_t):
+            self.infer(ast.operand, res_t, o.sym)
+            expr_c, expr_t = ast.operand.accept(self, o)
         
         if ast.op == '-':
             op_c = self.emit.emitNEGOP(expr_t, o.frame)
-        elif ast.op == 'not':
+        else:
             op_c = self.emit.emitNOT(expr_t, o.frame)
         
         return expr_c + op_c, expr_t
@@ -474,7 +500,7 @@ class CodeGenVisitor(BaseVisitor):
             
             if self.isUnknown(arg_t):
                 self.infer(ast.args[i], param_t, o.sym)
-                # arg_c, arg_t = ast.args[i].accept(self, o)
+                arg_c, arg_t = ast.args[i].accept(self, o)
             
             code += arg_c
         code += self.emit.emitINVOKESTATIC(func_symbol.value.value + "/" + ast.name.name, func_symbol.mtype, o.frame)
@@ -509,27 +535,26 @@ class CodeGenVisitor(BaseVisitor):
         length = len(ast.idx)
         
         if type(arr_t) is Unknown:
-            return "", Unknown()
+            return "", arr_t
         
         for i in range(length):
-            _, idx_t = ast.idx[i].accept(self, o)
+            idx_c, idx_t = ast.idx[i].accept(self, Access(o.frame, o.sym, False))
             
             if self.isUnknown(idx_t):
                 self.infer(ast.idx[i], NumberType(), o.sym)
-                # arr_c += self.visit(Assign(ast.idx[i], self.get_default_value(NumberType())), SubBody(o.frame, o.sym))
-        
-        for i in range(length - 1):
-            idx_c, _ = ast.idx[i].accept(self, Access(o.frame, o.sym, False))
+                idx_c, idx_t = ast.idx[i].accept(self, Access(o.frame, o.sym, False))
+            
             arr_c += idx_c
             arr_c += self.emit.emitF2I(o.frame)
-            arr_c += self.emit.emitALOAD(arr_t, o.frame)
+            if i != length - 1:
+                arr_c += self.emit.emitALOAD(arr_t, o.frame)
         
-        last_idx_c, _ = ast.idx[-1].accept(self, Access(o.frame, o.sym, False))
-        arr_c += last_idx_c
-        arr_c += self.emit.emitF2I(o.frame)
         if o.isLeft:
-            # Left-hand side of assignment
-            code = [arr_c, self.emit.emitASTORE(arr_t.eleType, o.frame)]
+            try:
+                code = (arr_c, self.emit.emitASTORE(arr_t.eleType, o.frame))
+            except IllegalRuntimeException: # Illegal Runtime: Pop empty stack
+                o.frame.push()
+                return "", arr_t.eleType
         else:
             code = arr_c + self.emit.emitALOAD(arr_t.eleType, o.frame)
         return code, arr_t.eleType

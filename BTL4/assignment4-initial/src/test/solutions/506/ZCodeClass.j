@@ -25,15 +25,22 @@ Label1:
 .limit locals 1
 .end method
 
-.method public static main([Ljava/lang/String;)V
-.var 0 is args [Ljava/lang/String; from Label0 to Label1
+.method public static foo()Ljava/lang/String;
 Label0:
-.var 1 is a F from Label2 to Label3
+	ldc "Hello"
+	areturn
+Label1:
+.limit stack 1
+.limit locals 0
+.end method
+
+.method public static bar()V
+Label0:
+.var 0 is a F from Label2 to Label3
+.var 1 is b F from Label2 to Label3
 Label2:
-	invokestatic ZCodeClass/foo()F
-	fstore_1
-	fload_1
-	invokestatic io/writeNumber(F)V
+	fconst_1
+	fstore_0
 Label3:
 Label1:
 	return
@@ -41,11 +48,19 @@ Label1:
 .limit locals 2
 .end method
 
-.method public static foo()F
+.method public static main([Ljava/lang/String;)V
+.var 0 is args [Ljava/lang/String; from Label0 to Label1
 Label0:
-	ldc 1.5
-	freturn
+.var 1 is x Ljava/lang/String; from Label2 to Label3
+Label2:
+	invokestatic ZCodeClass/bar()V
+	invokestatic ZCodeClass/foo()Ljava/lang/String;
+	astore_1
+	aload_1
+	invokestatic io/writeString(Ljava/lang/String;)V
+Label3:
 Label1:
+	return
 .limit stack 1
-.limit locals 0
+.limit locals 2
 .end method

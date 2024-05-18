@@ -1,1 +1,24 @@
+func init()
+dynamic a
+dynamic b
+dynamic c
+dynamic d
 
+func foo(number a, bool b, string c, number d) begin
+    writeNumber(a - d)
+    writeBool(b and (c == "abc"))
+end
+
+func inc(number a) return a + 1
+
+func main() begin
+    init()
+    foo(a, b, c, inc(d))
+end
+
+func init() begin
+    a <- 1
+    b <- true
+    c <- "abc"
+    d <- 10
+end

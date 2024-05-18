@@ -1,6 +1,12 @@
-func foo() return
-func bar() begin
-end
+var a <- 1
+dynamic b <- "an inferred string "
+dynamic c
+dynamic d <- a
 
 func main() begin
+    c <- false
+    writeNumber(a)
+    writeString(b)
+    writeBool(c)
+    writeNumber(d)
 end

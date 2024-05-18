@@ -1,1 +1,7 @@
+number abc <- 12.3e3
 
+func foo(string abc) return abc == "abc"
+
+func main() begin
+    writeBool(foo("abc"))
+end

@@ -1,1 +1,13 @@
-
+number a <- 6
+func main() begin
+    dynamic b <- 7
+    begin
+        a <- 8
+        begin
+            b <- 9
+            writeNumber(a + b) ## 8 + 9 = 17
+        end
+        writeNumber(a + b) ## 8 + 9 = 17
+    end
+    writeNumber(a + b) ## 8 + 9 = 17
+end

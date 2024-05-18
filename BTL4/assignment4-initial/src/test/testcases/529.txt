@@ -1,1 +1,29 @@
+func init()
+dynamic a
+dynamic b
+dynamic c
+dynamic d
+dynamic e
+dynamic f
 
+func main() begin
+    init()
+    dynamic x1 <- a > b
+    dynamic x2 <- c != d
+    dynamic x3 <- e == f
+    
+    writeBool(x1)
+    writeString(" ")
+    writeBool(x2)
+    writeString(" ")
+    writeBool(x3)
+end
+
+func init() begin
+    a <- 100
+    b <- 200
+    c <- 100.0
+    d <- 100.00
+    e <- "23"
+    f <- "23"
+end
