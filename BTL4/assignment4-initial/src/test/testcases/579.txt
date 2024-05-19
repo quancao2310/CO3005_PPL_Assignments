@@ -1,3 +1,8 @@
-func main() begin
+func xor(bool a, bool b) return (a and not b) or (not a and b)
 
+func main() begin
+    writeBool(xor(true, true))
+    writeBool(xor(true, false))
+    writeBool(xor(false, true))
+    writeBool(xor(false, false))
 end

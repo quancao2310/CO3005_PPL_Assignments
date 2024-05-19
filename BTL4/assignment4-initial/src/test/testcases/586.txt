@@ -1,3 +1,21 @@
-func main() begin
+func print(string src, string dst) begin
+    string output <- "Move 1 disk from "
+    output <- output ... src
+    output <- output ... " to "
+    output <- output ... dst
+    output <- output ... "\n"
+    writeString(output)
+end
 
+func tower_of_hanoi(number n, string src, string dst, string aux) begin
+    if (n = 1) print(src, dst)
+    else begin
+        tower_of_hanoi(n - 1, src, aux, dst)
+        tower_of_hanoi(1, src, dst, aux)
+        tower_of_hanoi(n - 1, aux, dst, src)
+    end
+end
+
+func main() begin
+    tower_of_hanoi(3, "A", "C", "B")
 end

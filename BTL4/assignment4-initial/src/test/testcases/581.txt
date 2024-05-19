@@ -1,3 +1,25 @@
-func main() begin
+func round(number n)
 
+func dec_to_bin(number n) begin
+    if (n < 0) return "not implemented\n"
+    if (n = 0) return "0\n"
+    
+    var res <- "\n"
+    var i <- 0
+    for i until n <= 0 by 0 begin
+        if (n % 2 = 0) res <- "0" ... res
+        else res <- "1" ... res
+        n <- round(n/2)
+    end
+    
+    return res
+end
+
+func round(number n) return n - n % 1
+
+func main() begin
+    writeString(dec_to_bin(4))
+    writeString(dec_to_bin(10))
+    writeString(dec_to_bin(100))
+    writeString(dec_to_bin(1000))
 end

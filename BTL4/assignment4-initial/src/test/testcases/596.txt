@@ -1,3 +1,50 @@
-func main() begin
+func swap(number arr[10], number i, number j) begin
+    if ((i < 0) or (i >= 10) or (j < 0) or (j >= 10) or (i = j)) return
+    var tmp <- arr[i]
+    arr[i] <- arr[j]
+    arr[j] <- tmp
+end
 
+func partition(number arr[100], number left, number right) begin
+    number pivot <- arr[left]
+    number i <- left + 1
+    number j <- right
+    number saved_i <- i
+    number saved_j <- j
+    
+    for i until i > j by 0 begin
+        for i until ((i > j) or (arr[i] >= pivot)) by 1 begin
+            saved_i <- i + 1
+        end
+        i <- saved_i
+        for j until ((i > j) or (arr[j] < pivot)) by -1 begin
+            saved_j <- j - 1
+        end
+        j <- saved_j
+        if (i < j) begin
+            swap(arr, i, j)
+            i <- i + 1
+            j <- j - 1
+        end
+    end
+    swap(arr, j, left)
+    return j
+end
+
+func quick_sort(number arr[100], number left, number right) begin
+    if (left >= right) return
+    number pos <- partition(arr, left, right)
+    quick_sort(arr, left, pos - 1)
+    quick_sort(arr, pos + 1, right)
+end
+
+func main() begin
+    dynamic arr <- [5.71, 1.69, 3.49, 2.65, 4.28, 7.84, 1.49, 5.52, 2.48, 7.87]
+    quick_sort(arr, 0, 9)
+    writeNumber(arr[0])
+    var i <- 1
+    for i until i = 10 by 1 begin
+        writeString(" ")
+        writeNumber(arr[i])
+    end
 end

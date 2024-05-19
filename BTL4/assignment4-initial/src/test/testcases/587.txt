@@ -1,3 +1,53 @@
-func main() begin
+func pow(number base, number exp) begin
+    number res <- 1
+    var i <- 0
+    for i until i = exp by 1 begin
+        res <- res * base
+    end
+    return res
+end
 
+func round(number n, number decimal_points) begin
+    number factor <- pow(10, decimal_points)
+    return ((n * factor) - (n * factor) % 1) / factor
+end
+
+func sqrt(number n, number decimal_points) begin
+    if (n < 0) return -1
+    
+    number left <- 0
+    number right <- n
+    number mid
+    var _ <- 0
+    
+    for _ until right - left < pow(0.1, decimal_points) by 0 begin
+        mid <- (left + right) / 2
+        if (mid * mid = n) return mid
+        elif (mid * mid < n) left <- mid
+        else right <- mid
+    end
+    return round((left + right)/2, decimal_points)
+end
+
+func main() begin
+    writeNumber(sqrt(0, 2))
+    writeString("\n")
+    writeNumber(sqrt(25, 2))
+    writeString("\n")
+    writeNumber(sqrt(81, 2))
+    writeString("\n")
+    writeNumber(sqrt(100, 2))
+    writeString("\n")
+    
+    writeNumber(sqrt(9, 2))
+    writeString("\n")
+    writeNumber(sqrt(12, 2))
+    writeString("\n")
+    writeNumber(sqrt(13, 2))
+    writeString("\n")
+    writeNumber(sqrt(14, 2))
+    writeString("\n")
+    writeNumber(sqrt(15, 2))
+    writeString("\n")
+    writeNumber(sqrt(16, 2))
 end

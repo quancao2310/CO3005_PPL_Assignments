@@ -1,3 +1,13 @@
-func main() begin
+func is_leap(number year) return (year % 400 = 0) or ((year % 4 = 0) and (year % 100 != 0))
 
+func main() begin
+    var years <- [2001, 2004, 1900, 2000]
+    var i <- 0
+    for i until i = 4 by 1 begin
+        writeNumber(years[i])
+        if (is_leap(years[i]))
+            writeString(" is a leap year\n")
+        else
+            writeString(" is not a leap year\n")
+    end
 end

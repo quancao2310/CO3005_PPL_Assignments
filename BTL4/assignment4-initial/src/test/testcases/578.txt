@@ -1,3 +1,14 @@
-func main() begin
+func printArr(number a[10]) begin
+    writeNumber(a[0])
+    var i <- 1
+    for i until i = 10 by 1 begin
+        writeString(" ")
+        writeNumber(a[i])
+    end
+    writeString("\n")
+end
 
+func main() begin
+    printArr([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    printArr([2, 0, 2, 4, 0, 5, 1, 9, 0, 0])
 end

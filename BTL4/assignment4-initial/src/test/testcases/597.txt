@@ -1,3 +1,44 @@
-func main() begin
+func swap(number arr[10], number i, number j) begin
+    if ((i < 0) or (i >= 10) or (j < 0) or (j >= 10) or (i = j)) return
+    var tmp <- arr[i]
+    arr[i] <- arr[j]
+    arr[j] <- tmp
+end
 
+func heapify(number arr[10], number length, number index) begin
+    number l <- 2 * index + 1
+    number r <- 2 * index + 2
+    number largest <- index
+    if (l < length)
+        if (arr[l] > arr[largest]) largest <- l
+    if (r < length)
+        if (arr[r] > arr[largest]) largest <- r
+    if (largest != index) begin
+        swap(arr, index, largest)
+        heapify(arr, length, largest)
+    end
+end
+
+func heap_sort(number arr[10], number length) begin
+    ## Build heap
+    number internal <- (length/2 - (length/2 % 1)) - 1
+    for internal until internal < 0 by -1
+        heapify(arr, length, internal)
+    
+    var i <- length - 1
+    for i until i <= 0 by -1 begin
+        swap(arr, 0, i)
+        heapify(arr, i, 0)
+    end
+end
+
+func main() begin
+    dynamic arr <- [5.71, 1.69, 3.49, 2.65, 4.28, 7.84, 1.49, 5.52, 2.48, 7.87]
+    heap_sort(arr, 10)
+    writeNumber(arr[0])
+    var i <- 1
+    for i until i = 10 by 1 begin
+        writeString(" ")
+        writeNumber(arr[i])
+    end
 end

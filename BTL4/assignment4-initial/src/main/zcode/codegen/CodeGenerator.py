@@ -12,8 +12,6 @@ class MType(Type):
     def __init__(self, partype: List[Type], rettype: Type):
         self.partype = partype
         self.rettype = rettype
-    def __str__(self):
-        return f"MType({[str(typ) for typ in self.partype]}, {str(self.rettype)})"
 
 class ClassType(Type): # For ZCodeClass
     def __init__(self, className: str):
@@ -30,14 +28,10 @@ class Val(ABC):
 class Index(Val):
     def __init__(self, value: int):
         self.value = value
-    def __str__(self):
-        return f"Index({self.value})"
 
 class CName(Val):
     def __init__(self, value: str):
         self.value = value
-    def __str__(self):
-        return f"CName({self.value})"
 
 # Symbol class
 class Symbol:
@@ -46,8 +40,6 @@ class Symbol:
         self.mtype = mtype
         self.value = value
         self.defined = defined
-    def __str__(self):
-        return f"Symbol({self.name}, {str(self.mtype)}, {str(self.value)}, {self.defined})"
 
 class Access():
     def __init__(self, frame: Frame, sym: List[Symbol], isLeft: bool, expr = None):
@@ -191,18 +183,17 @@ class CodeGenVisitor(BaseVisitor):
         
         # Visit all global variables first to get the symbols
         global_subbody = SubBody(None, self.env)
-        for decl in ast.decl:
-            if type(decl) is VarDecl:
-                _, global_subbody = decl.accept(self, global_subbody)
+        for decl in filter(lambda decl: type(decl) is VarDecl, ast.decl):
+            _, global_subbody = decl.accept(self, global_subbody)
         
         # Generate static initializer and default constructor
-        self.genMETHOD(self.clinit, [Symbol("<clinit>", MType([], VoidType()), CName(self.className))] + global_subbody.sym, Frame("<clinit>", VoidType()))
-        self.genMETHOD(init, [Symbol("<init>", MType([], VoidType()), CName(self.className))], Frame("<init>", VoidType()))
+        mtype, cname = MType([], VoidType()), CName(self.className)
+        self.genMETHOD(self.clinit, [Symbol("<clinit>", mtype, cname)] + global_subbody.sym, Frame("<clinit>", VoidType()))
+        self.genMETHOD(init, [Symbol("<init>", mtype, cname)], Frame("<init>", VoidType()))
         
         # Generate static methods for functions
-        for decl in ast.decl:
-            if type(decl) is FuncDecl:
-                global_subbody = decl.accept(self, global_subbody)
+        for decl in filter(lambda decl: type(decl) is FuncDecl, ast.decl):
+            global_subbody = decl.accept(self, global_subbody)
         
         # Generate static fields for global variables (after inference)
         code = ""

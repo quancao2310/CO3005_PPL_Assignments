@@ -1,3 +1,12 @@
-func main() begin
+number fib[10]
 
+func main() begin
+    fib[0] <- 0
+    fib[1] <- 1
+    
+    var i <- 2
+    for i until i = 10 by 1
+        fib[i] <- fib[i - 1] + fib[i - 2]
+    
+    writeNumber(fib[9])
 end

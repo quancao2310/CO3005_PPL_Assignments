@@ -1,3 +1,25 @@
-func main() begin
+func lis(number arr[10], number n) begin
+    number lis[10]
+    lis[0] <- 1
+    
+    number i <- 1
+    for i until i >= n by 1 begin
+        lis[i] <- 1
+        
+        number j <- 0
+        for j until j >= i by 1
+            if ((arr[i] > arr[j]) and (lis[j] + 1 > lis[i]))
+                lis[i] <- lis[j] + 1
+    end
+    
+    number max <- lis[0]
+    for i until i >= n by 1
+        if (lis[i] > max) max <- lis[i]
+    
+    return max
+end
 
+func main() begin
+    dynamic arr <- [5.71, 1.69, 3.49, 2.65, 4.28, 7.84, 1.49, 5.52, 2.48, 7.87]
+    writeNumber(lis(arr, 10)) ## 5: 1.69, 2.65, 4.28, 7.84, 7.87
 end

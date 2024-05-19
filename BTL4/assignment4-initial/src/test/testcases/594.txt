@@ -1,3 +1,38 @@
-func main() begin
+func sort_segment(number arr[10], number segment_idx, number k) begin
+    number i <- segment_idx + k
+    for i until i >= 10 by k begin
+        number tmp <- arr[i]
+        number j <- i - k
+        for j until j < -k by -k begin
+            if (j < 0) begin ## separated due to no short-circuit evaluation
+                arr[j + k] <- tmp
+                break
+            end
+            elif (tmp >= arr[j]) begin
+                arr[j + k] <- tmp
+                break
+            end
+            else arr[j + k] <- arr[j]
+        end
+    end
+end
 
+func shell_sort(number arr[10], number num_of_segment_list[3]) begin
+    number i <- 2
+    for i until i < 0 by -1 begin
+        number segment <- 0
+        for segment until segment = num_of_segment_list[i] by 1
+            sort_segment(arr, segment, num_of_segment_list[i])
+    end
+end
+
+func main() begin
+    dynamic arr <- [5.71, 1.69, 3.49, 2.65, 4.28, 7.84, 1.49, 5.52, 2.48, 7.87]
+    shell_sort(arr, [1, 2, 4])
+    writeNumber(arr[0])
+    var i <- 1
+    for i until i = 10 by 1 begin
+        writeString(" ")
+        writeNumber(arr[i])
+    end
 end

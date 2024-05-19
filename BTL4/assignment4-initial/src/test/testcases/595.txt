@@ -1,3 +1,47 @@
-func main() begin
+func round(number n) return n - n % 1
 
+func merge(number arr[10], number left, number right, number mid) begin
+    number left_length <- mid - left + 1 ## left -> mid
+    number right_length <- right - mid ## mid + 1 -> right
+    number arr_left[10]
+    number arr_right[10]
+    
+    number i <- 0
+    number j <- 0
+    
+    for i until i >= left_length by 1
+        arr_left[i] <- arr[left + i]
+    for j until j >= right_length by 1
+        arr_right[j] <- arr[mid + 1 + j]
+    
+    number k <- left
+    for k until k > right by 1 begin
+        if ((i < left_length) and ((j >= right_length) or (arr_left[i] <= arr_right[j]))) begin
+            arr[k] <- arr_left[i]
+            i <- i + 1
+        end
+        else begin
+            arr[k] <- arr_right[j]
+            j <- j + 1
+        end
+    end
+end
+
+func merge_sort(number arr[10], number left, number right) begin
+    if (left >= right) return
+    number mid <- round((left + right) / 2)
+    merge_sort(arr, left, mid)
+    merge_sort(arr, mid + 1, right)
+    merge(arr, left, right, mid)
+end
+
+func main() begin
+    dynamic arr <- [5.71, 1.69, 3.49, 2.65, 4.28, 7.84, 1.49, 5.52, 2.48, 7.87]
+    merge_sort(arr, 0, 9)
+    writeNumber(arr[0])
+    var i <- 1
+    for i until i = 10 by 1 begin
+        writeString(" ")
+        writeNumber(arr[i])
+    end
 end

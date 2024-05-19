@@ -1,0 +1,4 @@
+2001.0 is not a leap year
+2004.0 is a leap year
+1900.0 is not a leap year
+2000.0 is a leap year

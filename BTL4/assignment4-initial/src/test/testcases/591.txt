@@ -1,3 +1,26 @@
-func main() begin
+func swap(number arr[10], number i, number j) begin
+    if ((i < 0) or (i >= 10) or (j < 0) or (j >= 10) or (i = j)) return
+    var tmp <- arr[i]
+    arr[i] <- arr[j]
+    arr[j] <- tmp
+end
 
+func bubble_sort(number arr[10]) begin
+    number i <- 1
+    for i until i = 10 by 1 begin
+        number j <- 9
+        for j until j < i by -1
+            if (arr[j] < arr[j - 1]) swap(arr, j, j - 1)
+    end
+end
+
+func main() begin
+    dynamic arr <- [5.71, 1.69, 3.49, 2.65, 4.28, 7.84, 1.49, 5.52, 2.48, 7.87]
+    bubble_sort(arr)
+    writeNumber(arr[0])
+    var i <- 1
+    for i until i = 10 by 1 begin
+        writeString(" ")
+        writeNumber(arr[i])
+    end
 end

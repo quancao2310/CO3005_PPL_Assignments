@@ -1,3 +1,12 @@
-func main() begin
+func fact(number n) begin
+    if (n <= 1) return 1
+    return n * fact(n - 1)
+end
 
+func main() begin
+    writeNumber(fact(1))
+    writeNumber(fact(2))
+    writeNumber(fact(3))
+    writeNumber(fact(4))
+    writeNumber(fact(5))
 end

@@ -1,3 +1,20 @@
-func main() begin
+func round(number n) return n - n % 1
 
+func interpolation_search(number arr[10], number element, number left, number right)
+begin
+    if ((left > right) or (element < arr[left]) or (element > arr[right])) return -1
+    number pos <- left + (right - left)*(element - arr[left])/(arr[right] - arr[left])
+    pos <- round(pos)
+    if (element = arr[pos]) return pos
+    elif (element < arr[pos]) return interpolation_search(arr, element, left, pos-1)
+    return interpolation_search(arr, element, pos+1, right)
+end
+
+func main() begin
+    dynamic arr <- [1.49, 1.69, 2.48, 2.65, 3.49, 4.28, 5.52, 5.71, 7.84, 7.87]
+    dynamic element <- 4.28
+    var pos <- interpolation_search(arr, element, 0, 9)
+    
+    if (pos = -1) writeString("Not found")
+    else writeNumber(pos)
 end

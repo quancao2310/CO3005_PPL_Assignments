@@ -1510,227 +1510,745 @@ end
         self.assertTrue(TestCodeGen.test(input, expect, 574))
     
     # Solve algorithms/problems in ZCode (simplified due to lack of features)
-#     def test_575(self):
-#         # 
-#         input = """func main() begin
+    def test_575(self):
+        # Factorial
+        input = """func fact(number n) begin
+    if (n <= 1) return 1
+    return n * fact(n - 1)
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 575))
+func main() begin
+    writeNumber(fact(1))
+    writeNumber(fact(2))
+    writeNumber(fact(3))
+    writeNumber(fact(4))
+    writeNumber(fact(5))
+end
+"""
+        expect = "1.02.06.024.0120.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 575))
     
-#     def test_576(self):
-#         # 
-#         input = """func main() begin
+    def test_576(self):
+        # Find sum of array
+        input = """func sum(number a[10])
+begin
+    var i <- 0
+    var sum <- 0
+    for i until i = 10 by 1
+        sum <- sum + a[i]
+    return sum
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 576))
+func main() begin
+    writeNumber(sum([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+    writeNumber(sum([2, 0, 2, 4, 0, 5, 1, 9, 0, 0]))
+end
+"""
+        expect = "55.023.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 576))
     
-#     def test_577(self):
-#         # 
-#         input = """func main() begin
+    def test_577(self):
+        # Find maximum in array
+        input = """func max(number a[10]) begin
+    var max <- a[0]
+    var i <- 1
+    for i until i = 10 by 1
+        if (a[i] > max) max <- a[i]
+    return max
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 577))
+func main() begin
+    writeNumber(max([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
+    writeNumber(max([2, 0, 2, 4, 0, 5, 1, 9, 0, 0]))
+end
+"""
+        expect = "10.09.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 577))
     
-#     def test_578(self):
-#         # 
-#         input = """func main() begin
+    def test_578(self):
+        # Print array
+        input = """func printArr(number a[10]) begin
+    writeNumber(a[0])
+    var i <- 1
+    for i until i = 10 by 1 begin
+        writeString(" ")
+        writeNumber(a[i])
+    end
+    writeString("\\n")
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 578))
+func main() begin
+    printArr([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    printArr([2, 0, 2, 4, 0, 5, 1, 9, 0, 0])
+end
+"""
+        expect = "1.0 2.0 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0\n2.0 0.0 2.0 4.0 0.0 5.0 1.0 9.0 0.0 0.0\n"
+        self.assertTrue(TestCodeGen.test(input, expect, 578))
     
-#     def test_579(self):
-#         # 
-#         input = """func main() begin
+    def test_579(self):
+        # XOR function
+        input = """func xor(bool a, bool b) return (a and not b) or (not a and b)
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 579))
+func main() begin
+    writeBool(xor(true, true))
+    writeBool(xor(true, false))
+    writeBool(xor(false, true))
+    writeBool(xor(false, false))
+end
+"""
+        expect = "falsetruetruefalse"
+        self.assertTrue(TestCodeGen.test(input, expect, 579))
     
-#     def test_580(self):
-#         # 
-#         input = """func main() begin
+    def test_580(self):
+        # Check leap year
+        input = """func is_leap(number year) return (year % 400 = 0) or ((year % 4 = 0) and (year % 100 != 0))
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 580))
+func main() begin
+    var years <- [2001, 2004, 1900, 2000]
+    var i <- 0
+    for i until i = 4 by 1 begin
+        writeNumber(years[i])
+        if (is_leap(years[i]))
+            writeString(" is a leap year\\n")
+        else
+            writeString(" is not a leap year\\n")
+    end
+end
+"""
+        expect = "2001.0 is not a leap year\n2004.0 is a leap year\n1900.0 is not a leap year\n2000.0 is a leap year\n"
+        self.assertTrue(TestCodeGen.test(input, expect, 580))
     
-#     def test_581(self):
-#         # 
-#         input = """func main() begin
+    def test_581(self):
+        # Decimal to binary representation
+        input = """func round(number n)
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 581))
+func dec_to_bin(number n) begin
+    if (n < 0) return "not implemented\\n"
+    if (n = 0) return "0\\n"
     
-#     def test_582(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 582))
+    var res <- "\\n"
+    var i <- 0
+    for i until n <= 0 by 0 begin
+        if (n % 2 = 0) res <- "0" ... res
+        else res <- "1" ... res
+        n <- round(n/2)
+    end
     
-#     def test_583(self):
-#         # 
-#         input = """func main() begin
+    return res
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 583))
+func round(number n) return n - n % 1
+
+func main() begin
+    writeString(dec_to_bin(4))
+    writeString(dec_to_bin(10))
+    writeString(dec_to_bin(100))
+    writeString(dec_to_bin(1000))
+end
+"""
+        expect = "100\n1010\n1100100\n1111101000\n"
+        self.assertTrue(TestCodeGen.test(input, expect, 581))
     
-#     def test_584(self):
-#         # 
-#         input = """func main() begin
+    def test_582(self):
+        # Greatest Common Divisor (GCD)
+        input = """func gcd(number a, number b) begin
+    if (b = 0) return a
+    return gcd(b, a % b)
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 584))
+func main() begin
+    writeNumber(gcd(6, 9))
+    writeNumber(gcd(24, 16))
+    writeNumber(gcd(1, 7))
+end
+"""
+        expect = "3.08.01.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 582))
     
-#     def test_585(self):
-#         # 
-#         input = """func main() begin
+    def test_583(self):
+        # Fibonacci sequence
+        input = """number fib[10]
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 585))
+func main() begin
+    fib[0] <- 0
+    fib[1] <- 1
     
-#     def test_586(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 586))
+    var i <- 2
+    for i until i = 10 by 1
+        fib[i] <- fib[i - 1] + fib[i - 2]
     
-#     def test_587(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 587))
+    writeNumber(fib[9])
+end
+"""
+        expect = "34.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 583))
     
-#     def test_588(self):
-#         # 
-#         input = """func main() begin
+    def test_584(self):
+        # Check whether one number is divisible the other (Example 1 in spec but don't read input)
+        input = """func areDivisors(number num1, number num2)
+    return ((num1 % num2 = 0) or (num2 % num1 = 0))
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 588))
+func main()
+    begin
+        var num1 <- 2024
+        var num2 <- 8
+        if (areDivisors(num1, num2)) writeString("Yes")
+        else writeString("No")
+    end
+"""
+        expect = "Yes"
+        self.assertTrue(TestCodeGen.test(input, expect, 584))
     
-#     def test_589(self):
-#         # 
-#         input = """func main() begin
+    def test_585(self):
+        # Check prime number (Example 2 in spec but don't read input)
+        input = """func isPrime(number x)
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 589))
+func main()
+    begin
+        number x <- 23
+        if (isPrime(x)) writeString("Yes")
+        else writeString("No")
+    end
+
+func isPrime(number x)
+    begin
+        if (x <= 1) return false
+        var i <- 2
+        for i until i > x / 2 by 1
+        begin
+            if (x % i = 0) return false
+        end
+        return true
+    end
+"""
+        expect = "Yes"
+        self.assertTrue(TestCodeGen.test(input, expect, 585))
     
-#     def test_590(self):
-#         # 
-#         input = """func main() begin
+    def test_586(self):
+        # Tower of Hanoi
+        input = """func print(string src, string dst) begin
+    string output <- "Move 1 disk from "
+    output <- output ... src
+    output <- output ... " to "
+    output <- output ... dst
+    output <- output ... "\\n"
+    writeString(output)
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 590))
+func tower_of_hanoi(number n, string src, string dst, string aux) begin
+    if (n = 1) print(src, dst)
+    else begin
+        tower_of_hanoi(n - 1, src, aux, dst)
+        tower_of_hanoi(1, src, dst, aux)
+        tower_of_hanoi(n - 1, aux, dst, src)
+    end
+end
+
+func main() begin
+    tower_of_hanoi(3, "A", "C", "B")
+end
+"""
+        expect = """Move 1 disk from A to C
+Move 1 disk from A to B
+Move 1 disk from C to B
+Move 1 disk from A to C
+Move 1 disk from B to A
+Move 1 disk from B to C
+Move 1 disk from A to C
+"""
+        self.assertTrue(TestCodeGen.test(input, expect, 586))
     
-#     def test_591(self):
-#         # 
-#         input = """func main() begin
+    def test_587(self):
+        # Square root of a number to a given precision
+        # This testcase might failed due to floating point precision
+        input = """func pow(number base, number exp) begin
+    number res <- 1
+    var i <- 0
+    for i until i = exp by 1 begin
+        res <- res * base
+    end
+    return res
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 591))
+func round(number n, number decimal_points) begin
+    number factor <- pow(10, decimal_points)
+    return ((n * factor) - (n * factor) % 1) / factor
+end
+
+func sqrt(number n, number decimal_points) begin
+    if (n < 0) return -1
     
-#     def test_592(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 592))
+    number left <- 0
+    number right <- n
+    number mid
+    var _ <- 0
     
-#     def test_593(self):
-#         # 
-#         input = """func main() begin
+    for _ until right - left < pow(0.1, decimal_points) by 0 begin
+        mid <- (left + right) / 2
+        if (mid * mid = n) return mid
+        elif (mid * mid < n) left <- mid
+        else right <- mid
+    end
+    return round((left + right)/2, decimal_points)
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 593))
+func main() begin
+    writeNumber(sqrt(0, 2))
+    writeString("\\n")
+    writeNumber(sqrt(25, 2))
+    writeString("\\n")
+    writeNumber(sqrt(81, 2))
+    writeString("\\n")
+    writeNumber(sqrt(100, 2))
+    writeString("\\n")
     
-#     def test_594(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 594))
+    writeNumber(sqrt(9, 2))
+    writeString("\\n")
+    writeNumber(sqrt(12, 2))
+    writeString("\\n")
+    writeNumber(sqrt(13, 2))
+    writeString("\\n")
+    writeNumber(sqrt(14, 2))
+    writeString("\\n")
+    writeNumber(sqrt(15, 2))
+    writeString("\\n")
+    writeNumber(sqrt(16, 2))
+end
+"""
+        expect = "0.0\n5.0\n9.0\n10.0\n3.0\n3.46\n3.6\n3.74\n3.87\n4.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 587))
     
-#     def test_595(self):
-#         # 
-#         input = """func main() begin
+    def test_588(self):
+        # Linear search
+        input = """func linear_search(number arr[10], number element) begin
+    var i <- 0
+    for i until i = 10 by 1
+        if (arr[i] = element) return i
+    return -1
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 595))
+func main() begin
+    dynamic arr <- [5.71, 1.69, 3.49, 2.65, 4.28, 7.84, 1.49, 5.52, 2.48, 7.87]
+    dynamic element <- 4.28
+    var pos <- linear_search(arr, element)
     
-#     def test_596(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 596))
+    if (pos = -1) writeString("Not found")
+    else writeNumber(pos)
+end
+"""
+        expect = "4.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 588))
     
-#     def test_597(self):
-#         # 
-#         input = """func main() begin
+    def test_589(self):
+        # Binary search
+        input = """func round(number n) return n - n % 1
+func binary_search(number arr[10], number element) begin
+    var left <- 0
+    var right <- 9
+    number mid
+    var _ <- 0
+    for _ until left > right by 0 begin
+        mid <- round((left + right) / 2)
+        if (element = arr[mid]) return mid
+        elif (element > arr[mid]) left <- mid + 1
+        else right <- mid - 1
+    end
+    return -1
+end
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 597))
+func main() begin
+    dynamic arr <- [1.49, 1.69, 2.48, 2.65, 3.49, 4.28, 5.52, 5.71, 7.84, 7.87]
+    dynamic element <- 4.28
+    var pos <- binary_search(arr, element)
     
-#     def test_598(self):
-#         # 
-#         input = """func main() begin
-
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 598))
+    if (pos = -1) writeString("Not found")
+    else writeNumber(pos)
+end
+"""
+        expect = "5.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 589))
     
-#     def test_599(self):
-#         # 
-#         input = """func main() begin
+    def test_590(self):
+        # Interpolation search
+        input = """func round(number n) return n - n % 1
 
-# end
-# """
-#         expect = ""
-#         self.assertTrue(TestCodeGen.test(input, expect, 599))
+func interpolation_search(number arr[10], number element, number left, number right)
+begin
+    if ((left > right) or (element < arr[left]) or (element > arr[right])) return -1
+    number pos <- left + (right - left)*(element - arr[left])/(arr[right] - arr[left])
+    pos <- round(pos)
+    if (element = arr[pos]) return pos
+    elif (element < arr[pos]) return interpolation_search(arr, element, left, pos-1)
+    return interpolation_search(arr, element, pos+1, right)
+end
+
+func main() begin
+    dynamic arr <- [1.49, 1.69, 2.48, 2.65, 3.49, 4.28, 5.52, 5.71, 7.84, 7.87]
+    dynamic element <- 4.28
+    var pos <- interpolation_search(arr, element, 0, 9)
+    
+    if (pos = -1) writeString("Not found")
+    else writeNumber(pos)
+end
+"""
+        expect = "5.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 590))
+    
+    def test_591(self):
+        # Bubble sort
+        input = """func swap(number arr[10], number i, number j) begin
+    if ((i < 0) or (i >= 10) or (j < 0) or (j >= 10) or (i = j)) return
+    var tmp <- arr[i]
+    arr[i] <- arr[j]
+    arr[j] <- tmp
+end
+
+func bubble_sort(number arr[10]) begin
+    number i <- 1
+    for i until i = 10 by 1 begin
+        number j <- 9
+        for j until j < i by -1
+            if (arr[j] < arr[j - 1]) swap(arr, j, j - 1)
+    end
+end
+
+func main() begin
+    dynamic arr <- [5.71, 1.69, 3.49, 2.65, 4.28, 7.84, 1.49, 5.52, 2.48, 7.87]
+    bubble_sort(arr)
+    writeNumber(arr[0])
+    var i <- 1
+    for i until i = 10 by 1 begin
+        writeString(" ")
+        writeNumber(arr[i])
+    end
+end
+"""
+        expect = "1.49 1.69 2.48 2.65 3.49 4.28 5.52 5.71 7.84 7.87"
+        self.assertTrue(TestCodeGen.test(input, expect, 591))
+    
+    def test_592(self):
+        # Selection sort
+        input = """func swap(number arr[10], number i, number j) begin
+    if ((i < 0) or (i >= 10) or (j < 0) or (j >= 10) or (i = j)) return
+    var tmp <- arr[i]
+    arr[i] <- arr[j]
+    arr[j] <- tmp
+end
+
+func selection_sort(number arr[10]) begin
+    number i <- 0
+    for i until i = 9 by 1 begin
+        number min_idx <- i
+        number j <- i + 1
+        for j until j = 10 by 1
+            if (arr[j] < arr[min_idx]) min_idx <- j
+        swap(arr, i, min_idx)
+    end
+end
+
+func main() begin
+    dynamic arr <- [5.71, 1.69, 3.49, 2.65, 4.28, 7.84, 1.49, 5.52, 2.48, 7.87]
+    selection_sort(arr)
+    writeNumber(arr[0])
+    var i <- 1
+    for i until i = 10 by 1 begin
+        writeString(" ")
+        writeNumber(arr[i])
+    end
+end
+"""
+        expect = "1.49 1.69 2.48 2.65 3.49 4.28 5.52 5.71 7.84 7.87"
+        self.assertTrue(TestCodeGen.test(input, expect, 592))
+    
+    def test_593(self):
+        # Insertion sort
+        input = """func insertion_sort(number arr[10]) begin
+    number i <- 1
+    for i until i = 10 by 1 begin
+        number tmp <- arr[i]
+        number j <- i - 1
+        for j until j < -1 by -1 begin
+            if (j = -1) begin ## separated due to no short-circuit evaluation
+                arr[0] <- tmp
+                break
+            end
+            elif (tmp >= arr[j]) begin
+                arr[j + 1] <- tmp
+                break
+            end
+            else arr[j + 1] <- arr[j]
+        end
+    end
+end
+
+func main() begin
+    dynamic arr <- [5.71, 1.69, 3.49, 2.65, 4.28, 7.84, 1.49, 5.52, 2.48, 7.87]
+    insertion_sort(arr)
+    writeNumber(arr[0])
+    var i <- 1
+    for i until i = 10 by 1 begin
+        writeString(" ")
+        writeNumber(arr[i])
+    end
+end
+"""
+        expect = "1.49 1.69 2.48 2.65 3.49 4.28 5.52 5.71 7.84 7.87"
+        self.assertTrue(TestCodeGen.test(input, expect, 593))
+    
+    def test_594(self):
+        # Shell sort
+        input = """func sort_segment(number arr[10], number segment_idx, number k) begin
+    number i <- segment_idx + k
+    for i until i >= 10 by k begin
+        number tmp <- arr[i]
+        number j <- i - k
+        for j until j < -k by -k begin
+            if (j < 0) begin ## separated due to no short-circuit evaluation
+                arr[j + k] <- tmp
+                break
+            end
+            elif (tmp >= arr[j]) begin
+                arr[j + k] <- tmp
+                break
+            end
+            else arr[j + k] <- arr[j]
+        end
+    end
+end
+
+func shell_sort(number arr[10], number num_of_segment_list[3]) begin
+    number i <- 2
+    for i until i < 0 by -1 begin
+        number segment <- 0
+        for segment until segment = num_of_segment_list[i] by 1
+            sort_segment(arr, segment, num_of_segment_list[i])
+    end
+end
+
+func main() begin
+    dynamic arr <- [5.71, 1.69, 3.49, 2.65, 4.28, 7.84, 1.49, 5.52, 2.48, 7.87]
+    shell_sort(arr, [1, 2, 4])
+    writeNumber(arr[0])
+    var i <- 1
+    for i until i = 10 by 1 begin
+        writeString(" ")
+        writeNumber(arr[i])
+    end
+end
+"""
+        expect = "1.49 1.69 2.48 2.65 3.49 4.28 5.52 5.71 7.84 7.87"
+        self.assertTrue(TestCodeGen.test(input, expect, 594))
+    
+    def test_595(self):
+        # Merge sort
+        input = """func round(number n) return n - n % 1
+
+func merge(number arr[10], number left, number right, number mid) begin
+    number left_length <- mid - left + 1 ## left -> mid
+    number right_length <- right - mid ## mid + 1 -> right
+    number arr_left[10]
+    number arr_right[10]
+    
+    number i <- 0
+    number j <- 0
+    
+    for i until i >= left_length by 1
+        arr_left[i] <- arr[left + i]
+    for j until j >= right_length by 1
+        arr_right[j] <- arr[mid + 1 + j]
+    
+    number k <- left
+    for k until k > right by 1 begin
+        if ((i < left_length) and ((j >= right_length) or (arr_left[i] <= arr_right[j]))) begin
+            arr[k] <- arr_left[i]
+            i <- i + 1
+        end
+        else begin
+            arr[k] <- arr_right[j]
+            j <- j + 1
+        end
+    end
+end
+
+func merge_sort(number arr[10], number left, number right) begin
+    if (left >= right) return
+    number mid <- round((left + right) / 2)
+    merge_sort(arr, left, mid)
+    merge_sort(arr, mid + 1, right)
+    merge(arr, left, right, mid)
+end
+
+func main() begin
+    dynamic arr <- [5.71, 1.69, 3.49, 2.65, 4.28, 7.84, 1.49, 5.52, 2.48, 7.87]
+    merge_sort(arr, 0, 9)
+    writeNumber(arr[0])
+    var i <- 1
+    for i until i = 10 by 1 begin
+        writeString(" ")
+        writeNumber(arr[i])
+    end
+end
+"""
+        expect = "1.49 1.69 2.48 2.65 3.49 4.28 5.52 5.71 7.84 7.87"
+        self.assertTrue(TestCodeGen.test(input, expect, 595))
+    
+    def test_596(self):
+        # Quick sort
+        input = """func swap(number arr[10], number i, number j) begin
+    if ((i < 0) or (i >= 10) or (j < 0) or (j >= 10) or (i = j)) return
+    var tmp <- arr[i]
+    arr[i] <- arr[j]
+    arr[j] <- tmp
+end
+
+func partition(number arr[100], number left, number right) begin
+    number pivot <- arr[left]
+    number i <- left + 1
+    number j <- right
+    number saved_i <- i
+    number saved_j <- j
+    
+    for i until i > j by 0 begin
+        for i until ((i > j) or (arr[i] >= pivot)) by 1 begin
+            saved_i <- i + 1
+        end
+        i <- saved_i
+        for j until ((i > j) or (arr[j] < pivot)) by -1 begin
+            saved_j <- j - 1
+        end
+        j <- saved_j
+        if (i < j) begin
+            swap(arr, i, j)
+            i <- i + 1
+            j <- j - 1
+        end
+    end
+    swap(arr, j, left)
+    return j
+end
+
+func quick_sort(number arr[100], number left, number right) begin
+    if (left >= right) return
+    number pos <- partition(arr, left, right)
+    quick_sort(arr, left, pos - 1)
+    quick_sort(arr, pos + 1, right)
+end
+
+func main() begin
+    dynamic arr <- [5.71, 1.69, 3.49, 2.65, 4.28, 7.84, 1.49, 5.52, 2.48, 7.87]
+    quick_sort(arr, 0, 9)
+    writeNumber(arr[0])
+    var i <- 1
+    for i until i = 10 by 1 begin
+        writeString(" ")
+        writeNumber(arr[i])
+    end
+end
+"""
+        expect = "1.49 1.69 2.48 2.65 3.49 4.28 5.52 5.71 7.84 7.87"
+        self.assertTrue(TestCodeGen.test(input, expect, 596))
+    
+    def test_597(self):
+        # Heap sort
+        input = """func swap(number arr[10], number i, number j) begin
+    if ((i < 0) or (i >= 10) or (j < 0) or (j >= 10) or (i = j)) return
+    var tmp <- arr[i]
+    arr[i] <- arr[j]
+    arr[j] <- tmp
+end
+
+func heapify(number arr[10], number length, number index) begin
+    number l <- 2 * index + 1
+    number r <- 2 * index + 2
+    number largest <- index
+    if (l < length)
+        if (arr[l] > arr[largest]) largest <- l
+    if (r < length)
+        if (arr[r] > arr[largest]) largest <- r
+    if (largest != index) begin
+        swap(arr, index, largest)
+        heapify(arr, length, largest)
+    end
+end
+
+func heap_sort(number arr[10], number length) begin
+    ## Build heap
+    number internal <- (length/2 - (length/2 % 1)) - 1
+    for internal until internal < 0 by -1
+        heapify(arr, length, internal)
+    
+    var i <- length - 1
+    for i until i <= 0 by -1 begin
+        swap(arr, 0, i)
+        heapify(arr, i, 0)
+    end
+end
+
+func main() begin
+    dynamic arr <- [5.71, 1.69, 3.49, 2.65, 4.28, 7.84, 1.49, 5.52, 2.48, 7.87]
+    heap_sort(arr, 10)
+    writeNumber(arr[0])
+    var i <- 1
+    for i until i = 10 by 1 begin
+        writeString(" ")
+        writeNumber(arr[i])
+    end
+end
+"""
+        expect = "1.49 1.69 2.48 2.65 3.49 4.28 5.52 5.71 7.84 7.87"
+        self.assertTrue(TestCodeGen.test(input, expect, 597))
+    
+    def test_598(self):
+        # Longest Increasing Subsequence (LIS)
+        # Print the length of the longest increasing subsequence of array
+        input = """func lis(number arr[10], number n) begin
+    number lis[10]
+    lis[0] <- 1
+    
+    number i <- 1
+    for i until i >= n by 1 begin
+        lis[i] <- 1
+        
+        number j <- 0
+        for j until j >= i by 1
+            if ((arr[i] > arr[j]) and (lis[j] + 1 > lis[i]))
+                lis[i] <- lis[j] + 1
+    end
+    
+    number max <- lis[0]
+    for i until i >= n by 1
+        if (lis[i] > max) max <- lis[i]
+    
+    return max
+end
+
+func main() begin
+    dynamic arr <- [5.71, 1.69, 3.49, 2.65, 4.28, 7.84, 1.49, 5.52, 2.48, 7.87]
+    writeNumber(lis(arr, 10)) ## 5: 1.69, 2.65, 4.28, 7.84, 7.87
+end
+"""
+        expect = "5.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 598))
+    
+    def test_599(self):
+        # Longest Common Subsequence (LCS)
+        # Print the length of the longest common subsequence of array (or strings)
+        input = """func max(number a, number b) begin
+    if (a > b) return a
+    return b
+end
+
+func lcs(string s1[10], string s2[10], number m, number n) begin
+    if ((m = 0) or (n = 0)) return 0
+    if (s1[m - 1] == s2[n - 1]) return 1 + lcs(s1, s2, m - 1, n - 1)
+    return max(lcs(s1, s2, m - 1, n), lcs(s1, s2, m, n - 1))
+end
+
+func main() begin
+    dynamic s1 <- ["A", "G", "G", "T", "A", "B", "", "", "",""]
+    dynamic s2 <- ["G", "X", "T", "X", "A", "Y", "B", "", "", ""]
+    writeNumber(lcs(s1, s2, 6, 7)) ## 4: "G" - "T" - "A" - "B"
+end
+"""
+        expect = "4.0"
+        self.assertTrue(TestCodeGen.test(input, expect, 599))

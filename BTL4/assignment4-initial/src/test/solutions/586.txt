@@ -1,0 +1,7 @@
+Move 1 disk from A to C
+Move 1 disk from A to B
+Move 1 disk from C to B
+Move 1 disk from A to C
+Move 1 disk from B to A
+Move 1 disk from B to C
+Move 1 disk from A to C

@@ -1,3 +1,23 @@
-func main() begin
+func round(number n) return n - n % 1
+func binary_search(number arr[10], number element) begin
+    var left <- 0
+    var right <- 9
+    number mid
+    var _ <- 0
+    for _ until left > right by 0 begin
+        mid <- round((left + right) / 2)
+        if (element = arr[mid]) return mid
+        elif (element > arr[mid]) left <- mid + 1
+        else right <- mid - 1
+    end
+    return -1
+end
 
+func main() begin
+    dynamic arr <- [1.49, 1.69, 2.48, 2.65, 3.49, 4.28, 5.52, 5.71, 7.84, 7.87]
+    dynamic element <- 4.28
+    var pos <- binary_search(arr, element)
+    
+    if (pos = -1) writeString("Not found")
+    else writeNumber(pos)
 end
