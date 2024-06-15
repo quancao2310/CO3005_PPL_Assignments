@@ -4,6 +4,9 @@ This repository contains the specifications and my implementations of 4 PPL assi
 
 Here is the newest version of ZCode: [Spec](./ZCode_v1.2.2.pdf). The spec is changed over time to resolve ambiguity or any other problems regarding to language/compiler implementation.
 
+> [!NOTE]
+> For more information on how to run the project, please refer to the README inside `BTL4/assignment4-initial` folder.
+
 ## Assignment 1: Lexer/Parser
 
 The first phase of the compilation is lexical analysis. This process is done by a **_Lexer_**. It reads the stream of characters of the source code and groups those into meaningful sequences called **_lexemes_**. It also removes extraneous whitespace and comments. After this process, all the characters becomes a token stream.
@@ -24,4 +27,12 @@ The AST can then be translated to machine code and run. However, there may be so
 
 There are many ways to check the AST for those constraints. In this assignment, the Visitor pattern is reused for its simplicity and familiarity. You also have to organize and store your scopes and types of the program variables/functions/classes in order to check them later.
 
-## Assignment 4
+## Assignment 4: Code Generation
+
+After checking for some potential errors, the source code is then translated into some code that the machines can execute. It can be the machine code, or an (or some) intermediate representation which is then translated into target machine code by another machine.
+
+The intermediate code should be easier to be produced and translated into the target machine code. For this assignment, the chosen intermediate representation is **_Java bytecode_**, and the machine that can later process it is **_Java virtual machine (JVM)_**.
+
+Our task is to translate the AST into **_Jasmin code_**, an assembly-like syntax of Java bytecode. The Jasmin code is then translated into Java bytecode by a Jasmin assembler, and then processed by JVM.
+
+The Visitor is also reused, but now you are also provided with some APIs by your lecturers. These APIs help you write your intermediate code generator faster. You must understand these APIs, and how Jasmin/Java bytecode works in order to produce the right code for JVM.

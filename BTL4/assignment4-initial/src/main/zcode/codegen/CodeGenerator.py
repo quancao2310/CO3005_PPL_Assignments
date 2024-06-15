@@ -42,7 +42,7 @@ class Symbol:
         self.defined = defined
 
 class Access():
-    def __init__(self, frame: Frame, sym: List[Symbol], isLeft: bool, expr = None):
+    def __init__(self, frame: Frame, sym: List[Symbol], isLeft: bool, expr: Expr = None):
         self.frame = frame
         self.sym = sym
         self.isLeft = isLeft
@@ -78,7 +78,7 @@ class CodeGenVisitor(BaseVisitor):
         self.env = env
         self.path = path
     
-    def infer_symbol(self, name: str, typ: Type, env: List[Symbol], isMType: bool) -> Type:
+    def infer_symbol(self, name: str, typ: Type, env: List[Symbol], isMType: bool):
         if isMType:
             symbol_list = filter(lambda symbol: type(symbol.mtype) is MType, env)
         else:
